@@ -1,0 +1,17 @@
+## Interface: 11508
+## Title: VoidMod
+## Notes: Mzx classic tools
+## Notes-zhCN: Mzx怀旧服插件整合
+## Author: Muzixi
+## Version: 1.0
+## SavedVariables: VoidModClassicDB
+## SavedVariablesPerCharacter: VoidModClassicCharacterDB
+
+VoidMod.lua
+commend\Background.lua
+commend\Movable.lua
+module\TotemWeaponMonitor.lua
+module\BloodlustSimple.lua
+module\MessageBot.lua
+module\PlayerInfo.lua
+module\ButtonAuto.lua
