@@ -1,4 +1,4 @@
-## Interface: 11508
+## Interface: 11508,20505
 ## Title: VoidMod
 ## Notes: Mzx classic tools
 ## Notes-zhCN: Mzx怀旧服插件整合
