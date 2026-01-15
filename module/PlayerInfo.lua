@@ -101,7 +101,7 @@ function VoidFrame:Void_CreatePlayerInfoDisplay_UP(first)
     self.voidPlayerInfo_UP:SetPoint(VoidModClassicCharacterDB.point.up.p, VoidModClassicCharacterDB.point.up.x, VoidModClassicCharacterDB.point.up.y)
     SetPlayerInfoFrameStyle(self.voidPlayerInfo_UP)
 
-    self.voidPlayerInfoText_UP = self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    self.voidPlayerInfoText_UP = self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText")
 
     AddString(self.voidPlayerInfoText_UP, first)
 end
@@ -117,7 +117,7 @@ function VoidFrame:Void_CreatePlayerInfoDisplay_Down(info)
     self.voidPlayerInfo_DOWN:SetPoint(VoidModClassicCharacterDB.point.down.p, VoidModClassicCharacterDB.point.down.x, VoidModClassicCharacterDB.point.down.y)
     SetPlayerInfoFrameStyle(self.voidPlayerInfo_DOWN)
 
-    self.voidPlayerInfoText_DOWN = self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    self.voidPlayerInfoText_DOWN = self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText")
 
     AddString(self.voidPlayerInfoText_DOWN, info)
 end
