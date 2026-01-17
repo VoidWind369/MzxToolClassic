@@ -3,7 +3,7 @@ local totemWeapon = {
 
     -- 漩涡武器法术ID
     spell_id = 344179,
-    galeWinds_spell_id = 324,
+    galeWinds_spell_id = { 324, 325, 326, 327, 328 },
 
     -- 显示设置
     max_stacks = 5,
@@ -102,7 +102,16 @@ end
 -- 增强萨buff监控进程
 function VoidFrame:UpdateTotemWeaponStacks()
     local totemWeaponData = C_UnitAuras.GetUnitAuraBySpellID("player", totemWeapon.spell_id)
-    local galeWindsData = C_UnitAuras.GetUnitAuraBySpellID("player", totemWeapon.galeWinds_spell_id)
+
+    local galeWindsDataCount = 0
+    for _, spell_id in pairs(totemWeapon.galeWinds_spell_id) do
+        local galeWindsData = C_UnitAuras.GetUnitAuraBySpellID("player", spell_id)
+        if galeWindsData then
+            galeWindsDataCount = galeWindsDataCount + 1
+        end
+    end
+
+    -- local galeWindsData = C_UnitAuras.GetUnitAuraBySpellID("player", totemWeapon.galeWinds_spell_id)
 
     if totemWeaponData then
         totemWeapon.currentStacks = totemWeaponData.applications or 0
@@ -113,7 +122,7 @@ function VoidFrame:UpdateTotemWeaponStacks()
 
     -- 更新小圆点进度
     self:UpdateDotProgress(totemWeapon.currentStacks)
-    if galeWindsData then
+    if galeWindsDataCount > 0 then
         self:UpdateDotFrameProgress(true)
     else
         self:UpdateDotFrameProgress(false)
