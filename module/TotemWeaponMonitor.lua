@@ -3,7 +3,7 @@ local totemWeapon = {
 
     -- 漩涡武器法术ID
     spell_id = 344179,
-    galeWinds_spell_id = { 324, 325, 326, 327, 328 },
+    galeWinds_spell_id = { 324, 325, 905, 327, 328 },
 
     -- 显示设置
     max_stacks = 5,
