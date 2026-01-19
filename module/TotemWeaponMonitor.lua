@@ -4,10 +4,11 @@ local totemWeapon = {
     -- 漩涡武器法术ID
     spell_id = 344179,
     galeWinds_spell_id = { 324, 325, 905, 327, 328 },
+    focus_spell_id = 43339,
 
     -- 显示设置
     max_stacks = 5,
-    dot_size = 36, -- 每个小圆点的大小
+    dot_size = 36,   -- 每个小圆点的大小
     dot_spacing = 1, -- 圆点间距
     position_x = 0,
     position_y = -260,
@@ -73,8 +74,8 @@ function VoidFrame:UpdateDotProgress(stacks)
         else
             -- 未激活的小圆点 - 深灰色渐变
             dot.tex:SetGradient("VERTICAL",
-                    CreateColor(0.5, 0.5, 0.5, alpha),
-                    CreateColor(0.2, 0.2, 0.2, alpha)
+                CreateColor(0.5, 0.5, 0.5, alpha),
+                CreateColor(0.2, 0.2, 0.2, alpha)
             )
             dot.glow:Hide()
             dot:SetAlpha(0.3)
@@ -102,6 +103,7 @@ end
 -- 增强萨buff监控进程
 function VoidFrame:UpdateTotemWeaponStacks()
     local totemWeaponData = C_UnitAuras.GetUnitAuraBySpellID("player", totemWeapon.spell_id)
+    local focusData = C_UnitAuras.GetUnitAuraBySpellID("player", totemWeapon.focus_spell_id)
 
     local galeWindsDataCount = 0
     for _, spell_id in pairs(totemWeapon.galeWinds_spell_id) do
@@ -122,11 +124,16 @@ function VoidFrame:UpdateTotemWeaponStacks()
 
     -- 更新小圆点进度
     self:UpdateDotProgress(totemWeapon.currentStacks)
-    if galeWindsDataCount > 0 then
+    if focusData then
         self:UpdateDotFrameProgress(true)
     else
         self:UpdateDotFrameProgress(false)
     end
+    -- if galeWindsDataCount > 0 then
+    --     self:UpdateDotFrameProgress(true)
+    -- else
+    --     self:UpdateDotFrameProgress(false)
+    -- end
 end
 
 function VoidFrame:TestDisplay()
@@ -212,11 +219,11 @@ local function LoadPosition()
     if TOTEM_WEAPON_MONITOR_POSITION then
         VoidFrame.dotFrame:ClearAllPoints()
         VoidFrame.dotFrame:SetPoint(
-                TOTEM_WEAPON_MONITOR_POSITION.point or "CENTER",
-                UIParent,
-                TOTEM_WEAPON_MONITOR_POSITION.point or "CENTER",
-                TOTEM_WEAPON_MONITOR_POSITION.x or totemWeapon.position_x,
-                TOTEM_WEAPON_MONITOR_POSITION.y or totemWeapon.position_y
+            TOTEM_WEAPON_MONITOR_POSITION.point or "CENTER",
+            UIParent,
+            TOTEM_WEAPON_MONITOR_POSITION.point or "CENTER",
+            TOTEM_WEAPON_MONITOR_POSITION.x or totemWeapon.position_x,
+            TOTEM_WEAPON_MONITOR_POSITION.y or totemWeapon.position_y
         )
         VoidFrame.dotFrame:SetScale(TOTEM_WEAPON_MONITOR_POSITION.scale or 1)
     end
