@@ -56,7 +56,9 @@ end
 --- # 刷新武器熟练度信息框体
 function VoidFrame:Void_UpdateSkillLineInfoDisplay()
     local info = VoidFrame:GetSkillLineInfo()
-    self.voidSkillLineInfoText:SetText(info)
+    if self.voidSkillLineInfoText then
+        self.voidSkillLineInfoText:SetText(info)
+    end
 end
 
 function MovableSkillLineDisplayStop()
