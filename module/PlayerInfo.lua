@@ -14,29 +14,29 @@ local point = {
 --- # 玩家信息获取
 function VoidFrame:Void_PlayerInfo()
     -- 主属性
-    local strength = UnitStat("player", 1) -- 力量
-    local agility = UnitStat("player", 2) -- 敏捷
-    local stamina = UnitStat("player", 3) -- 耐力
-    local intellect = UnitStat("player", 4) -- 智力
-    local spirit = UnitStat("player", 5) -- 精神
+    local strength = UnitStat("player", 1)          -- 力量
+    local agility = UnitStat("player", 2)           -- 敏捷
+    local stamina = UnitStat("player", 3)           -- 耐力
+    local intellect = UnitStat("player", 4)         -- 智力
+    local spirit = UnitStat("player", 5)            -- 精神
 
-    local health = UnitHealth("player") -- 生命值
+    local health = UnitHealth("player")             -- 生命值
 
     local _, physical = UnitResistance("player", 0) -- 护甲
-    local _, holy = UnitResistance("player", 1) -- 神圣
-    local _, fire = UnitResistance("player", 2) -- 火焰
-    local _, nature = UnitResistance("player", 3) -- 自然
-    local _, frost = UnitResistance("player", 4) -- 冰霜
-    local _, shadow = UnitResistance("player", 5) -- 暗影
-    local _, arcane = UnitResistance("player", 6) -- 奥数
+    local _, holy = UnitResistance("player", 1)     -- 神圣
+    local _, fire = UnitResistance("player", 2)     -- 火焰
+    local _, nature = UnitResistance("player", 3)   -- 自然
+    local _, frost = UnitResistance("player", 4)    -- 冰霜
+    local _, shadow = UnitResistance("player", 5)   -- 暗影
+    local _, arcane = UnitResistance("player", 6)   -- 奥数
 
     local baseSpeed, currentSpeed, playerSpeedMod = GetUnitSpeed("player")
-    local speedPercent = (currentSpeed / 7) * 100  -- 7是基础奔跑速度
+    local speedPercent = (currentSpeed / 7) * 100 -- 7是基础奔跑速度
     --local power = UnitPower("player", Enum.PowerType.Mana)
 
     -- 副属性
-    local crit = GetCritChance() -- 暴击
-    local haste = GetHaste() -- 急速
+    local crit = GetCritChance()       -- 暴击
+    local haste = GetHaste()           -- 急速
     local mastery = GetMasteryEffect() -- 精通
 
     local first_table = {
@@ -98,7 +98,8 @@ function VoidFrame:Void_CreatePlayerInfoDisplay_UP(first)
     print("p", VoidModClassicCharacterDB.point.up.p)
     self.voidPlayerInfo_UP = CreateFrame("Frame", "PlayerInfo_UP", UIParent, "BackdropTemplate")
     self.voidPlayerInfo_UP:SetSize(100, 115)
-    self.voidPlayerInfo_UP:SetPoint(VoidModClassicCharacterDB.point.up.p, VoidModClassicCharacterDB.point.up.x, VoidModClassicCharacterDB.point.up.y)
+    self.voidPlayerInfo_UP:SetPoint(VoidModClassicCharacterDB.point.up.p, VoidModClassicCharacterDB.point.up.x,
+        VoidModClassicCharacterDB.point.up.y)
     SetPlayerInfoFrameStyle(self.voidPlayerInfo_UP)
 
     self.voidPlayerInfoText_UP = self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText")
@@ -114,7 +115,8 @@ function VoidFrame:Void_CreatePlayerInfoDisplay_Down(info)
     VoidModClassicCharacterDB.point.down.y = VoidModClassicCharacterDB.point.down.y or point.down.y
     self.voidPlayerInfo_DOWN = CreateFrame("Frame", "PlayerInfo_DOWN", UIParent, "BackdropTemplate")
     self.voidPlayerInfo_DOWN:SetSize(100, 115)
-    self.voidPlayerInfo_DOWN:SetPoint(VoidModClassicCharacterDB.point.down.p, VoidModClassicCharacterDB.point.down.x, VoidModClassicCharacterDB.point.down.y)
+    self.voidPlayerInfo_DOWN:SetPoint(VoidModClassicCharacterDB.point.down.p, VoidModClassicCharacterDB.point.down.x,
+        VoidModClassicCharacterDB.point.down.y)
     SetPlayerInfoFrameStyle(self.voidPlayerInfo_DOWN)
 
     self.voidPlayerInfoText_DOWN = self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText")
@@ -123,7 +125,7 @@ function VoidFrame:Void_CreatePlayerInfoDisplay_Down(info)
 end
 
 --- # 创建玩家信息框体
-function VoidFrame:Void_CreatePlayerInfoDisplay()
+function VoidFrame:Void_CreatePlayerInfo()
     VoidModClassicCharacterDB.point = VoidModClassicCharacterDB.point or point
 
     local first, info = VoidFrame:Void_PlayerInfo()
@@ -137,7 +139,7 @@ function VoidFrame:Void_CreatePlayerInfoDisplay()
 end
 
 --- # 刷新玩家信息框体
-function VoidFrame:Void_UpdatePlayerInfoDisplay()
+function VoidFrame:Void_UpdatePlayerInfo()
     local first, info = VoidFrame:Void_PlayerInfo()
     self.voidPlayerInfoText_UP:SetText(first)
     self.voidPlayerInfoText_DOWN:SetText(info)
@@ -149,7 +151,7 @@ function MovableDisplayStop()
         self:StopMovingOrSizing()
         self.isMoving = false
         local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
-        VoidModClassicCharacterDB.point.up.p = p -- 保存
+        VoidModClassicCharacterDB.point.up.p = p    -- 保存
         VoidModClassicCharacterDB.point.up.x = xOfs -- 保存
         VoidModClassicCharacterDB.point.up.y = yOfs -- 保存
     end)
@@ -157,7 +159,7 @@ function MovableDisplayStop()
         self:StopMovingOrSizing()
         self.isMoving = false
         local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
-        VoidModClassicCharacterDB.point.down.p = p -- 保存
+        VoidModClassicCharacterDB.point.down.p = p    -- 保存
         VoidModClassicCharacterDB.point.down.x = xOfs -- 保存
         VoidModClassicCharacterDB.point.down.y = yOfs -- 保存
     end)
@@ -169,7 +171,7 @@ function MovableDisplayStop()
             self:SetPoint(point.up.p, point.up.x, point.up.y)
             local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
             -- 保存到变量或保存文件
-            VoidModClassicCharacterDB.point.up.p = p -- 保存
+            VoidModClassicCharacterDB.point.up.p = p    -- 保存
             VoidModClassicCharacterDB.point.up.x = xOfs -- 保存
             VoidModClassicCharacterDB.point.up.y = yOfs -- 保存
             self.doubleClick = false
@@ -182,7 +184,7 @@ function MovableDisplayStop()
             self:SetPoint(point.down.p, point.down.x, point.down.y)
             local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
             -- 保存到变量或保存文件
-            VoidModClassicCharacterDB.point.down.p = p -- 保存
+            VoidModClassicCharacterDB.point.down.p = p    -- 保存
             VoidModClassicCharacterDB.point.down.x = xOfs -- 保存
             VoidModClassicCharacterDB.point.down.y = yOfs -- 保存
             self.doubleClick = false

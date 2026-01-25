@@ -9,6 +9,7 @@ VoidFrame:RegisterEvent("LFG_QUEUE_STATUS_UPDATE")
 VoidFrame:RegisterEvent("GROUP_INVITE_CONFIRMATION")
 VoidFrame:RegisterEvent("LFG_ROLE_CHECK_SHOW")
 VoidFrame:RegisterEvent("UNIT_RESISTANCES")
+VoidFrame:RegisterEvent("SKILL_LINES_CHANGED")
 
 VoidFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_LOGIN" then
@@ -19,9 +20,9 @@ VoidFrame:SetScript("OnEvent", function(self, event, ...)
             self:CheckBloodlust()
             self:UpdateTotemWeaponStacks()
         end
-        self:Void_UpdatePlayerInfoDisplay()
+        self:Void_UpdatePlayerInfo()
     elseif event == "UNIT_RESISTANCES" then
-        self:Void_UpdatePlayerInfoDisplay()
+        self:Void_UpdatePlayerInfo()
     elseif event == "CHAT_MSG_WHISPER" then
         self:MessageStart(...)
     elseif event == "PARTY_INVITE_REQUEST" or event == "GROUP_INVITE_CONFIRMATION" then
@@ -30,10 +31,9 @@ VoidFrame:SetScript("OnEvent", function(self, event, ...)
             self:PartyStart(...)
         end
     elseif event == "UNIT_COMBAT" then
-        self:Void_UpdatePlayerInfoDisplay()
-    elseif event == "LFG_ROLE_CHECK_SHOW" then
-        print("排本")
-        C_Timer.After(0.1, function() LFDRoleCheckPopupAcceptButton:Click() end)
+        self:Void_UpdatePlayerInfo()
+    elseif event == "SKILL_LINES_CHANGED" then
+        self:Void_UpdateSkillLineInfoDisplay()
     end
 end)
 
@@ -42,9 +42,12 @@ function VoidFrame:Initialize()
     VoidModClassicDB = VoidModClassicDB or {}
     VoidModClassicCharacterDB = VoidModClassicCharacterDB or {}
 
+    self:GetSkillLineInfo()
+
     -- 调试打印区域
     local className, classFilename, classId = UnitClass("player")
-    print("|cFF33937FVoidMod|r |cFF69CCF0Player|r |cFF00FF00Info:|r \n » Name: " .. className .. "\n » FileName: " .. classFilename .. "\n » Id: " .. classId)
+    print("|cFF33937FVoidMod|r |cFF69CCF0Player|r |cFF00FF00Info:|r \n » Name: " ..
+        className .. "\n » FileName: " .. classFilename .. "\n » Id: " .. classId)
 
     -- WOW客户端信息
     self:ClientInfo()
@@ -54,7 +57,8 @@ function VoidFrame:Initialize()
 
 
     -- 创建属性显示框架
-    self:Void_CreatePlayerInfoDisplay()
+    self:Void_CreatePlayerInfo()
+    self:Void_CreateSkillLineInfo()
 
     -- 注册斜杠命令
     SLASH_VOID_MOD1 = "/void"
@@ -93,7 +97,8 @@ end
 
 function VoidFrame:ClientInfo()
     local version, build, date, toc_version = GetBuildInfo()
-    print("|cFF33937FVoidMod|r |cFF69CCF0Client|r |cFF00FF00Info:|r \n » Version: " .. version .. "\n » Build: " .. build .. "\n » Date: " .. date .. "\n » TocVersion: " .. toc_version)
+    print("|cFF33937FVoidMod|r |cFF69CCF0Client|r |cFF00FF00Info:|r \n » Version: " ..
+        version .. "\n » Build: " .. build .. "\n » Date: " .. date .. "\n » TocVersion: " .. toc_version)
 end
 
 function VoidFrame:PrintHelp()
