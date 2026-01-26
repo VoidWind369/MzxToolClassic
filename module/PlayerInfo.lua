@@ -66,29 +66,6 @@ function VoidFrame:Void_PlayerInfo()
     return first, last, info, sub_attribute
 end
 
---- # 框体通用属性
-function SetPlayerInfoFrameStyle(frame)
-    frame:SetFrameStrata("HIGH")
-    frame:SetBackdrop({
-        bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-        edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-        edgeSize = 12,
-        insets = { left = 6, right = 6, top = 6, bottom = 6 },
-    })
-    frame:SetBackdropColor(0, 0, 0, 0.15)
-    frame:SetBackdropBorderColor(0.2, 0.2, 0.2, 0.5)
-end
-
---- # 显示文字通用属性
-function AddString(fontString, string)
-    fontString:SetPoint("LEFT", 13.5, 0)
-    fontString:SetText(string)
-    fontString:SetTextScale(1)
-    fontString:SetShadowColor(1.0, 1.0, 1.0, 0.5)
-    fontString:SetSpacing(1.5)
-    fontString:SetJustifyH("LEFT")
-end
-
 --- # 创建主属性框体
 function VoidFrame:Void_CreatePlayerInfoDisplay_UP(first)
     VoidModClassicCharacterDB.point.up = VoidModClassicCharacterDB.point.up or point.up
@@ -99,7 +76,7 @@ function VoidFrame:Void_CreatePlayerInfoDisplay_UP(first)
     self.voidPlayerInfo_UP:SetSize(100, 115)
     self.voidPlayerInfo_UP:SetPoint(VoidModClassicCharacterDB.point.up.p, VoidModClassicCharacterDB.point.up.x,
         VoidModClassicCharacterDB.point.up.y)
-    SetPlayerInfoFrameStyle(self.voidPlayerInfo_UP)
+    SetInfoFrameStyle(self.voidPlayerInfo_UP)
 
     self.voidPlayerInfoText_UP = self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText")
 
@@ -116,7 +93,7 @@ function VoidFrame:Void_CreatePlayerInfoDisplay_Down(info)
     self.voidPlayerInfo_DOWN:SetSize(100, 115)
     self.voidPlayerInfo_DOWN:SetPoint(VoidModClassicCharacterDB.point.down.p, VoidModClassicCharacterDB.point.down.x,
         VoidModClassicCharacterDB.point.down.y)
-    SetPlayerInfoFrameStyle(self.voidPlayerInfo_DOWN)
+    SetInfoFrameStyle(self.voidPlayerInfo_DOWN)
 
     self.voidPlayerInfoText_DOWN = self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText")
 

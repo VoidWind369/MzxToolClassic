@@ -7,39 +7,57 @@ local totem = {
 }
 
 function VoidFrame.GetTotemInfo()
-    local str_table = {}
-    local color = { "|cFFFF4500", "|cFF8B4513", "|cFF1E90FF", "|cFF40E0D0" }
-    for index = 1, 4 do
+    local icon_table = {}
+    local name_table = {}
+    local dur_table = {}
+    local color = { { "|cFFFF4500", "(火焰图腾)" }, { "|cFF8B4513", "(大地图腾)" }, { "|cFF1E90FF", "(水之图腾)" }, { "|cFF40E0D0", "(空气图腾)" } }
+    for index, value in ipairs(color) do
         local haveTotem, totemName, startTime, duration, icon, modRate, spellID = GetTotemInfo(index)
-        local name = (haveTotem and totemName) and totemName or "(没插)"
-        local est_dur = (haveTotem and totemName) and startTime + duration - GetTime() or 0
-        table.insert(str_table, color[index] .. name .. "|r  " .. string.format("%.1f", est_dur))
+        local icon_num = (haveTotem and totemName) and icon or 136232
+        local name = (haveTotem and totemName) and totemName or value[2]
+        local est_dur = (haveTotem and totemName) and string.format("|cFFFFFF00%.1f|r", startTime + duration - GetTime()) or
+            "|cFFC0C0C0Nil|r"
+        -- print("icon:", icon)
+        table.insert(icon_table, icon_num)
+        table.insert(name_table, value[1] .. name .. "|r")
+        table.insert(dur_table, est_dur)
     end
-    return table.concat(str_table, "\n")
+    return table.concat(name_table, "\n"), table.concat(dur_table, "\n"), icon_table, table.concat(icon_table, "\n")
 end
 
 --- # 创建图腾框体
-function VoidFrame:Void_CreateTotemInfoDisplay(str)
+function VoidFrame:Void_CreateTotemInfoDisplay(name, dur, icon, icon_text)
     VoidModClassicCharacterDB.point.totem = VoidModClassicCharacterDB.point.totem or totem.up
     VoidModClassicCharacterDB.point.totem.p = VoidModClassicCharacterDB.point.totem.p or totem.up.p
     VoidModClassicCharacterDB.point.totem.x = VoidModClassicCharacterDB.point.totem.x or totem.up.x
     VoidModClassicCharacterDB.point.totem.y = VoidModClassicCharacterDB.point.totem.y or totem.up.y
     self.voidTotemInfo = CreateFrame("Frame", "Totem", UIParent, "BackdropTemplate")
-    self.voidTotemInfo:SetSize(165, 90)
+    self.voidTotemInfo:SetSize(200, 100)
     self.voidTotemInfo:SetPoint(VoidModClassicCharacterDB.point.totem.p,
         VoidModClassicCharacterDB.point.totem.x,
         VoidModClassicCharacterDB.point.totem.y)
-    SetPlayerInfoFrameStyle(self.voidTotemInfo)
+    SetInfoFrameStyle(self.voidTotemInfo)
 
-    self.voidTotemInfoText = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
+    self.voidTotemInfoNameText = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
+    self.voidTotemInfoDurText = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
+    self.voidTotemInfoIconText = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
 
-    AddString(self.voidTotemInfoText, str)
+    for index, value in ipairs(icon) do
+        self.voidTotemInfoIcon = self.voidTotemInfo:CreateTexture()
+        self.voidTotemInfoIcon:SetTexture(value)
+        self.voidTotemInfoIcon:SetSize(15, 15)
+        self.voidTotemInfoIcon:SetPoint("LEFT", self.voidTotemInfo, "LEFT", 125, 28 - (index - 1) * 20)
+    end
+
+    AddString(self.voidTotemInfoNameText, name, 1.2)
+    AddNumber(self.voidTotemInfoDurText, dur, 1.2)
+    AddString(self.voidTotemInfoIconText, icon_text, 1.2, 190)
 end
 
 --- # 创建武器熟练度信息框体
 function VoidFrame:Void_CreateTotemInfo()
-    local info = VoidFrame:GetTotemInfo()
-    self:Void_CreateTotemInfoDisplay(info)
+    -- local name, dur = VoidFrame:GetTotemInfo()
+    self:Void_CreateTotemInfoDisplay(VoidFrame:GetTotemInfo())
 
     MovableDisplay(self.voidTotemInfo)
 
@@ -48,9 +66,14 @@ end
 
 --- # 刷新武器熟练度信息框体
 function VoidFrame:Void_UpdateTotemInfoDisplay()
-    local info = VoidFrame:GetTotemInfo()
-    if self.voidTotemInfoText then
-        self.voidTotemInfoText:SetText(info)
+    local name, dur, icon, icon_text = VoidFrame:GetTotemInfo()
+    if self.voidTotemInfoNameText then
+        self.voidTotemInfoNameText:SetText(name)
+        self.voidTotemInfoDurText:SetText(dur)
+        self.voidTotemInfoIconText:SetText(icon_text)
+        for index, value in ipairs(icon) do
+            self.voidTotemInfoIcon:SetTexture(value)
+        end
     end
 end
 

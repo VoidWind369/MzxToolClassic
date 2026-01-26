@@ -35,7 +35,7 @@ function VoidFrame:Void_CreateSkillLineInfoDisplay(str)
     self.voidSkillLineInfo:SetPoint(VoidModClassicCharacterDB.point.skill_line.p,
         VoidModClassicCharacterDB.point.skill_line.x,
         VoidModClassicCharacterDB.point.skill_line.y)
-    SetPlayerInfoFrameStyle(self.voidSkillLineInfo)
+    SetInfoFrameStyle(self.voidSkillLineInfo)
 
     self.voidSkillLineInfoText = self.voidSkillLineInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
 
