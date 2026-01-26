@@ -13,7 +13,7 @@ function VoidFrame.GetTotemInfo()
     local color = { { "|cFFFF4500", "(火焰图腾)" }, { "|cFF8B4513", "(大地图腾)" }, { "|cFF1E90FF", "(水之图腾)" }, { "|cFF40E0D0", "(空气图腾)" } }
     for index, value in ipairs(color) do
         local haveTotem, totemName, startTime, duration, icon, modRate, spellID = GetTotemInfo(index)
-        local icon_num = (haveTotem and totemName) and icon or 136232
+        local icon_num = icon or 136232
         local name = (haveTotem and totemName) and totemName or value[2]
         local est_dur = (haveTotem and totemName) and string.format("|cFFFFFF00%.1f|r", startTime + duration - GetTime()) or
             "|cFFC0C0C0Nil|r"
@@ -32,7 +32,7 @@ function VoidFrame:Void_CreateTotemInfoDisplay(name, dur, icon, icon_text)
     VoidModClassicCharacterDB.point.totem.x = VoidModClassicCharacterDB.point.totem.x or totem.up.x
     VoidModClassicCharacterDB.point.totem.y = VoidModClassicCharacterDB.point.totem.y or totem.up.y
     self.voidTotemInfo = CreateFrame("Frame", "Totem", UIParent, "BackdropTemplate")
-    self.voidTotemInfo:SetSize(200, 100)
+    self.voidTotemInfo:SetSize(220, 100)
     self.voidTotemInfo:SetPoint(VoidModClassicCharacterDB.point.totem.p,
         VoidModClassicCharacterDB.point.totem.x,
         VoidModClassicCharacterDB.point.totem.y)
@@ -42,16 +42,17 @@ function VoidFrame:Void_CreateTotemInfoDisplay(name, dur, icon, icon_text)
     self.voidTotemInfoDurText = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
     self.voidTotemInfoIconText = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
 
+    self.voidTotemInfoIcon = {}
     for index, value in ipairs(icon) do
-        self.voidTotemInfoIcon = self.voidTotemInfo:CreateTexture()
-        self.voidTotemInfoIcon:SetTexture(value)
-        self.voidTotemInfoIcon:SetSize(15, 15)
-        self.voidTotemInfoIcon:SetPoint("LEFT", self.voidTotemInfo, "LEFT", 125, 28 - (index - 1) * 20)
+        self.voidTotemInfoIcon[index] = self.voidTotemInfo:CreateTexture()
+        self.voidTotemInfoIcon[index]:SetTexture(value)
+        self.voidTotemInfoIcon[index]:SetSize(15, 15)
+        self.voidTotemInfoIcon[index]:SetPoint("LEFT", self.voidTotemInfo, "LEFT", 13.5, 28 - (index - 1) * 19.5)
     end
 
-    AddString(self.voidTotemInfoNameText, name, 1.2)
+    AddString(self.voidTotemInfoNameText, name, 1.2, 35)
     AddNumber(self.voidTotemInfoDurText, dur, 1.2)
-    AddString(self.voidTotemInfoIconText, icon_text, 1.2, 190)
+    -- AddString(self.voidTotemInfoIconText, icon_text, 1.2, 190)
 end
 
 --- # 创建武器熟练度信息框体
@@ -67,13 +68,13 @@ end
 --- # 刷新武器熟练度信息框体
 function VoidFrame:Void_UpdateTotemInfoDisplay()
     local name, dur, icon, icon_text = VoidFrame:GetTotemInfo()
+    for index, value in ipairs(icon) do
+        self.voidTotemInfoIcon[index]:SetTexture(value)
+    end
     if self.voidTotemInfoNameText then
         self.voidTotemInfoNameText:SetText(name)
         self.voidTotemInfoDurText:SetText(dur)
-        self.voidTotemInfoIconText:SetText(icon_text)
-        for index, value in ipairs(icon) do
-            self.voidTotemInfoIcon:SetTexture(value)
-        end
+        -- self.voidTotemInfoIconText:SetText(icon_text)
     end
 end
 
