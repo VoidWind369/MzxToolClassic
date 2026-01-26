@@ -30,8 +30,7 @@ function VoidFrame:Void_CreateSkillLineInfoDisplay(str)
     VoidModClassicCharacterDB.point.skill_line.p = VoidModClassicCharacterDB.point.skill_line.p or skill_line.up.p
     VoidModClassicCharacterDB.point.skill_line.x = VoidModClassicCharacterDB.point.skill_line.x or skill_line.up.x
     VoidModClassicCharacterDB.point.skill_line.y = VoidModClassicCharacterDB.point.skill_line.y or skill_line.up.y
-    print("p", VoidModClassicCharacterDB.point.up.p)
-    self.voidSkillLineInfo = CreateFrame("Frame", "PlayerInfo_UP", UIParent, "BackdropTemplate")
+    self.voidSkillLineInfo = CreateFrame("Frame", "SkillLine", UIParent, "BackdropTemplate")
     self.voidSkillLineInfo:SetSize(145, 155)
     self.voidSkillLineInfo:SetPoint(VoidModClassicCharacterDB.point.skill_line.p,
         VoidModClassicCharacterDB.point.skill_line.x,

@@ -37,6 +37,10 @@ VoidFrame:SetScript("OnEvent", function(self, event, ...)
     end
 end)
 
+VoidFrame:SetScript("OnUpdate", function(self, delta)
+    VoidFrame:Void_UpdateTotemInfoDisplay()
+end)
+
 function VoidFrame:Initialize()
     -- 加载数据库
     VoidModClassicDB = VoidModClassicDB or {}
@@ -49,6 +53,12 @@ function VoidFrame:Initialize()
     print("|cFF33937FVoidMod|r |cFF69CCF0Player|r |cFF00FF00Info:|r \n » Name: " ..
         className .. "\n » FileName: " .. classFilename .. "\n » Id: " .. classId)
 
+    for index = 1, 4 do
+        local arg1, totemName, startTime, duration, icon = GetTotemInfo(index)
+        local est_dur = startTime + duration - GetTime()
+        print(totemName .. "  " .. est_dur)
+    end
+
     -- WOW客户端信息
     self:ClientInfo()
 
@@ -59,6 +69,7 @@ function VoidFrame:Initialize()
     -- 创建属性显示框架
     self:Void_CreatePlayerInfo()
     self:Void_CreateSkillLineInfo()
+    self:Void_CreateTotemInfo()
 
     -- 注册斜杠命令
     SLASH_VOID_MOD1 = "/void"

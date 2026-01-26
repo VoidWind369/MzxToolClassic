@@ -15,4 +15,5 @@ module\BloodlustSimple.lua
 module\MessageBot.lua
 module\PlayerInfo.lua
 module\SkillLineInfo.lua
+module\TotemInfo.lua
 module\ButtonAuto.lua

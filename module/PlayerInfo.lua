@@ -95,7 +95,6 @@ function VoidFrame:Void_CreatePlayerInfoDisplay_UP(first)
     VoidModClassicCharacterDB.point.up.p = VoidModClassicCharacterDB.point.up.p or point.up.p
     VoidModClassicCharacterDB.point.up.x = VoidModClassicCharacterDB.point.up.x or point.up.x
     VoidModClassicCharacterDB.point.up.y = VoidModClassicCharacterDB.point.up.y or point.up.y
-    print("p", VoidModClassicCharacterDB.point.up.p)
     self.voidPlayerInfo_UP = CreateFrame("Frame", "PlayerInfo_UP", UIParent, "BackdropTemplate")
     self.voidPlayerInfo_UP:SetSize(100, 115)
     self.voidPlayerInfo_UP:SetPoint(VoidModClassicCharacterDB.point.up.p, VoidModClassicCharacterDB.point.up.x,
