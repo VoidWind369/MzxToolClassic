@@ -8,44 +8,46 @@ local skill_line = {
 }
 
 function VoidFrame.GetSkillLineInfo()
-    local str_table = {
-        "|cFFFFCC00"
-    }
+    local name_table = {}
+    local rank_table = {}
     for i = 1, GetNumSkillLines() do
         local skillName, header, isExpanded, skillRank, numTempPoints, skillModifier, skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType, skillDescription =
             GetSkillLineInfo(i)
         for index, value in ipairs(skill_line.names) do
             if value == skillName then
-                table.insert(str_table, string.format("%s %d/%d", skillName, skillRank, skillMaxRank))
+                table.insert(name_table, string.format("|cFFFFCC00%s|r", skillName))
+                table.insert(rank_table, string.format("%d/%d", skillRank, skillMaxRank))
             end
         end
     end
-    table.insert(str_table, "|r")
-    return table.concat(str_table, "\n")
+    return name_table, rank_table
 end
 
 --- # 创建武器熟练度框体
-function VoidFrame:Void_CreateSkillLineInfoDisplay(str)
+function VoidFrame:Void_CreateSkillLineInfoDisplay(name_table, rank_table)
     VoidModClassicCharacterDB.point.skill_line = VoidModClassicCharacterDB.point.skill_line or skill_line.up
     VoidModClassicCharacterDB.point.skill_line.p = VoidModClassicCharacterDB.point.skill_line.p or skill_line.up.p
     VoidModClassicCharacterDB.point.skill_line.x = VoidModClassicCharacterDB.point.skill_line.x or skill_line.up.x
     VoidModClassicCharacterDB.point.skill_line.y = VoidModClassicCharacterDB.point.skill_line.y or skill_line.up.y
     self.voidSkillLineInfo = CreateFrame("Frame", "SkillLine", UIParent, "BackdropTemplate")
-    self.voidSkillLineInfo:SetSize(145, 155)
+    self.voidSkillLineInfo:SetSize(145, #name_table * 18 + 10)
     self.voidSkillLineInfo:SetPoint(VoidModClassicCharacterDB.point.skill_line.p,
         VoidModClassicCharacterDB.point.skill_line.x,
         VoidModClassicCharacterDB.point.skill_line.y)
     SetInfoFrameStyle(self.voidSkillLineInfo)
 
-    self.voidSkillLineInfoText = self.voidSkillLineInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
+    self.voidSkillLineInfoText = {
+        self.voidSkillLineInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
+        self.voidSkillLineInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
+    }
 
-    AddString(self.voidSkillLineInfoText, str)
+    AddString(self.voidSkillLineInfoText[1], table.concat(name_table, "\n"))
+    AddNumber(self.voidSkillLineInfoText[2], table.concat(rank_table, "\n"))
 end
 
 --- # 创建武器熟练度信息框体
 function VoidFrame:Void_CreateSkillLineInfo()
-    local info = VoidFrame:GetSkillLineInfo()
-    self:Void_CreateSkillLineInfoDisplay(info)
+    self:Void_CreateSkillLineInfoDisplay(VoidFrame:GetSkillLineInfo())
 
     MovableDisplay(self.voidSkillLineInfo)
 
@@ -54,9 +56,10 @@ end
 
 --- # 刷新武器熟练度信息框体
 function VoidFrame:Void_UpdateSkillLineInfoDisplay()
-    local info = VoidFrame:GetSkillLineInfo()
+    local name_table, rank_table = VoidFrame:GetSkillLineInfo()
     if self.voidSkillLineInfoText then
-        self.voidSkillLineInfoText:SetText(info)
+        self.voidSkillLineInfoText[1]:SetText(table.concat(name_table, "\n"))
+        self.voidSkillLineInfoText[2]:SetText(table.concat(rank_table, "\n"))
     end
 end
 

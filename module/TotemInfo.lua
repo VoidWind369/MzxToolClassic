@@ -53,6 +53,12 @@ function VoidFrame:Void_CreateTotemInfoDisplay(name, dur, icon, icon_text)
     AddString(self.voidTotemInfoNameText, name, 1.2, 35)
     AddNumber(self.voidTotemInfoDurText, dur, 1.2)
     -- AddString(self.voidTotemInfoIconText, icon_text, 1.2, 190)
+
+    -- 不是增强初始隐藏
+    local _, _, classId = UnitClass("player")
+    if classId ~= 7 then
+        self.voidTotemInfo:Hide()
+    end
 end
 
 --- # 创建武器熟练度信息框体
