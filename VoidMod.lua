@@ -14,6 +14,8 @@ VoidFrame:RegisterEvent("SKILL_LINES_CHANGED")
 VoidFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_LOGIN" then
         self:Initialize()
+        self:RecycleTotem()
+        DebugSecureButton()
     elseif event == "UNIT_AURA" then
         local unit = ...
         if unit == "player" then
@@ -122,4 +124,22 @@ function VoidFrame:PrintHelp()
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void twm scale|r - 切换大小")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void twm reset|r - 重置位置和大小")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void|r - 显示帮助")
+end
+
+-- 打印安全按钮状态
+function DebugSecureButton()
+    local btn = _G["RecycleTotemBtn"] -- 替换为你的安全按钮全局名
+    if not btn then
+        print("❌ 安全按钮未创建")
+        return
+    end
+
+    print("✅ 安全按钮存在")
+    for _, attr in ipairs({ "type", "spell", "unit", "target", "macrotext" }) do
+        local value = btn:GetAttribute(attr)
+        print("  " .. attr .. ":", value or "nil")
+    end
+
+    -- 检查是否为安全模板
+    print("  SecureTemplate:", btn:GetAttribute("type") ~= nil)
 end

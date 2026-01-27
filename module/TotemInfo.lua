@@ -84,6 +84,28 @@ function VoidFrame:Void_UpdateTotemInfoDisplay()
     end
 end
 
+function VoidFrame:RecycleTotem()
+    VoidFrame.voidTotemInfo.secureBtn = CreateFrame("Button", "RecycleTotemBtn", UIParent, "SecureActionButtonTemplate")
+    local secureBtn = VoidFrame.voidTotemInfo.secureBtn
+    secureBtn:SetSize(220, 100)
+    secureBtn:SetAttribute("type", "spell")
+    secureBtn:SetAttribute("spell", "图腾召唤") -- 设置要施放的技能名
+    secureBtn:SetAttribute("unit", "player")
+    secureBtn:RegisterForClicks("AnyUp", "AnyDown")
+    -- VoidFrame.voidTotemInfo.secureBtn:SetAttribute("type", "macro")
+    -- VoidFrame.voidTotemInfo.secureBtn:SetAttribute("macrotext", "/cast 图腾召唤") -- text for macro on left click
+
+    -- 回收图腾
+    VoidFrame.voidTotemInfo:SetScript("OnMouseDown", function(self, button)
+        -- 检查是否是鼠标右键
+        if button == "RightButton" then
+            -- 立即施放技能
+            secureBtn:Click()
+            print("图腾回收")
+        end
+    end)
+end
+
 function MovableTotemDisplayStop()
     -- 拖动停止
     VoidFrame.voidTotemInfo:SetScript("OnDragStop", function(self)
