@@ -47,7 +47,7 @@ function VoidFrame:Void_CreateTotemInfoDisplay(name, dur, icon, icon_text)
         self.voidTotemInfoIcon[index] = self.voidTotemInfo:CreateTexture()
         self.voidTotemInfoIcon[index]:SetTexture(value)
         self.voidTotemInfoIcon[index]:SetSize(15, 15)
-        self.voidTotemInfoIcon[index]:SetPoint("LEFT", self.voidTotemInfo, "LEFT", 13.5, 28 - (index - 1) * 19.5)
+        self.voidTotemInfoIcon[index]:SetPoint("LEFT", self.voidTotemInfo, "LEFT", 13.5, 27 - (index - 1) * 19.2)
     end
 
     AddString(self.voidTotemInfoNameText, name, 1.2, 35)

@@ -44,7 +44,7 @@ function VoidFrame:CheckBloodlust()
 
     -- 处理buff状态变化
     if foundBuff and not bloodlust.hasBloodlust then
-        self:OnBloodlustGained(buffName, spellIdFound, "wav")
+        self:OnBloodlustGained(buffName, spellIdFound, "ogg")
         bloodlust.hasBloodlust = true
     elseif not foundBuff and bloodlust.hasBloodlust then
         bloodlust.hasBloodlust = false
