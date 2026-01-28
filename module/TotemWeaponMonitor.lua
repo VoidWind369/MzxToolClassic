@@ -9,7 +9,7 @@ local totemWeapon = {
 
     -- 法术ID                                                   -- 漩涡武器
     lightning_shield_id = { 324, 325, 905, 945, 8134, 10431, 10432, 25469, 25472 }, -- 闪电护盾
-    water_shield_id = 33736,                                                        -- 水之护盾
+    water_shield_id = { 24398, 33736 },                                             -- 水之护盾
     focus_spell_id = 43339,                                                         -- 萨满专注
 
     -- 显示设置
@@ -116,6 +116,7 @@ end
 function VoidFrame:UpdateTotemWeaponStacks()
     local focusData = C_UnitAuras.GetUnitAuraBySpellID("player", totemWeapon.focus_spell_id)
 
+    -- 闪电护盾
     local lightning_shield = { 0, 0 }
     for _, spell_id in pairs(totemWeapon.lightning_shield_id) do
         local aura = C_UnitAuras.GetUnitAuraBySpellID("player", spell_id)
@@ -124,13 +125,22 @@ function VoidFrame:UpdateTotemWeaponStacks()
             lightning_shield[2] = aura.applications or 0
         end
     end
-    local water_shield = C_UnitAuras.GetUnitAuraBySpellID("player", totemWeapon.water_shield_id)
+
+    -- 水之护盾
+    local water_shield = { 0, 0 }
+    for _, spell_id in pairs(totemWeapon.water_shield_id) do
+        local aura = C_UnitAuras.GetUnitAuraBySpellID("player", spell_id)
+        if aura then
+            water_shield[1] = water_shield[1] + 1
+            water_shield[2] = aura.applications or 0
+        end
+    end
 
     if lightning_shield[1] > 0 then
         totemWeapon.currentStacks = lightning_shield[2]
         totemWeapon.shield_type = 0
-    elseif water_shield then
-        totemWeapon.currentStacks = water_shield.applications or 0
+    elseif water_shield[1] > 0 then
+        totemWeapon.currentStacks = water_shield[2]
         totemWeapon.shield_type = 1
     else
         totemWeapon.currentStacks = 0
