@@ -92,12 +92,20 @@ function VoidFrame:HandleSlashCommand(msg)
         self:DebugEleBuff()
     elseif command == "twm test" then
         self:TestDisplay()
-    elseif command == "twm move" then
-        self:ToggleMoveMode()
-    elseif command == "twm reset" then
-        self:ResetPosition()
-    elseif command == "twm scale" then
-        self:ToggleScale()
+    elseif command == "twm show" then
+        self.dotFrame:Show()
+    elseif command == "twm hide" then
+        self.dotFrame:Hide()
+    elseif command == "pi show" then
+        self.voidPlayerInfo_UP:Show()
+        self.voidPlayerInfo_DOWN:Show()
+    elseif command == "pi hide" then
+        self.voidPlayerInfo_UP:Hide()
+        self.voidPlayerInfo_DOWN:Hide()
+    elseif command == "sli show" then
+        self.voidSkillLineInfo:Show()
+    elseif command == "sli hide" then
+        self.voidSkillLineInfo:Hide()
     elseif command == "info" then
         self:Void_PlayerInfo()
     else
@@ -114,12 +122,11 @@ end
 
 function VoidFrame:PrintHelp()
     DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00恶龙咆哮:|r")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void bls test|r - 测试提示效果")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void bls debug|r - 显示当前所有buff和ID")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void bls ele|r - 显示萨满激活护盾")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void twm test|r - 测试显示效果")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void twm move|r - 切换移动模式")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void twm scale|r - 切换大小")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void twm reset|r - 重置位置和大小")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void twm show|r - 显示萨满护盾监控")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void twm hide|r - 关闭萨满护盾监控")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void pi show|r - 显示角色属性面板")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void pi hide|r - 关闭角色属性面板")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void sli show|r - 显示武器熟练度面板")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void sli hide|r - 关闭武器熟练度面板")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void|r - 显示帮助")
 end
