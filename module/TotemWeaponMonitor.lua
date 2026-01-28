@@ -1,25 +1,40 @@
 local totemWeapon = {
+    up = {
+        p = "CENTER",
+        x = 0,
+        y = -270
+    },
+
     Shaman_SpecId = 7,
 
-    -- 漩涡武器法术ID
-    spell_id = 344179,
-    galeWinds_spell_id = { 324, 325, 905, 327, 328 },
-    focus_spell_id = 43339,
+    -- 法术ID                                                   -- 漩涡武器
+    lightning_shield_id = { 324, 325, 905, 945, 8134, 10431, 10432, 25469, 25472 }, -- 闪电护盾
+    water_shield_id = 33736,                                                        -- 水之护盾
+    focus_spell_id = 43339,                                                         -- 萨满专注
 
     -- 显示设置
-    max_stacks = 5,
+    max_stacks = 3,
     dot_size = 36,   -- 每个小圆点的大小
     dot_spacing = 1, -- 圆点间距
     position_x = 0,
     position_y = -260,
 
+    shield_type = 0,
     currentStacks = 0,
     lastStacks = 0,
 }
 
 function VoidFrame:CreateDotProgress()
+    VoidModClassicCharacterDB.point.totemWeapon = VoidModClassicCharacterDB.point.totemWeapon or totemWeapon.up
+    VoidModClassicCharacterDB.point.totemWeapon.p = VoidModClassicCharacterDB.point.totemWeapon.p or totemWeapon.up.p
+    VoidModClassicCharacterDB.point.totemWeapon.x = VoidModClassicCharacterDB.point.totemWeapon.x or totemWeapon.up.x
+    VoidModClassicCharacterDB.point.totemWeapon.y = VoidModClassicCharacterDB.point.totemWeapon.y or totemWeapon.up.y
+
     -- 主框架
     self.dotFrame = CreateFrame("Frame", "TotemWeapon", UIParent, "BackdropTemplate")
+    self.dotFrame:SetPoint(VoidModClassicCharacterDB.point.totemWeapon.p,
+        VoidModClassicCharacterDB.point.totemWeapon.x,
+        VoidModClassicCharacterDB.point.totemWeapon.y)
     WhiteTransparentFrame(self.dotFrame, totemWeapon)
 
     -- 创建10个小圆点
@@ -43,28 +58,31 @@ function VoidFrame:CreateDotProgress()
     if classId ~= totemWeapon.Shaman_SpecId then
         self.dotFrame:Hide()
     end
+
+    MovableDisplay(self.dotFrame)
+    MovableTotemWeaponDisplayStop()
 end
 
 -- 设定狂风怒号颜色
-function VoidFrame:UpdateDotFrameProgress(hasGaleWindsData)
+function UpdateDotFrameProgress(hasGaleWindsData)
     if hasGaleWindsData then
-        self.dotFrame:SetBackdropColor(0, 0.4, 1, 0.55)
-        self.dotFrame:SetBackdropBorderColor(0, 0.1, 0.4, 0.8)
+        VoidFrame.dotFrame:SetBackdropColor(0, 0.4, 1, 0.55)
+        VoidFrame.dotFrame:SetBackdropBorderColor(0, 0.1, 0.4, 0.8)
     else
-        self.dotFrame:SetBackdropColor(0, 0, 0, 0.15)
-        self.dotFrame:SetBackdropBorderColor(0.2, 0.2, 0.2, 0.5)
+        VoidFrame.dotFrame:SetBackdropColor(0, 0, 0, 0.15)
+        VoidFrame.dotFrame:SetBackdropBorderColor(0.2, 0.2, 0.2, 0.5)
     end
 end
 
 -- 设定漩涡武器层数颜色
-function VoidFrame:UpdateDotProgress(stacks)
+function UpdateDotProgress(stacks)
     local alpha = 1
     for i = 1, totemWeapon.max_stacks do
-        local dot = self.totemWeaponDots[i]
+        local dot = VoidFrame.totemWeaponDots[i]
 
         if i <= stacks then
             -- 激活的小圆点 - 饱满的纵向渐变
-            local topColor, bottomColor = self:GetGradientColorsSM(i, alpha)
+            local topColor, bottomColor = GetGradientColorsSM(totemWeapon.shield_type, alpha)
             dot.tex:SetGradient("VERTICAL", topColor, bottomColor)
 
             -- 发光效果
@@ -83,57 +101,75 @@ function VoidFrame:UpdateDotProgress(stacks)
     end
 end
 
-function VoidFrame:GetGradientColorsSM(dotIndex, alpha)
+function GetGradientColorsSM(shield_type, alpha)
     -- 饱满的金属渐变色
-    if dotIndex <= 4 then
+    if shield_type == 1 then
         -- 蓝色金属
         return CreateColor(0.8, 0.9, 1.0, alpha), CreateColor(0.2, 0.4, 0.9, alpha)
-    elseif dotIndex <= 7 then
-        -- 金色金属
-        return CreateColor(1.0, 1.0, 0.7, alpha), CreateColor(0.8, 0.6, 0.2, alpha)
-    elseif dotIndex <= 9 then
-        -- 橙色金属
-        return CreateColor(1.0, 0.8, 0.7, alpha), CreateColor(1.0, 0.5, 0.1, alpha)
     else
         -- 红色金属
-        return CreateColor(1.0, 0.4, 0.4, alpha), CreateColor(1.0, 0.0, 0.0, alpha)
+        return CreateColor(0.9, 0.0, 0.9, alpha), CreateColor(0.7, 0.0, 1.0, alpha)
     end
 end
 
 -- 增强萨buff监控进程
 function VoidFrame:UpdateTotemWeaponStacks()
-    local totemWeaponData = C_UnitAuras.GetUnitAuraBySpellID("player", totemWeapon.spell_id)
     local focusData = C_UnitAuras.GetUnitAuraBySpellID("player", totemWeapon.focus_spell_id)
 
-    local galeWindsDataCount = 0
-    for _, spell_id in pairs(totemWeapon.galeWinds_spell_id) do
-        local galeWindsData = C_UnitAuras.GetUnitAuraBySpellID("player", spell_id)
-        if galeWindsData then
-            galeWindsDataCount = galeWindsDataCount + 1
+    local lightning_shield = { 0, 0 }
+    for _, spell_id in pairs(totemWeapon.lightning_shield_id) do
+        local aura = C_UnitAuras.GetUnitAuraBySpellID("player", spell_id)
+        if aura then
+            lightning_shield[1] = lightning_shield[1] + 1
+            lightning_shield[2] = aura.applications or 0
         end
     end
+    local water_shield = C_UnitAuras.GetUnitAuraBySpellID("player", totemWeapon.water_shield_id)
 
-    -- local galeWindsData = C_UnitAuras.GetUnitAuraBySpellID("player", totemWeapon.galeWinds_spell_id)
-
-    if totemWeaponData then
-        totemWeapon.currentStacks = totemWeaponData.applications or 0
+    if lightning_shield[1] > 0 then
+        totemWeapon.currentStacks = lightning_shield[2]
+        totemWeapon.shield_type = 0
+    elseif water_shield then
+        totemWeapon.currentStacks = water_shield.applications or 0
+        totemWeapon.shield_type = 1
     else
         totemWeapon.currentStacks = 0
         totemWeapon.lastStacks = 0
     end
 
     -- 更新小圆点进度
-    self:UpdateDotProgress(totemWeapon.currentStacks)
+    UpdateDotProgress(totemWeapon.currentStacks)
     if focusData then
-        self:UpdateDotFrameProgress(true)
+        UpdateDotFrameProgress(true)
     else
-        self:UpdateDotFrameProgress(false)
+        UpdateDotFrameProgress(false)
     end
-    -- if galeWindsDataCount > 0 then
-    --     self:UpdateDotFrameProgress(true)
-    -- else
-    --     self:UpdateDotFrameProgress(false)
-    -- end
+end
+
+function MovableTotemWeaponDisplayStop()
+    -- 拖动停止
+    VoidFrame.dotFrame:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        self.isMoving = false
+        local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
+        VoidModClassicCharacterDB.point.totemWeapon.p = p    -- 保存
+        VoidModClassicCharacterDB.point.totemWeapon.x = xOfs -- 保存
+        VoidModClassicCharacterDB.point.totemWeapon.y = yOfs -- 保存
+    end)
+
+    -- 双击居中
+    VoidFrame.dotFrame:SetScript("OnMouseUp", function(self, button)
+        if button == "LeftButton" and self.doubleClick then
+            self:ClearAllPoints()
+            self:SetPoint(totemWeapon.up.p, totemWeapon.up.x, totemWeapon.up.y)
+            local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
+            -- 保存到变量或保存文件
+            VoidModClassicCharacterDB.point.totemWeapon.p = p    -- 保存
+            VoidModClassicCharacterDB.point.totemWeapon.x = xOfs -- 保存
+            VoidModClassicCharacterDB.point.totemWeapon.y = yOfs -- 保存
+            self.doubleClick = false
+        end
+    end)
 end
 
 function VoidFrame:TestDisplay()
@@ -159,75 +195,3 @@ function VoidFrame:TestDisplay()
         end
     end)
 end
-
-function VoidFrame:ToggleMoveMode()
-    if self.dotFrame:IsMovable() then
-        self.dotFrame:EnableMouse(false)
-        self.dotFrame:SetMovable(false)
-        DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00移动模式已关闭|r")
-    else
-        self.dotFrame:EnableMouse(true)
-        self.dotFrame:SetMovable(true)
-        self.dotFrame:RegisterForDrag("LeftButton")
-        self.dotFrame:SetScript("OnDragStart", function(self)
-            self:StartMoving()
-        end)
-        self.dotFrame:SetScript("OnDragStop", function(self)
-            self:StopMovingOrSizing()
-            SavePosition()
-        end)
-        DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00移动模式已开启 - 拖动框架移动位置|r")
-    end
-end
-
-function VoidFrame:ResetPosition()
-    self.dotFrame:ClearAllPoints()
-    self.dotFrame:SetPoint("CENTER", totemWeapon.position_x, totemWeapon.position_y)
-    self.dotFrame:SetScale(1)
-    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00位置和大小已重置|r")
-end
-
-function VoidFrame:ToggleScale()
-    local currentScale = self.dotFrame:GetScale()
-    if currentScale == 1 then
-        self.dotFrame:SetScale(1.3)
-        DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00放大模式|r")
-    elseif currentScale == 1.3 then
-        self.dotFrame:SetScale(0.8)
-        DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00缩小模式|r")
-    else
-        self.dotFrame:SetScale(1)
-        DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00正常大小|r")
-    end
-end
-
--- 保存配置
-local function SavePosition()
-    if VoidFrame.dotFrame then
-        local point, relativeTo, relativePoint, xOfs, yOfs = VoidFrame.dotFrame:GetPoint()
-        TOTEM_WEAPON_MONITOR_POSITION = {
-            point = point,
-            x = xOfs,
-            y = yOfs,
-            scale = VoidFrame.dotFrame:GetScale()
-        }
-    end
-end
-
--- 加载保存的位置
-local function LoadPosition()
-    if TOTEM_WEAPON_MONITOR_POSITION then
-        VoidFrame.dotFrame:ClearAllPoints()
-        VoidFrame.dotFrame:SetPoint(
-            TOTEM_WEAPON_MONITOR_POSITION.point or "CENTER",
-            UIParent,
-            TOTEM_WEAPON_MONITOR_POSITION.point or "CENTER",
-            TOTEM_WEAPON_MONITOR_POSITION.x or totemWeapon.position_x,
-            TOTEM_WEAPON_MONITOR_POSITION.y or totemWeapon.position_y
-        )
-        VoidFrame.dotFrame:SetScale(TOTEM_WEAPON_MONITOR_POSITION.scale or 1)
-    end
-end
-
--- 在显示框架创建后加载位置
-C_Timer.After(1, LoadPosition)

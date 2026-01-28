@@ -3,7 +3,6 @@ function WhiteTransparentFrame(self, infos)
     local bar_height = infos.dot_size + 10
 
     self:SetSize(bar_width + infos.dot_spacing + 12, bar_height + infos.dot_spacing)
-    self:SetPoint("CENTER", infos.position_x, infos.position_y)
     self:SetFrameStrata("HIGH")
     self:SetBackdrop({
         bgFile = "Interface/Tooltips/UI-Tooltip-Background",
@@ -37,7 +36,7 @@ function WhiteTransparentDotTex(dotTex, infos)
     dotTex:SetTexture(518448)
     -- 初始状态
     dotTex:SetGradient("VERTICAL",
-            CreateColor(0.5, 0.5, 0.5, 1),
-            CreateColor(0.2, 0.2, 0.2, 1)
+        CreateColor(0.5, 0.5, 0.5, 1),
+        CreateColor(0.2, 0.2, 0.2, 1)
     )
 end

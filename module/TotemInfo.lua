@@ -1,8 +1,8 @@
 local totem = {
     up = {
         p = "CENTER",
-        x = 0.0,
-        y = 0
+        x = 0,
+        y = -190
     },
 }
 
@@ -15,9 +15,9 @@ function VoidFrame.GetTotemInfo()
         local haveTotem, totemName, startTime, duration, icon, modRate, spellID = GetTotemInfo(index)
         local icon_num = icon or 136232
         local name = (haveTotem and totemName) and totemName or value[2]
-        local est_dur = (haveTotem and totemName) and string.format("|cFFFFFF00%.1f|r", startTime + duration - GetTime()) or
-            "|cFFC0C0C0Nil|r"
-        -- print("icon:", icon)
+        local est_num = startTime + duration - GetTime()
+        local est_color_str = string.format(est_num > 10 and "|cFFFFFF00%.1f|r" or "|cFFFF0000%.1f|r", est_num)
+        local est_dur = (haveTotem and totemName) and est_color_str or "|cFFC0C0C0Nil|r"
         table.insert(icon_table, icon_num)
         table.insert(name_table, value[1] .. name .. "|r")
         table.insert(dur_table, est_dur)
@@ -67,6 +67,7 @@ function VoidFrame:Void_CreateTotemInfo()
     self:Void_CreateTotemInfoDisplay(VoidFrame:GetTotemInfo())
 
     MovableDisplay(self.voidTotemInfo)
+    self:RecycleTotem()
 
     MovableTotemDisplayStop()
 end
