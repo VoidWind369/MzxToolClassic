@@ -52,18 +52,10 @@ function VoidFrame:Void_CreateTotemInfoDisplay(name, dur, icon, icon_text)
 
     AddString(self.voidTotemInfoNameText, name, 1.2, 35)
     AddNumber(self.voidTotemInfoDurText, dur, 1.2)
-    -- AddString(self.voidTotemInfoIconText, icon_text, 1.2, 190)
-
-    -- 不是增强初始隐藏
-    local _, _, classId = UnitClass("player")
-    if classId ~= 7 then
-        self.voidTotemInfo:Hide()
-    end
 end
 
 --- # 创建武器熟练度信息框体
 function VoidFrame:Void_CreateTotemInfo()
-    -- local name, dur = VoidFrame:GetTotemInfo()
     self:Void_CreateTotemInfoDisplay(VoidFrame:GetTotemInfo())
 
     MovableDisplay(self.voidTotemInfo)
@@ -74,14 +66,17 @@ end
 
 --- # 刷新武器熟练度信息框体
 function VoidFrame:Void_UpdateTotemInfoDisplay()
-    local name, dur, icon, icon_text = VoidFrame:GetTotemInfo()
-    for index, value in ipairs(icon) do
-        self.voidTotemInfoIcon[index]:SetTexture(value)
-    end
-    if self.voidTotemInfoNameText then
-        self.voidTotemInfoNameText:SetText(name)
-        self.voidTotemInfoDurText:SetText(dur)
-        -- self.voidTotemInfoIconText:SetText(icon_text)
+    -- 判断是否启用
+    if self.voidTotemInfo then
+        local name, dur, icon, icon_text = VoidFrame:GetTotemInfo()
+        for index, value in ipairs(icon) do
+            self.voidTotemInfoIcon[index]:SetTexture(value)
+        end
+        if self.voidTotemInfoNameText then
+            self.voidTotemInfoNameText:SetText(name)
+            self.voidTotemInfoDurText:SetText(dur)
+            -- self.voidTotemInfoIconText:SetText(icon_text)
+        end
     end
 end
 

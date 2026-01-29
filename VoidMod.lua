@@ -62,14 +62,18 @@ function VoidFrame:Initialize()
     -- WOW客户端信息
     self:ClientInfo()
 
-    -- 创建漩涡武器框架
-    self:CreateDotProgress()
-
-
     -- 创建属性显示框架
     self:Void_CreatePlayerInfo()
     self:Void_CreateSkillLineInfo()
-    self:Void_CreateTotemInfo()
+
+    -- 职业框架
+    local _, _, class_id = UnitClass("player")
+
+    -- 萨满
+    if class_id == 7 then
+        self:Void_CreateShield()
+        self:Void_CreateTotemInfo()
+    end
 
     -- 注册斜杠命令
     SLASH_VOID_MOD1 = "/void"

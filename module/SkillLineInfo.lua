@@ -56,10 +56,12 @@ end
 
 --- # 刷新武器熟练度信息框体
 function VoidFrame:Void_UpdateSkillLineInfoDisplay()
-    local name_table, rank_table = VoidFrame:GetSkillLineInfo()
-    if self.voidSkillLineInfoText then
-        self.voidSkillLineInfoText[1]:SetText(table.concat(name_table, "\n"))
-        self.voidSkillLineInfoText[2]:SetText(table.concat(rank_table, "\n"))
+    if self.voidSkillLineInfo then
+        local name_table, rank_table = VoidFrame:GetSkillLineInfo()
+        if self.voidSkillLineInfoText then
+            self.voidSkillLineInfoText[1]:SetText(table.concat(name_table, "\n"))
+            self.voidSkillLineInfoText[2]:SetText(table.concat(rank_table, "\n"))
+        end
     end
 end
 

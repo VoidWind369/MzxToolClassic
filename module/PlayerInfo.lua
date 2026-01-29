@@ -116,9 +116,11 @@ end
 
 --- # 刷新玩家信息框体
 function VoidFrame:Void_UpdatePlayerInfo()
-    local first, info = VoidFrame:Void_PlayerInfo()
-    self.voidPlayerInfoText_UP:SetText(first)
-    self.voidPlayerInfoText_DOWN:SetText(info)
+    if self.voidPlayerInfo_UP and self.voidPlayerInfo_DOWN then
+        local first, info = VoidFrame:Void_PlayerInfo()
+        self.voidPlayerInfoText_UP:SetText(first)
+        self.voidPlayerInfoText_DOWN:SetText(info)
+    end
 end
 
 function MovableDisplayStop()

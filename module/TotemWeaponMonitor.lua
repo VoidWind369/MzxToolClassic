@@ -24,7 +24,7 @@ local totemWeapon = {
     lastStacks = 0,
 }
 
-function VoidFrame:CreateDotProgress()
+function VoidFrame:Void_CreateShield()
     VoidModClassicCharacterDB.point.totemWeapon = VoidModClassicCharacterDB.point.totemWeapon or totemWeapon.up
     VoidModClassicCharacterDB.point.totemWeapon.p = VoidModClassicCharacterDB.point.totemWeapon.p or totemWeapon.up.p
     VoidModClassicCharacterDB.point.totemWeapon.x = VoidModClassicCharacterDB.point.totemWeapon.x or totemWeapon.up.x
@@ -51,12 +51,6 @@ function VoidFrame:CreateDotProgress()
         WhiteTransparentDotTex(dot.tex, totemWeapon)
 
         self.totemWeaponDots[i] = dot
-    end
-
-    -- 不是增强初始隐藏
-    local _, _, classId = UnitClass("player")
-    if classId ~= totemWeapon.Shaman_SpecId then
-        self.dotFrame:Hide()
     end
 
     MovableDisplay(self.dotFrame)
@@ -114,6 +108,12 @@ end
 
 -- 增强萨buff监控进程
 function VoidFrame:UpdateTotemWeaponStacks()
+    -- 判断是否加载
+    if not self.dotFrame then
+        return
+    end
+
+    -- 萨满专注
     local focusData = C_UnitAuras.GetUnitAuraBySpellID("player", totemWeapon.focus_spell_id)
 
     -- 闪电护盾
