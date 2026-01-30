@@ -124,6 +124,8 @@ function VoidFrame:HandleSlashCommand(msg)
                 VoidModClassicCharacterDB.status.PlayerInfo = true
             elseif value == "skillline" then
                 VoidModClassicCharacterDB.status.SkillLineInfo = true
+            elseif value == "totem" then
+                VoidModClassicCharacterDB.status.TotemInfo = true
             end
         end
         ReloadUI()
@@ -135,6 +137,8 @@ function VoidFrame:HandleSlashCommand(msg)
                 VoidModClassicCharacterDB.status.PlayerInfo = false
             elseif value == "skillline" then
                 VoidModClassicCharacterDB.status.SkillLineInfo = false
+            elseif value == "totem" then
+                VoidModClassicCharacterDB.status.TotemInfo = false
             end
         end
         ReloadUI()
@@ -154,11 +158,12 @@ end
 
 function VoidFrame:PrintHelp()
     DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00恶龙咆哮菜单:|r")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void show|r |cFA500FF0module1 module2|r - 开启监控")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void hide|r |cFA500FF0module1 module2|r - 关闭监控")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void show|r |cFA500FF0module1 module2|r - 开启模块")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void hide|r |cFA500FF0module1 module2|r - 关闭模块")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void|r - 显示帮助")
     DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00可选module:|r")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFA500FF0 shield|r - 元素护盾监控")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFA500FF0 shield|r - 萨满护盾监控")
     DEFAULT_CHAT_FRAME:AddMessage("|cFA500FF0 player|r - 角色属性面板")
     DEFAULT_CHAT_FRAME:AddMessage("|cFA500FF0 skillline|r - 武器熟练度面板")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFA500FF0 totem|r - 萨满图腾监控")
 end

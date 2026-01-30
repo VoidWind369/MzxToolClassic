@@ -1,0 +1,11 @@
+菜单命令
+ /void 显示帮助
+ /void show module1 module2 开启模块
+ /void hide module1 module2 关闭模块
+ （可一次性开启关闭多模块）
+
+已支持模块
+ shield - 元素护盾监控
+ player - 角色属性面板
+ skillline - 武器熟练度面板
+ totem - 萨满图腾监控
