@@ -33,7 +33,7 @@ function VoidFrame:Void_CreateTotemInfoDisplay(totem_info)
     VoidModClassicCharacterDB.point.totem.x = VoidModClassicCharacterDB.point.totem.x or totem.up.x
     VoidModClassicCharacterDB.point.totem.y = VoidModClassicCharacterDB.point.totem.y or totem.up.y
     self.voidTotemInfo = CreateFrame("Frame", "Totem", UIParent, "BackdropTemplate")
-    self.voidTotemInfo:SetSize(220, #totem_info * 22 + 19)
+    self.voidTotemInfo:SetSize(220, #totem_info * 26 + 10)
     self.voidTotemInfo:SetPoint(VoidModClassicCharacterDB.point.totem.p,
         VoidModClassicCharacterDB.point.totem.x,
         VoidModClassicCharacterDB.point.totem.y)
@@ -47,8 +47,8 @@ function VoidFrame:Void_CreateTotemInfoDisplay(totem_info)
         self.voidTotemInfoNameText[index] = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
         self.voidTotemInfoDurText[index] = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
 
-        local y = 33 - (index - 1) * 22
-        AddIcon(self.voidTotemInfoIcon[index], value.icon, 18, 13.5, y - 1)
+        local y = 36 - (index - 1) * 24
+        AddIcon(self.voidTotemInfoIcon[index], value.icon, 17, 13.5, y - 1)
         AddString(self.voidTotemInfoNameText[index], value.name, 1.2, 35, y)
         AddNumber(self.voidTotemInfoDurText[index], value.dur, 1.2, -10, y)
     end
