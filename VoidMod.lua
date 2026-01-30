@@ -41,10 +41,21 @@ VoidFrame:SetScript("OnUpdate", function(self, delta)
     VoidFrame:Void_UpdateTotemInfoDisplay()
 end)
 
-function VoidFrame:Initialize()
-    -- 加载数据库
+function InitDatabase()
     VoidModClassicDB = VoidModClassicDB or {}
     VoidModClassicCharacterDB = VoidModClassicCharacterDB or {}
+
+    VoidModClassicCharacterDB.status = VoidModClassicCharacterDB.status or {
+        PlayerInfo = true,
+        SkillLine = true,
+        ShieldInfo = true,
+        TotemInfo = true
+    }
+end
+
+function VoidFrame:Initialize()
+    -- 加载数据库
+    InitDatabase()
 
     self:GetSkillLineInfo()
 
@@ -63,16 +74,24 @@ function VoidFrame:Initialize()
     self:ClientInfo()
 
     -- 创建属性显示框架
-    self:Void_CreatePlayerInfo()
-    self:Void_CreateSkillLineInfo()
+    if VoidModClassicCharacterDB.status.PlayerInfo == true then
+        self:Void_CreatePlayerInfo()
+    end
+    if VoidModClassicCharacterDB.status.SkillLine == true then
+        self:Void_CreateSkillLineInfo()
+    end
 
     -- 职业框架
     local _, _, class_id = UnitClass("player")
 
     -- 萨满
     if class_id == 7 then
-        self:Void_CreateShield()
-        self:Void_CreateTotemInfo()
+        if VoidModClassicCharacterDB.status.ShieldInfo == true then
+            self:Void_CreateShieldInfo()
+        end
+        if VoidModClassicCharacterDB.status.TotemInfo == true then
+            self:Void_CreateTotemInfo()
+        end
     end
 
     -- 注册斜杠命令
@@ -81,6 +100,7 @@ function VoidFrame:Initialize()
         self:HandleSlashCommand(msg)
     end
     DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000恶！龙！咆！哮！|r|cFF00FF00启动！|r")
+    DEFAULT_CHAT_FRAME:AddMessage("周年服 |cFFFF69B4月溪晓月|r 公会")
 end
 
 function VoidFrame:HandleSlashCommand(msg)
@@ -94,22 +114,30 @@ function VoidFrame:HandleSlashCommand(msg)
         self:DebugBuffs()
     elseif command == "bls ele" then
         self:DebugEleBuff()
-    elseif command == "twm test" then
+    elseif command == "si test" then
         self:TestDisplay()
-    elseif command == "twm show" then
-        self.dotFrame:Show()
-    elseif command == "twm hide" then
-        self.dotFrame:Hide()
-    elseif command == "pi show" then
-        self.voidPlayerInfo_UP:Show()
-        self.voidPlayerInfo_DOWN:Show()
-    elseif command == "pi hide" then
-        self.voidPlayerInfo_UP:Hide()
-        self.voidPlayerInfo_DOWN:Hide()
-    elseif command == "sli show" then
-        self.voidSkillLineInfo:Show()
-    elseif command == "sli hide" then
-        self.voidSkillLineInfo:Hide()
+    elseif string.find(command, "show") then
+        for index, value in ipairs(strsplittable(" ", command)) do
+            if value == "shield" then
+                VoidModClassicCharacterDB.status.ShieldInfo = true
+            elseif value == "player" then
+                VoidModClassicCharacterDB.status.PlayerInfo = true
+            elseif value == "skillline" then
+                VoidModClassicCharacterDB.status.SkillLineInfo = true
+            end
+        end
+        ReloadUI()
+    elseif string.find(command, "hide") then
+        for index, value in ipairs(strsplittable(" ", command)) do
+            if value == "shield" then
+                VoidModClassicCharacterDB.status.Shield = false
+            elseif value == "player" then
+                VoidModClassicCharacterDB.status.PlayerInfo = false
+            elseif value == "skillline" then
+                VoidModClassicCharacterDB.status.SkillLineInfo = false
+            end
+        end
+        ReloadUI()
     elseif command == "info" then
         self:Void_PlayerInfo()
     else
@@ -125,12 +153,12 @@ function VoidFrame:ClientInfo()
 end
 
 function VoidFrame:PrintHelp()
-    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00恶龙咆哮:|r")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void twm show|r - 显示萨满护盾监控")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void twm hide|r - 关闭萨满护盾监控")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void pi show|r - 显示角色属性面板")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void pi hide|r - 关闭角色属性面板")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void sli show|r - 显示武器熟练度面板")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void sli hide|r - 关闭武器熟练度面板")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00/void|r - 显示帮助")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00恶龙咆哮菜单:|r")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void show|r |cFA500FF0module1 module2|r - 开启监控")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void hide|r |cFA500FF0module1 module2|r - 关闭监控")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void|r - 显示帮助")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00可选module:|r")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFA500FF0 shield|r - 元素护盾监控")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFA500FF0 player|r - 角色属性面板")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFA500FF0 skillline|r - 武器熟练度面板")
 end

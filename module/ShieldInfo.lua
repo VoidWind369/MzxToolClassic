@@ -24,7 +24,7 @@ local totemWeapon = {
     lastStacks = 0,
 }
 
-function VoidFrame:Void_CreateShield()
+function VoidFrame:Void_CreateShieldInfo()
     VoidModClassicCharacterDB.point.totemWeapon = VoidModClassicCharacterDB.point.totemWeapon or totemWeapon.up
     VoidModClassicCharacterDB.point.totemWeapon.p = VoidModClassicCharacterDB.point.totemWeapon.p or totemWeapon.up.p
     VoidModClassicCharacterDB.point.totemWeapon.x = VoidModClassicCharacterDB.point.totemWeapon.x or totemWeapon.up.x
