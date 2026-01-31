@@ -27,13 +27,14 @@ VoidFrame:SetScript("OnEvent", function(self, event, ...)
         if unit ~= nil then
             self:PartyStart(...)
         end
-    elseif event == "SKILL_LINES_CHANGED" then
-        self:Void_UpdateSkillLineInfo()
+        -- elseif event == "SKILL_LINES_CHANGED" then
+        --     self:Void_UpdateSkillLineInfo()
     end
 end)
 
 VoidFrame:SetScript("OnUpdate", function(self, delta)
-    VoidFrame:Void_UpdateTotemInfo()
+    self:Void_UpdateTotemInfo()
+    self:Void_UpdateSkillLineInfo()
 end)
 
 function VoidFrame:Initialize()
