@@ -40,8 +40,6 @@ function VoidFrame:Initialize()
     -- 加载数据库
     InitDatabase()
 
-    self:GetSkillLineInfo()
-
     -- 调试打印区域
     local className, classFilename, classId = UnitClass("player")
     print("|cFF33937FVoidMod|r |cFF69CCF0Player|r |cFF00FF00Info:|r \n » Name: " ..
