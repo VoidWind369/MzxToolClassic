@@ -8,6 +8,7 @@
 ## SavedVariablesPerCharacter: VoidModClassicCharacterDB
 
 VoidMod.lua
+VoidData.lua
 commend\Background.lua
 commend\Movable.lua
 module\ShieldInfo.lua

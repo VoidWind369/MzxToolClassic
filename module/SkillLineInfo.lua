@@ -25,10 +25,12 @@ end
 
 --- # 创建武器熟练度框体
 function VoidFrame:Void_CreateSkillLineInfoDisplay(name_table, rank_table)
-    VoidModClassicCharacterDB.point.skill_line = VoidModClassicCharacterDB.point.skill_line or skill_line.up
-    VoidModClassicCharacterDB.point.skill_line.p = VoidModClassicCharacterDB.point.skill_line.p or skill_line.up.p
-    VoidModClassicCharacterDB.point.skill_line.x = VoidModClassicCharacterDB.point.skill_line.x or skill_line.up.x
-    VoidModClassicCharacterDB.point.skill_line.y = VoidModClassicCharacterDB.point.skill_line.y or skill_line.up.y
+    VoidModClassicCharacterDB.point.skill_line = VoidModClassicCharacterDB.point.skill_line or {
+        p = skill_line.up.p,
+        x = skill_line.up.x,
+        y = skill_line.up.y
+    }
+
     self.voidSkillLineInfo = CreateFrame("Frame", "SkillLine", UIParent, "BackdropTemplate")
     self.voidSkillLineInfo:SetSize(145, #name_table * 18 + 10)
     self.voidSkillLineInfo:SetPoint(VoidModClassicCharacterDB.point.skill_line.p,

@@ -28,10 +28,12 @@ end
 
 --- # 创建图腾框体
 function VoidFrame:Void_CreateTotemInfoDisplay(totem_info)
-    VoidModClassicCharacterDB.point.totem = VoidModClassicCharacterDB.point.totem or totem.up
-    VoidModClassicCharacterDB.point.totem.p = VoidModClassicCharacterDB.point.totem.p or totem.up.p
-    VoidModClassicCharacterDB.point.totem.x = VoidModClassicCharacterDB.point.totem.x or totem.up.x
-    VoidModClassicCharacterDB.point.totem.y = VoidModClassicCharacterDB.point.totem.y or totem.up.y
+    VoidModClassicCharacterDB.point.totem = VoidModClassicCharacterDB.point.totem or {
+        p = totem.up.p,
+        x = totem.up.x,
+        y = totem.up.y,
+    }
+
     self.voidTotemInfo = CreateFrame("Frame", "Totem", UIParent, "BackdropTemplate")
     self.voidTotemInfo:SetSize(220, #totem_info * 26 + 10)
     self.voidTotemInfo:SetPoint(VoidModClassicCharacterDB.point.totem.p,

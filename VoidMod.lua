@@ -41,18 +41,6 @@ VoidFrame:SetScript("OnUpdate", function(self, delta)
     VoidFrame:Void_UpdateTotemInfoDisplay()
 end)
 
-function InitDatabase()
-    VoidModClassicDB = VoidModClassicDB or {}
-    VoidModClassicCharacterDB = VoidModClassicCharacterDB or {}
-
-    VoidModClassicCharacterDB.status = VoidModClassicCharacterDB.status or {
-        PlayerInfo = true,
-        SkillLine = true,
-        ShieldInfo = true,
-        TotemInfo = true
-    }
-end
-
 function VoidFrame:Initialize()
     -- 加载数据库
     InitDatabase()

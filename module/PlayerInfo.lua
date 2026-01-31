@@ -1,10 +1,10 @@
 local point = {
-    up = {
+    player_up = {
         p = "BOTTOMLEFT",
         x = 430.0,
         y = 130.0
     },
-    down = {
+    player_down = {
         p = "BOTTOMLEFT",
         x = 430.0,
         y = 10.0
@@ -68,14 +68,17 @@ end
 
 --- # 创建主属性框体
 function VoidFrame:Void_CreatePlayerInfoDisplay_UP(first)
-    VoidModClassicCharacterDB.point.up = VoidModClassicCharacterDB.point.up or point.up
-    VoidModClassicCharacterDB.point.up.p = VoidModClassicCharacterDB.point.up.p or point.up.p
-    VoidModClassicCharacterDB.point.up.x = VoidModClassicCharacterDB.point.up.x or point.up.x
-    VoidModClassicCharacterDB.point.up.y = VoidModClassicCharacterDB.point.up.y or point.up.y
+    VoidModClassicCharacterDB.point.player_up = VoidModClassicCharacterDB.point.player_up or {
+        p = point.player_up.p,
+        x = point.player_up.x,
+        y = point.player_up.y
+    }
+
     self.voidPlayerInfo_UP = CreateFrame("Frame", "PlayerInfo_UP", UIParent, "BackdropTemplate")
     self.voidPlayerInfo_UP:SetSize(100, 115)
-    self.voidPlayerInfo_UP:SetPoint(VoidModClassicCharacterDB.point.up.p, VoidModClassicCharacterDB.point.up.x,
-        VoidModClassicCharacterDB.point.up.y)
+    self.voidPlayerInfo_UP:SetPoint(VoidModClassicCharacterDB.point.player_up.p,
+        VoidModClassicCharacterDB.point.player_up.x,
+        VoidModClassicCharacterDB.point.player_up.y)
     SetInfoFrameStyle(self.voidPlayerInfo_UP)
 
     self.voidPlayerInfoText_UP = self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText")
@@ -85,14 +88,16 @@ end
 
 --- # 创建副属性框体
 function VoidFrame:Void_CreatePlayerInfoDisplay_Down(info)
-    VoidModClassicCharacterDB.point.down = VoidModClassicCharacterDB.point.down or point.down
-    VoidModClassicCharacterDB.point.down.p = VoidModClassicCharacterDB.point.down.p or point.down.p
-    VoidModClassicCharacterDB.point.down.x = VoidModClassicCharacterDB.point.down.x or point.down.x
-    VoidModClassicCharacterDB.point.down.y = VoidModClassicCharacterDB.point.down.y or point.down.y
+    VoidModClassicCharacterDB.point.player_down = VoidModClassicCharacterDB.point.player_down or {
+        p = point.player_down.p,
+        x = point.player_down.x,
+        y = point.player_down.y
+    }
     self.voidPlayerInfo_DOWN = CreateFrame("Frame", "PlayerInfo_DOWN", UIParent, "BackdropTemplate")
     self.voidPlayerInfo_DOWN:SetSize(100, 115)
-    self.voidPlayerInfo_DOWN:SetPoint(VoidModClassicCharacterDB.point.down.p, VoidModClassicCharacterDB.point.down.x,
-        VoidModClassicCharacterDB.point.down.y)
+    self.voidPlayerInfo_DOWN:SetPoint(VoidModClassicCharacterDB.point.player_down.p,
+        VoidModClassicCharacterDB.point.player_down.x,
+        VoidModClassicCharacterDB.point.player_down.y)
     SetInfoFrameStyle(self.voidPlayerInfo_DOWN)
 
     self.voidPlayerInfoText_DOWN = self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText")
@@ -129,29 +134,29 @@ function MovableDisplayStop()
         self:StopMovingOrSizing()
         self.isMoving = false
         local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
-        VoidModClassicCharacterDB.point.up.p = p    -- 保存
-        VoidModClassicCharacterDB.point.up.x = xOfs -- 保存
-        VoidModClassicCharacterDB.point.up.y = yOfs -- 保存
+        VoidModClassicCharacterDB.point.player_up.p = p    -- 保存
+        VoidModClassicCharacterDB.point.player_up.x = xOfs -- 保存
+        VoidModClassicCharacterDB.point.player_up.y = yOfs -- 保存
     end)
     VoidFrame.voidPlayerInfo_DOWN:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
         self.isMoving = false
         local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
-        VoidModClassicCharacterDB.point.down.p = p    -- 保存
-        VoidModClassicCharacterDB.point.down.x = xOfs -- 保存
-        VoidModClassicCharacterDB.point.down.y = yOfs -- 保存
+        VoidModClassicCharacterDB.point.player_down.p = p    -- 保存
+        VoidModClassicCharacterDB.point.player_down.x = xOfs -- 保存
+        VoidModClassicCharacterDB.point.player_down.y = yOfs -- 保存
     end)
 
     -- 双击居中
     VoidFrame.voidPlayerInfo_UP:SetScript("OnMouseUp", function(self, button)
         if button == "LeftButton" and self.doubleClick then
             self:ClearAllPoints()
-            self:SetPoint(point.up.p, point.up.x, point.up.y)
+            self:SetPoint(point.player_up.p, point.player_up.x, point.player_up.y)
             local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
             -- 保存到变量或保存文件
-            VoidModClassicCharacterDB.point.up.p = p    -- 保存
-            VoidModClassicCharacterDB.point.up.x = xOfs -- 保存
-            VoidModClassicCharacterDB.point.up.y = yOfs -- 保存
+            VoidModClassicCharacterDB.point.player_up.p = p    -- 保存
+            VoidModClassicCharacterDB.point.player_up.x = xOfs -- 保存
+            VoidModClassicCharacterDB.point.player_up.y = yOfs -- 保存
             self.doubleClick = false
         end
     end)
@@ -159,7 +164,7 @@ function MovableDisplayStop()
     VoidFrame.voidPlayerInfo_DOWN:SetScript("OnMouseUp", function(self, button)
         if button == "LeftButton" and self.doubleClick then
             self:ClearAllPoints()
-            self:SetPoint(point.down.p, point.down.x, point.down.y)
+            self:SetPoint(point.player_down.p, point.player_down.x, point.player_down.y)
             local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
             -- 保存到变量或保存文件
             VoidModClassicCharacterDB.point.down.p = p    -- 保存

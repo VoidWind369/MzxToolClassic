@@ -1,4 +1,4 @@
-local totemWeapon = {
+local shield = {
     up = {
         p = "CENTER",
         x = 0,
@@ -25,30 +25,31 @@ local totemWeapon = {
 }
 
 function VoidFrame:Void_CreateShieldInfo()
-    VoidModClassicCharacterDB.point.totemWeapon = VoidModClassicCharacterDB.point.totemWeapon or totemWeapon.up
-    VoidModClassicCharacterDB.point.totemWeapon.p = VoidModClassicCharacterDB.point.totemWeapon.p or totemWeapon.up.p
-    VoidModClassicCharacterDB.point.totemWeapon.x = VoidModClassicCharacterDB.point.totemWeapon.x or totemWeapon.up.x
-    VoidModClassicCharacterDB.point.totemWeapon.y = VoidModClassicCharacterDB.point.totemWeapon.y or totemWeapon.up.y
+    VoidModClassicCharacterDB.point.totemWeapon = VoidModClassicCharacterDB.point.totemWeapon or {
+        p = shield.up.p,
+        x = shield.up.x,
+        y = shield.up.y
+    }
 
     -- 主框架
     self.dotFrame = CreateFrame("Frame", "TotemWeapon", UIParent, "BackdropTemplate")
     self.dotFrame:SetPoint(VoidModClassicCharacterDB.point.totemWeapon.p,
         VoidModClassicCharacterDB.point.totemWeapon.x,
         VoidModClassicCharacterDB.point.totemWeapon.y)
-    WhiteTransparentFrame(self.dotFrame, totemWeapon)
+    WhiteTransparentFrame(self.dotFrame, shield)
 
     -- 创建10个小圆点
     self.totemWeaponDots = {}
 
-    for i = 1, totemWeapon.max_stacks do
+    for i = 1, shield.max_stacks do
         local dot = CreateFrame("Frame", nil, self.dotFrame)
-        WhiteTransparentDot(i, dot, totemWeapon)
+        WhiteTransparentDot(i, dot, shield)
 
         dot.glow = dot:CreateTexture(nil, "BACKGROUND")
-        WhiteTransparentDotGlow(dot.glow, totemWeapon)
+        WhiteTransparentDotGlow(dot.glow, shield)
 
         dot.tex = dot:CreateTexture(nil, "OVERLAY")
-        WhiteTransparentDotTex(dot.tex, totemWeapon)
+        WhiteTransparentDotTex(dot.tex, shield)
 
         self.totemWeaponDots[i] = dot
     end
@@ -71,12 +72,12 @@ end
 -- 设定漩涡武器层数颜色
 function UpdateDotProgress(stacks)
     local alpha = 1
-    for i = 1, totemWeapon.max_stacks do
+    for i = 1, shield.max_stacks do
         local dot = VoidFrame.totemWeaponDots[i]
 
         if i <= stacks then
             -- 激活的小圆点 - 饱满的纵向渐变
-            local topColor, bottomColor = GetGradientColorsSM(totemWeapon.shield_type, alpha)
+            local topColor, bottomColor = GetGradientColorsSM(shield.shield_type, alpha)
             dot.tex:SetGradient("VERTICAL", topColor, bottomColor)
 
             -- 发光效果
@@ -114,11 +115,11 @@ function VoidFrame:UpdateTotemWeaponStacks()
     end
 
     -- 萨满专注
-    local focusData = C_UnitAuras.GetUnitAuraBySpellID("player", totemWeapon.focus_spell_id)
+    local focusData = C_UnitAuras.GetUnitAuraBySpellID("player", shield.focus_spell_id)
 
     -- 闪电护盾
     local lightning_shield = { 0, 0 }
-    for _, spell_id in pairs(totemWeapon.lightning_shield_id) do
+    for _, spell_id in pairs(shield.lightning_shield_id) do
         local aura = C_UnitAuras.GetUnitAuraBySpellID("player", spell_id)
         if aura then
             lightning_shield[1] = lightning_shield[1] + 1
@@ -128,7 +129,7 @@ function VoidFrame:UpdateTotemWeaponStacks()
 
     -- 水之护盾
     local water_shield = { 0, 0 }
-    for _, spell_id in pairs(totemWeapon.water_shield_id) do
+    for _, spell_id in pairs(shield.water_shield_id) do
         local aura = C_UnitAuras.GetUnitAuraBySpellID("player", spell_id)
         if aura then
             water_shield[1] = water_shield[1] + 1
@@ -137,18 +138,18 @@ function VoidFrame:UpdateTotemWeaponStacks()
     end
 
     if lightning_shield[1] > 0 then
-        totemWeapon.currentStacks = lightning_shield[2]
-        totemWeapon.shield_type = 0
+        shield.currentStacks = lightning_shield[2]
+        shield.shield_type = 0
     elseif water_shield[1] > 0 then
-        totemWeapon.currentStacks = water_shield[2]
-        totemWeapon.shield_type = 1
+        shield.currentStacks = water_shield[2]
+        shield.shield_type = 1
     else
-        totemWeapon.currentStacks = 0
-        totemWeapon.lastStacks = 0
+        shield.currentStacks = 0
+        shield.lastStacks = 0
     end
 
     -- 更新小圆点进度
-    UpdateDotProgress(totemWeapon.currentStacks)
+    UpdateDotProgress(shield.currentStacks)
     if focusData then
         UpdateDotFrameProgress(true)
     else
@@ -171,7 +172,7 @@ function MovableTotemWeaponDisplayStop()
     VoidFrame.dotFrame:SetScript("OnMouseUp", function(self, button)
         if button == "LeftButton" and self.doubleClick then
             self:ClearAllPoints()
-            self:SetPoint(totemWeapon.up.p, totemWeapon.up.x, totemWeapon.up.y)
+            self:SetPoint(shield.up.p, shield.up.x, shield.up.y)
             local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
             -- 保存到变量或保存文件
             VoidModClassicCharacterDB.point.totemWeapon.p = p    -- 保存
@@ -198,10 +199,10 @@ function VoidFrame:TestDisplay()
     end, 10) -- 测试10秒
 
     C_Timer.After(10.5, function()
-        if totemWeapon.currentStacks == 0 then
+        if shield.currentStacks == 0 then
             self.dotFrame:Hide()
         else
-            self:UpdateDotProgress(totemWeapon.currentStacks)
+            self:UpdateDotProgress(shield.currentStacks)
         end
     end)
 end
