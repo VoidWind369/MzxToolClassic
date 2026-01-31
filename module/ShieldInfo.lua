@@ -55,7 +55,7 @@ function VoidFrame:Void_CreateShieldInfo()
     end
 
     MovableDisplay(self.dotFrame)
-    MovableTotemWeaponDisplayStop()
+    MovableShieldInfoDisplayStop()
 end
 
 -- 设定狂风怒号颜色
@@ -108,7 +108,7 @@ function GetGradientColorsSM(shield_type, alpha)
 end
 
 -- 增强萨buff监控进程
-function VoidFrame:UpdateTotemWeaponStacks()
+function VoidFrame:UpdateShieldInfo()
     -- 判断是否加载
     if not self.dotFrame then
         return
@@ -157,7 +157,7 @@ function VoidFrame:UpdateTotemWeaponStacks()
     end
 end
 
-function MovableTotemWeaponDisplayStop()
+function MovableShieldInfoDisplayStop()
     -- 拖动停止
     VoidFrame.dotFrame:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()

@@ -1,15 +1,12 @@
 -- 创建主框架
 VoidFrame = CreateFrame("Frame", "VoidModFrame", UIParent)
-VoidFrame:RegisterEvent("PLAYER_LOGIN")
-VoidFrame:RegisterEvent("UNIT_AURA")
-VoidFrame:RegisterEvent("CHAT_MSG_WHISPER")
-VoidFrame:RegisterEvent("PARTY_INVITE_REQUEST")
-VoidFrame:RegisterEvent("UNIT_COMBAT")
-VoidFrame:RegisterEvent("LFG_QUEUE_STATUS_UPDATE")
-VoidFrame:RegisterEvent("GROUP_INVITE_CONFIRMATION")
-VoidFrame:RegisterEvent("LFG_ROLE_CHECK_SHOW")
-VoidFrame:RegisterEvent("UNIT_RESISTANCES")
-VoidFrame:RegisterEvent("SKILL_LINES_CHANGED")
+VoidFrame:RegisterEvent("PLAYER_LOGIN")         --用户登录
+VoidFrame:RegisterEvent("UNIT_AURA")            --获得或消失的增益、减益、状态或物品加成
+VoidFrame:RegisterEvent("CHAT_MSG_WHISPER")     --收到其他玩家的低语
+VoidFrame:RegisterEvent("PARTY_INVITE_REQUEST") --排本邀请
+VoidFrame:RegisterEvent("UNIT_COMBAT")          --当 NPC 或玩家参与战斗并受到伤害时触发
+VoidFrame:RegisterEvent("UNIT_RESISTANCES")     --当单位抗性发生变化时
+VoidFrame:RegisterEvent("SKILL_LINES_CHANGED")  --当玩家技能列表内容发生变化时（武器熟练度）
 
 VoidFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_LOGIN" then
@@ -18,27 +15,25 @@ VoidFrame:SetScript("OnEvent", function(self, event, ...)
         local unit = ...
         if unit == "player" then
             self:CheckBloodlust()
-            self:UpdateTotemWeaponStacks()
+            self:UpdateShieldInfo()
         end
         self:Void_UpdatePlayerInfo()
-    elseif event == "UNIT_RESISTANCES" then
+    elseif event == "UNIT_RESISTANCES" or "UNIT_COMBAT" then
         self:Void_UpdatePlayerInfo()
     elseif event == "CHAT_MSG_WHISPER" then
         self:MessageStart(...)
-    elseif event == "PARTY_INVITE_REQUEST" or event == "GROUP_INVITE_CONFIRMATION" then
+    elseif event == "PARTY_INVITE_REQUEST" then
         local unit = ...
         if unit ~= nil then
             self:PartyStart(...)
         end
-    elseif event == "UNIT_COMBAT" then
-        self:Void_UpdatePlayerInfo()
     elseif event == "SKILL_LINES_CHANGED" then
-        self:Void_UpdateSkillLineInfoDisplay()
+        self:Void_UpdateSkillLineInfo()
     end
 end)
 
 VoidFrame:SetScript("OnUpdate", function(self, delta)
-    VoidFrame:Void_UpdateTotemInfoDisplay()
+    VoidFrame:Void_UpdateTotemInfo()
 end)
 
 function VoidFrame:Initialize()

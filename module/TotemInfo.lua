@@ -56,7 +56,7 @@ function VoidFrame:Void_CreateTotemInfoDisplay(totem_info)
     end
 end
 
---- # 创建武器熟练度信息框体
+--- # 创建图腾信息框体
 function VoidFrame:Void_CreateTotemInfo()
     self:Void_CreateTotemInfoDisplay(VoidFrame:GetTotemInfo())
 
@@ -66,8 +66,8 @@ function VoidFrame:Void_CreateTotemInfo()
     MovableTotemDisplayStop()
 end
 
---- # 刷新武器熟练度信息框体
-function VoidFrame:Void_UpdateTotemInfoDisplay()
+--- # 刷新图腾信息框体
+function VoidFrame:Void_UpdateTotemInfo()
     -- 判断是否启用
     if self.voidTotemInfo then
         local info = VoidFrame:GetTotemInfo()

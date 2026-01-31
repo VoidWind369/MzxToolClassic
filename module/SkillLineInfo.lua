@@ -57,7 +57,7 @@ function VoidFrame:Void_CreateSkillLineInfo()
 end
 
 --- # 刷新武器熟练度信息框体
-function VoidFrame:Void_UpdateSkillLineInfoDisplay()
+function VoidFrame:Void_UpdateSkillLineInfo()
     if self.voidSkillLineInfo then
         local name_table, rank_table = VoidFrame:GetSkillLineInfo()
         if self.voidSkillLineInfoText then
