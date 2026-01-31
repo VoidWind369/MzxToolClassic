@@ -47,12 +47,6 @@ function VoidFrame:Initialize()
     print("|cFF33937FVoidMod|r |cFF69CCF0Player|r |cFF00FF00Info:|r \n » Name: " ..
         className .. "\n » FileName: " .. classFilename .. "\n » Id: " .. classId)
 
-    for index = 1, 4 do
-        local arg1, totemName, startTime, duration, icon = GetTotemInfo(index)
-        local est_dur = startTime + duration - GetTime()
-        print(totemName .. "  " .. est_dur)
-    end
-
     -- WOW客户端信息
     self:ClientInfo()
 
