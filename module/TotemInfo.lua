@@ -21,6 +21,7 @@ function VoidFrame.GetTotemInfo()
             icon = icon_num,
             name = value[1] .. name .. "|r",
             dur = est_dur,
+            spell_id = spellID
         }
     end
     return totem_info
@@ -54,6 +55,7 @@ function VoidFrame:Void_CreateTotemInfoDisplay(totem_info)
         AddString(self.voidTotemInfoNameText[index], value.name, 1.2, 35, y)
         AddNumber(self.voidTotemInfoDurText[index], value.dur, 1.2, -10, y)
     end
+    GetTotemGameTooltip()
 end
 
 --- # 创建图腾信息框体
@@ -90,6 +92,22 @@ function VoidFrame:RecycleTotem()
     self.voidTotemInfo.secureBtn:RegisterForClicks("AnyUp", "AnyDown")
     -- VoidFrame.voidTotemInfo.secureBtn:SetAttribute("type", "macro")
     -- VoidFrame.voidTotemInfo.secureBtn:SetAttribute("macrotext", "/cast 图腾召唤") -- text for macro on left click
+end
+
+function GetTotemGameTooltip()
+    for index, value in ipairs(VoidFrame.voidTotemInfoIcon) do
+        -- 鼠标悬停事件
+        value:SetScript("OnEnter", function(self)
+            local haveTotem, totemName, startTime, duration, icon, modRate, spellID = GetTotemInfo(index)
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetSpellByID(spellID)
+            GameTooltip:Show()
+        end)
+
+        value:SetScript("OnLeave", function()
+            GameTooltip:Hide()
+        end)
+    end
 end
 
 function MovableTotemDisplayStop()

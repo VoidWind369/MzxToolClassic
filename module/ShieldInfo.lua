@@ -7,10 +7,12 @@ local shield = {
 
     Shaman_SpecId = 7,
 
-    -- 法术ID                                                   -- 漩涡武器
+    -- 法术ID
     lightning_shield_id = { 324, 325, 905, 945, 8134, 10431, 10432, 25469, 25472 }, -- 闪电护盾
     water_shield_id = { 24398, 33736 },                                             -- 水之护盾
     focus_spell_id = 43339,                                                         -- 萨满专注
+
+    now_shield_id = nil,                                                            -- 当前护盾
 
     -- 显示设置
     max_stacks = 3,
@@ -39,7 +41,7 @@ function VoidFrame:Void_CreateShieldInfo()
     WhiteTransparentFrame(self.dotFrame, shield)
 
     -- 创建10个小圆点
-    self.totemWeaponDots = {}
+    self.shieldDots = {}
 
     for i = 1, shield.max_stacks do
         local dot = CreateFrame("Frame", nil, self.dotFrame)
@@ -51,9 +53,10 @@ function VoidFrame:Void_CreateShieldInfo()
         dot.tex = dot:CreateTexture(nil, "OVERLAY")
         WhiteTransparentDotTex(dot.tex, shield)
 
-        self.totemWeaponDots[i] = dot
+        self.shieldDots[i] = dot
     end
 
+    GetShieldGameTooltip()
     MovableDisplay(self.dotFrame)
     MovableShieldInfoDisplayStop()
 end
@@ -73,7 +76,7 @@ end
 function UpdateDotProgress(stacks)
     local alpha = 1
     for i = 1, shield.max_stacks do
-        local dot = VoidFrame.totemWeaponDots[i]
+        local dot = VoidFrame.shieldDots[i]
 
         if i <= stacks then
             -- 激活的小圆点 - 饱满的纵向渐变
@@ -124,6 +127,7 @@ function VoidFrame:UpdateShieldInfo()
         if aura then
             lightning_shield[1] = lightning_shield[1] + 1
             lightning_shield[2] = aura.applications or 0
+            shield.now_shield_id = spell_id
         end
     end
 
@@ -134,6 +138,7 @@ function VoidFrame:UpdateShieldInfo()
         if aura then
             water_shield[1] = water_shield[1] + 1
             water_shield[2] = aura.applications or 0
+            shield.now_shield_id = spell_id
         end
     end
 
@@ -146,6 +151,7 @@ function VoidFrame:UpdateShieldInfo()
     else
         shield.currentStacks = 0
         shield.lastStacks = 0
+        shield.now_shield_id = nil
     end
 
     -- 更新小圆点进度
@@ -155,6 +161,21 @@ function VoidFrame:UpdateShieldInfo()
     else
         UpdateDotFrameProgress(false)
     end
+end
+
+function GetShieldGameTooltip()
+    -- 鼠标悬停事件
+    VoidFrame.shieldDots[2]:SetScript("OnEnter", function(self)
+        if shield.now_shield_id then
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetSpellByID(shield.now_shield_id)
+            GameTooltip:Show()
+        end
+    end)
+
+    VoidFrame.shieldDots[2]:SetScript("OnLeave", function()
+        GameTooltip:Hide()
+    end)
 end
 
 function MovableShieldInfoDisplayStop()

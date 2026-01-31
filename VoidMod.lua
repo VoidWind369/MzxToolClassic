@@ -6,7 +6,7 @@ VoidFrame:RegisterEvent("CHAT_MSG_WHISPER")     --收到其他玩家的低语
 VoidFrame:RegisterEvent("PARTY_INVITE_REQUEST") --排本邀请
 VoidFrame:RegisterEvent("UNIT_COMBAT")          --当 NPC 或玩家参与战斗并受到伤害时触发
 VoidFrame:RegisterEvent("UNIT_RESISTANCES")     --当单位抗性发生变化时
-VoidFrame:RegisterEvent("SKILL_LINES_CHANGED")  --当玩家技能列表内容发生变化时（武器熟练度）
+VoidFrame:RegisterEvent("SKILL_LINES_CHANGED")  --当玩家技能列表内容发生变化时(武器熟练度)
 
 VoidFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_LOGIN" then
