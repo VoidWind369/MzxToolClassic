@@ -43,8 +43,8 @@ function VoidFrame:Void_CreateSkillLineInfoDisplay(name_table, rank_table)
         self.voidSkillLineInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
     }
 
-    AddString(self.voidSkillLineInfoText[1], table.concat(name_table, "\n"))
-    AddNumber(self.voidSkillLineInfoText[2], table.concat(rank_table, "\n"))
+    AddStringLeft(self.voidSkillLineInfoText[1], table.concat(name_table, "\n"))
+    AddStringRight(self.voidSkillLineInfoText[2], table.concat(rank_table, "\n"))
 end
 
 --- # 创建武器熟练度信息框体

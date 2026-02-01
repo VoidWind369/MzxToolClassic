@@ -26,8 +26,40 @@ local shield = {
     lastStacks = 0,
 }
 
+--- # 获取武器临时附魔信息
+function VoidFrame:GetWeaponEnchantInfo()
+    local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID, hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantID, hasRangedEnchant, rangedExpiration, rangedCharges, rangedEnchantID =
+        GetWeaponEnchantInfo()
+
+    local main_color_str = hasMainHandEnchant and
+        string.format("%s%s|r", mainHandExpiration > 10000 and "|cFFFFFF00" or "|cFFFF0000",
+            MinutesOrSeconds(mainHandExpiration)) or
+        "|cFFC0C0C0Nil|r"
+    local off_color_str = hasOffHandEnchant and
+        string.format("%s%s|r", offHandExpiration > 10000 and "|cFFFFFF00" or "|cFFFF0000",
+            MinutesOrSeconds(offHandExpiration)) or
+        "|cFFC0C0C0Nil|r"
+    local ranged_color_str = hasRangedEnchant and
+        string.format("%s%s|r", rangedExpiration > 10000 and "|cFFFFFF00" or "|cFFFF0000",
+            MinutesOrSeconds(rangedExpiration)) or
+        "|cFFC0C0C0Nil|r"
+
+    return {
+        main = {
+            expiration = main_color_str,
+        },
+        off = {
+            expiration = off_color_str,
+        },
+        ranged = {
+            expiration = ranged_color_str,
+        }
+    }
+end
+
+--- # 创建护盾检测框体
 function VoidFrame:Void_CreateShieldInfo()
-    VoidModClassicCharacterDB.point.totemWeapon = VoidModClassicCharacterDB.point.totemWeapon or {
+    VoidModClassicCharacterDB.point.shield = VoidModClassicCharacterDB.point.shield or {
         p = shield.up.p,
         x = shield.up.x,
         y = shield.up.y
@@ -35,9 +67,9 @@ function VoidFrame:Void_CreateShieldInfo()
 
     -- 主框架
     self.dotFrame = CreateFrame("Frame", "TotemWeapon", UIParent, "BackdropTemplate")
-    self.dotFrame:SetPoint(VoidModClassicCharacterDB.point.totemWeapon.p,
-        VoidModClassicCharacterDB.point.totemWeapon.x,
-        VoidModClassicCharacterDB.point.totemWeapon.y)
+    self.dotFrame:SetPoint(VoidModClassicCharacterDB.point.shield.p,
+        VoidModClassicCharacterDB.point.shield.x,
+        VoidModClassicCharacterDB.point.shield.y)
     WhiteTransparentFrame(self.dotFrame, shield)
 
     -- 创建10个小圆点
@@ -56,12 +88,34 @@ function VoidFrame:Void_CreateShieldInfo()
         self.shieldDots[i] = dot
     end
 
+    self:Void_CreateWeaponEnchantInfoFrame(self:GetWeaponEnchantInfo())
+
     GetShieldGameTooltip()
     MovableDisplay(self.dotFrame)
     MovableShieldInfoDisplayStop()
 end
 
--- 设定狂风怒号颜色
+function VoidFrame:Void_CreateWeaponEnchantInfoFrame(hand_table)
+    self.dotFrame.weaponEnchantMain = CreateFrame("Frame", "WeaponEnchantMain", self.dotFrame, "BackdropTemplate")
+    self.dotFrame.weaponEnchantMain:SetSize(50, shield.dot_size + shield.dot_spacing + 10)
+    self.dotFrame.weaponEnchantMain:SetPoint("CENTER", -90, 0)
+    SetInfoFrameStyle(self.dotFrame.weaponEnchantMain)
+
+    self.dotFrame.weaponEnchantMainText = self.dotFrame.weaponEnchantMain:CreateFontString(nil, "OVERLAY",
+        "GameTooltipText")
+    AddStringCenter(self.dotFrame.weaponEnchantMainText, hand_table.main.expiration)
+
+    self.dotFrame.weaponEnchantOff = CreateFrame("Frame", "WeaponEnchantOff", self.dotFrame, "BackdropTemplate")
+    self.dotFrame.weaponEnchantOff:SetSize(50, shield.dot_size + shield.dot_spacing + 10)
+    self.dotFrame.weaponEnchantOff:SetPoint("CENTER", 90, 0)
+    SetInfoFrameStyle(self.dotFrame.weaponEnchantOff)
+
+    self.dotFrame.weaponEnchantOffText = self.dotFrame.weaponEnchantOff:CreateFontString(nil, "OVERLAY",
+        "GameTooltipText")
+    AddStringCenter(self.dotFrame.weaponEnchantOffText, hand_table.off.expiration)
+end
+
+-- 设定萨满专注颜色
 function UpdateDotFrameProgress(hasGaleWindsData)
     if hasGaleWindsData then
         VoidFrame.dotFrame:SetBackdropColor(0, 0.4, 1, 0.55)
@@ -72,7 +126,7 @@ function UpdateDotFrameProgress(hasGaleWindsData)
     end
 end
 
--- 设定漩涡武器层数颜色
+-- 设定护盾层数颜色
 function UpdateDotProgress(stacks)
     local alpha = 1
     for i = 1, shield.max_stacks do
@@ -96,6 +150,15 @@ function UpdateDotProgress(stacks)
             dot.glow:Hide()
             dot:SetAlpha(0.3)
         end
+    end
+end
+
+--- # 刷新武器临时附魔信息
+function VoidFrame:UpdateWeaponEnchant()
+    local hand = self:GetWeaponEnchantInfo()
+    if self.dotFrame then
+        self.dotFrame.weaponEnchantMainText:SetText(hand.main.expiration)
+        self.dotFrame.weaponEnchantOffText:SetText(hand.off.expiration)
     end
 end
 
@@ -184,9 +247,9 @@ function MovableShieldInfoDisplayStop()
         self:StopMovingOrSizing()
         self.isMoving = false
         local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
-        VoidModClassicCharacterDB.point.totemWeapon.p = p    -- 保存
-        VoidModClassicCharacterDB.point.totemWeapon.x = xOfs -- 保存
-        VoidModClassicCharacterDB.point.totemWeapon.y = yOfs -- 保存
+        VoidModClassicCharacterDB.point.shield.p = p    -- 保存
+        VoidModClassicCharacterDB.point.shield.x = xOfs -- 保存
+        VoidModClassicCharacterDB.point.shield.y = yOfs -- 保存
     end)
 
     -- 双击居中
@@ -196,9 +259,9 @@ function MovableShieldInfoDisplayStop()
             self:SetPoint(shield.up.p, shield.up.x, shield.up.y)
             local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
             -- 保存到变量或保存文件
-            VoidModClassicCharacterDB.point.totemWeapon.p = p    -- 保存
-            VoidModClassicCharacterDB.point.totemWeapon.x = xOfs -- 保存
-            VoidModClassicCharacterDB.point.totemWeapon.y = yOfs -- 保存
+            VoidModClassicCharacterDB.point.shield.p = p    -- 保存
+            VoidModClassicCharacterDB.point.shield.x = xOfs -- 保存
+            VoidModClassicCharacterDB.point.shield.y = yOfs -- 保存
             self.doubleClick = false
         end
     end)

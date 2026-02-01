@@ -2,7 +2,7 @@ local totem = {
     up = {
         p = "CENTER",
         x = 0,
-        y = -190
+        y = -180
     },
 }
 
@@ -36,7 +36,7 @@ function VoidFrame:Void_CreateTotemInfoDisplay(totem_info)
     }
 
     self.voidTotemInfo = CreateFrame("Frame", "Totem", UIParent, "BackdropTemplate")
-    self.voidTotemInfo:SetSize(220, #totem_info * 26 + 10)
+    self.voidTotemInfo:SetSize(231, #totem_info * 26 + 10)
     self.voidTotemInfo:SetPoint(VoidModClassicCharacterDB.point.totem.p,
         VoidModClassicCharacterDB.point.totem.x,
         VoidModClassicCharacterDB.point.totem.y)
@@ -52,8 +52,8 @@ function VoidFrame:Void_CreateTotemInfoDisplay(totem_info)
 
         local y = 36 - (index - 1) * 24
         AddIcon(self.voidTotemInfoIcon[index], value.icon, 17, 13.5, y - 1)
-        AddString(self.voidTotemInfoNameText[index], value.name, 1.2, 35, y)
-        AddNumber(self.voidTotemInfoDurText[index], value.dur, 1.2, -10, y)
+        AddStringLeft(self.voidTotemInfoNameText[index], value.name, 1.2, 35, y)
+        AddStringRight(self.voidTotemInfoDurText[index], value.dur, 1.2, -10, y)
     end
     GetTotemGameTooltip()
 end

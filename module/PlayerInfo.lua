@@ -83,7 +83,7 @@ function VoidFrame:Void_CreatePlayerInfoDisplay_UP(first)
 
     self.voidPlayerInfoText_UP = self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText")
 
-    AddString(self.voidPlayerInfoText_UP, first)
+    AddStringLeft(self.voidPlayerInfoText_UP, first)
 end
 
 --- # 创建副属性框体
@@ -102,7 +102,7 @@ function VoidFrame:Void_CreatePlayerInfoDisplay_Down(info)
 
     self.voidPlayerInfoText_DOWN = self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText")
 
-    AddString(self.voidPlayerInfoText_DOWN, info)
+    AddStringLeft(self.voidPlayerInfoText_DOWN, info)
 end
 
 --- # 创建玩家信息框体

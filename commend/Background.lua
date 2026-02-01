@@ -54,24 +54,29 @@ function SetInfoFrameStyle(frame)
     frame:SetBackdropBorderColor(0.2, 0.2, 0.2, 0.5)
 end
 
---- # 显示文字通用属性
-function AddString(fontString, string, scale, x, y)
-    fontString:SetPoint("LEFT", x or 13.5, y or 0)
+--- # 显示数字通用属性
+function AddString(fontString, string, scale, point, x, y)
+    fontString:SetPoint(point, x, y)
     fontString:SetText(string)
-    fontString:SetTextScale(scale or 1)
+    fontString:SetTextScale(scale)
     fontString:SetShadowColor(1.0, 1.0, 1.0, 0.5)
     fontString:SetSpacing(scale and scale * 1.5 or 1.5)
-    fontString:SetJustifyH("LEFT")
+    fontString:SetJustifyH(point)
+end
+
+--- # 显示文字通用属性
+function AddStringLeft(fontString, string, scale, x, y)
+    AddString(fontString, string, scale or 1, "LEFT", x or 13.5, y or 0)
 end
 
 --- # 显示数字通用属性
-function AddNumber(fontString, number, scale, x, y)
-    fontString:SetPoint("RIGHT", x or -13.5, y or 0)
-    fontString:SetText(number)
-    fontString:SetTextScale(scale or 1)
-    fontString:SetShadowColor(1.0, 1.0, 1.0, 0.5)
-    fontString:SetSpacing(scale and scale * 1.5 or 1.5)
-    fontString:SetJustifyH("RIGHT")
+function AddStringCenter(fontString, string, scale, x, y)
+    AddString(fontString, string, scale or 1, "CENTER", x or 0, y or 0)
+end
+
+--- # 显示数字通用属性
+function AddStringRight(fontString, string, scale, x, y)
+    AddString(fontString, string, scale or 1, "RIGHT", x or -13.5, y or 0)
 end
 
 --- # 显示图片通用属性
@@ -84,4 +89,14 @@ end
 --- # 显示图标通用属性
 function AddIcon(texture, image, size, x, y)
     AddImage(texture, image, size, size, x, y)
+end
+
+function MinutesOrSeconds(seconds)
+    if seconds > 60000 then
+        return string.format("%.0fm", seconds / 60000)
+    elseif seconds < 10000 then
+        return string.format("%.1fs", seconds / 1000)
+    else
+        return string.format("%.0fs", seconds / 1000)
+    end
 end
