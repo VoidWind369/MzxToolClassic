@@ -6,6 +6,7 @@
 ## Version: 1.0
 ## SavedVariables: VoidModClassicDB
 ## SavedVariablesPerCharacter: VoidModClassicCharacterDB
+## IconTexture: Interface\AddOns\VoidModClassic\Moon.png
 
 VoidMod.lua
 VoidData.lua
