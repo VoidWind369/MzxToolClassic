@@ -10,7 +10,7 @@ function WhiteTransparentFrame(self, infos)
         edgeSize = 12,
         insets = { left = 6, right = 6, top = 6, bottom = 6 },
     })
-    self:SetBackdropColor(0, 0, 0, 0.15)
+    self:SetBackdropColor(0, 0, 0, 0.3)
     self:SetBackdropBorderColor(0.2, 0.2, 0.2, 0.5)
 end
 
@@ -50,7 +50,7 @@ function SetInfoFrameStyle(frame)
         edgeSize = 12,
         insets = { left = 6, right = 6, top = 6, bottom = 6 },
     })
-    frame:SetBackdropColor(0, 0, 0, 0.15)
+    frame:SetBackdropColor(0, 0, 0, 0.3)
     frame:SetBackdropBorderColor(0.2, 0.2, 0.2, 0.5)
 end
 
@@ -59,7 +59,7 @@ function AddString(fontString, string, scale, point, x, y)
     fontString:SetPoint(point, x, y)
     fontString:SetText(string)
     fontString:SetTextScale(scale)
-    fontString:SetShadowColor(1.0, 1.0, 1.0, 0.5)
+    fontString:SetShadowColor(0, 0, 0, 0.5)
     fontString:SetSpacing(scale and scale * 1.5 or 1.5)
     fontString:SetJustifyH(point)
 end
