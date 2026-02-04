@@ -10,6 +10,7 @@ local shield = {
     -- 法术ID
     lightning_shield_id = { 324, 325, 905, 945, 8134, 10431, 10432, 25469, 25472 }, -- 闪电护盾
     water_shield_id = { 24398, 33736 },                                             -- 水之护盾
+    earth_shield_id = { 947, 32593, 32594 },                                        -- 大地之盾
     focus_spell_id = 43339,                                                         -- 萨满专注
 
     now_shield_id = nil,                                                            -- 当前护盾
@@ -167,6 +168,9 @@ function GetGradientColorsSM(shield_type, alpha)
     if shield_type == 1 then
         -- 蓝色金属
         return CreateColor(0.8, 0.9, 1.0, alpha), CreateColor(0.2, 0.4, 0.9, alpha)
+    elseif shield_type == 2 then
+        -- 黄色金属
+        return CreateColor(0.9, 1.0, 0.0, alpha), CreateColor(0.5, 1.0, 0.0, alpha)
     else
         -- 红色金属
         return CreateColor(0.9, 0.0, 0.9, alpha), CreateColor(0.7, 0.0, 1.0, alpha)
@@ -205,12 +209,26 @@ function VoidFrame:UpdateShieldInfo()
         end
     end
 
+    -- 大地之盾
+    local earth_shield = { 0, 0 }
+    for _, spell_id in pairs(shield.earth_shield_id) do
+        local aura = C_UnitAuras.GetUnitAuraBySpellID("player", spell_id)
+        if aura then
+            earth_shield[1] = earth_shield[1] + 1
+            earth_shield[2] = aura.applications or 0
+            shield.now_shield_id = spell_id
+        end
+    end
+
     if lightning_shield[1] > 0 then
         shield.currentStacks = lightning_shield[2]
         shield.shield_type = 0
     elseif water_shield[1] > 0 then
         shield.currentStacks = water_shield[2]
         shield.shield_type = 1
+    elseif earth_shield[1] > 0 then
+        shield.currentStacks = earth_shield[2]
+        shield.shield_type = 2
     else
         shield.currentStacks = 0
         shield.lastStacks = 0
