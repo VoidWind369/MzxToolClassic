@@ -18,4 +18,5 @@ module\MessageBot.lua
 module\PlayerInfo.lua
 module\SkillLineInfo.lua
 module\TotemInfo.lua
+module\ShamanBuff.lua
 module\ButtonAuto.lua

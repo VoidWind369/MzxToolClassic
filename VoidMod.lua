@@ -1,13 +1,15 @@
 -- 创建主框架
 VoidFrame = CreateFrame("Frame", "VoidModFrame", UIParent)
-VoidFrame:RegisterEvent("PLAYER_LOGIN")              --用户登录
-VoidFrame:RegisterEvent("UNIT_AURA")                 --获得或消失的增益、减益、状态或物品加成
-VoidFrame:RegisterEvent("CHAT_MSG_WHISPER")          --收到其他玩家的低语
-VoidFrame:RegisterEvent("PARTY_INVITE_REQUEST")      --排本邀请
-VoidFrame:RegisterEvent("GROUP_INVITE_CONFIRMATION") --队伍邀请
-VoidFrame:RegisterEvent("UNIT_COMBAT")               --当 NPC 或玩家参与战斗并受到伤害时触发
-VoidFrame:RegisterEvent("UNIT_RESISTANCES")          --当单位抗性发生变化时
-VoidFrame:RegisterEvent("SKILL_LINES_CHANGED")       --当玩家技能列表内容发生变化时(武器熟练度)
+VoidFrame:RegisterEvent("PLAYER_LOGIN")                --用户登录
+VoidFrame:RegisterEvent("UNIT_AURA")                   --获得或消失的增益、减益、状态或物品加成
+VoidFrame:RegisterEvent("CHAT_MSG_WHISPER")            --收到其他玩家的低语
+VoidFrame:RegisterEvent("PARTY_INVITE_REQUEST")        --排本邀请
+VoidFrame:RegisterEvent("GROUP_INVITE_CONFIRMATION")   --队伍邀请
+VoidFrame:RegisterEvent("UNIT_COMBAT")                 --当 NPC 或玩家参与战斗并受到伤害时触发
+VoidFrame:RegisterEvent("UNIT_RESISTANCES")            --当单位抗性发生变化时
+VoidFrame:RegisterEvent("SKILL_LINES_CHANGED")         --当玩家技能列表内容发生变化时(武器熟练度)
+VoidFrame:RegisterEvent("PLAYER_TOTEM_UPDATE")         --当图腾施放或被摧毁（召回或击杀）时
+VoidFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED") --战斗日志
 
 VoidFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_LOGIN" then
@@ -19,24 +21,63 @@ VoidFrame:SetScript("OnEvent", function(self, event, ...)
             self:UpdateShieldInfo()
         end
         self:Void_UpdatePlayerInfo()
-    elseif event == "UNIT_RESISTANCES" or "UNIT_COMBAT" then
+    end
+
+    if event == "UNIT_RESISTANCES" or "UNIT_COMBAT" then
         self:Void_UpdatePlayerInfo()
-    elseif event == "CHAT_MSG_WHISPER" then
+    end
+
+    if event == "CHAT_MSG_WHISPER" then
         self:MessageStart(...)
-    elseif event == "PARTY_INVITE_REQUEST" or event == "GROUP_INVITE_CONFIRMATION" then
+    end
+
+    if event == "PARTY_INVITE_REQUEST" or event == "GROUP_INVITE_CONFIRMATION" then
         local unit = ...
         if unit ~= nil then
             self:PartyStart(...)
         end
-        -- elseif event == "SKILL_LINES_CHANGED" then
-        --     self:Void_UpdateSkillLineInfo()
     end
+
+    if event == "PLAYER_TOTEM_UPDATE" then
+        self:Void_UpdateTotemInfo()
+    end
+
+    if event == "SKILL_LINES_CHANGED" then
+        self:Void_UpdateSkillLineInfo()
+    end
+
+    if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+        self:GetGroupBuffs()
+    end
+    ---------------------
+    local timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destRaidFlags =
+        CombatLogGetCurrentEventInfo()
+    local spellId, amount, critical
+
+    if subevent == "SWING_DAMAGE" then
+        amount, _, _, _, _, _, critical = select(12, CombatLogGetCurrentEventInfo())
+        print("普攻", spellId, amount, critical)
+    elseif subevent == "SPELL_DAMAGE" then
+        spellId, _, _, amount, _, _, _, _, _, critical = select(12, CombatLogGetCurrentEventInfo())
+        print("法术", spellId, amount, critical)
+    elseif subevent == "SPELL_CAST_SUCCESS" then
+        spellId = select(12, CombatLogGetCurrentEventInfo())
+        print("释放", subevent, spellId, amount, critical)
+    elseif subevent == "SPELL_SUMMON" then
+        local spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand =
+            select(12, CombatLogGetCurrentEventInfo())
+        print("召唤", event, subevent, spellId, spellName, amount, critical)
+    end
+
+    -- print("其他", subevent, amount, critical)
+    ---------------------
 end)
 
 VoidFrame:SetScript("OnUpdate", function(self, delta)
-    self:Void_UpdateTotemInfo()
+    self:Void_UpdateTotemTimeLeft()
     self:UpdateWeaponEnchant()
-    self:Void_UpdateSkillLineInfo()
+    -- self:Void_UpdateSkillLineInfo()
+    self:UpdateShamanBuff()
 end)
 
 function VoidFrame:Initialize()
@@ -73,6 +114,7 @@ function VoidFrame:Initialize()
         if VoidModClassicCharacterDB.status.TotemInfo == true then
             self:Void_CreateTotemInfo()
         end
+        self:CreateShamanBuffFrame()
     end
 
     -- 注册斜杠命令
@@ -125,6 +167,8 @@ function VoidFrame:HandleSlashCommand(msg)
         ReloadUI()
     elseif command == "info" then
         self:Void_PlayerInfo()
+    elseif command == "test" then
+        self:GetGroupBuffs()
     else
         self:ClientInfo()
         self:PrintHelp()

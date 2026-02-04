@@ -27,6 +27,20 @@ function VoidFrame.GetTotemInfo()
     return totem_info
 end
 
+function VoidFrame.GetTotemTimeLeft()
+    local totem_info = {}
+    local color = { { "|cFFFF4500", "(火焰图腾)" }, { "|cFF8B4513", "(大地图腾)" }, { "|cFF1E90FF", "(水之图腾)" }, { "|cFF40E0D0", "(空气图腾)" } }
+    for index, value in ipairs(color) do
+        local seconds = GetTotemTimeLeft(index)
+        local est_color_str = string.format(seconds > 10 and "|cFFFFFF00%.1f|r" or "|cFFFF0000%.1f|r", seconds)
+        local est_dur = seconds > 0 and est_color_str or "|cFFC0C0C0Nil|r"
+        totem_info[index] = {
+            dur = est_dur,
+        }
+    end
+    return totem_info
+end
+
 --- # 创建图腾框体
 function VoidFrame:Void_CreateTotemInfoDisplay(totem_info)
     VoidModClassicCharacterDB.point.totem = VoidModClassicCharacterDB.point.totem or {
@@ -76,6 +90,17 @@ function VoidFrame:Void_UpdateTotemInfo()
         for index, value in ipairs(info) do
             self.voidTotemInfoIcon[index]:SetTexture(value.icon)
             self.voidTotemInfoNameText[index]:SetText(value.name)
+            self.voidTotemInfoDurText[index]:SetText(value.dur)
+        end
+    end
+end
+
+--- # 刷新图腾剩余时间
+function VoidFrame:Void_UpdateTotemTimeLeft()
+    -- 判断是否启用
+    if self.voidTotemInfo then
+        local info = VoidFrame:GetTotemTimeLeft()
+        for index, value in ipairs(info) do
             self.voidTotemInfoDurText[index]:SetText(value.dur)
         end
     end
