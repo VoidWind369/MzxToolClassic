@@ -1,12 +1,13 @@
 -- 创建主框架
 VoidFrame = CreateFrame("Frame", "VoidModFrame", UIParent)
-VoidFrame:RegisterEvent("PLAYER_LOGIN")         --用户登录
-VoidFrame:RegisterEvent("UNIT_AURA")            --获得或消失的增益、减益、状态或物品加成
-VoidFrame:RegisterEvent("CHAT_MSG_WHISPER")     --收到其他玩家的低语
-VoidFrame:RegisterEvent("PARTY_INVITE_REQUEST") --排本邀请
-VoidFrame:RegisterEvent("UNIT_COMBAT")          --当 NPC 或玩家参与战斗并受到伤害时触发
-VoidFrame:RegisterEvent("UNIT_RESISTANCES")     --当单位抗性发生变化时
-VoidFrame:RegisterEvent("SKILL_LINES_CHANGED")  --当玩家技能列表内容发生变化时(武器熟练度)
+VoidFrame:RegisterEvent("PLAYER_LOGIN")              --用户登录
+VoidFrame:RegisterEvent("UNIT_AURA")                 --获得或消失的增益、减益、状态或物品加成
+VoidFrame:RegisterEvent("CHAT_MSG_WHISPER")          --收到其他玩家的低语
+VoidFrame:RegisterEvent("PARTY_INVITE_REQUEST")      --排本邀请
+VoidFrame:RegisterEvent("GROUP_INVITE_CONFIRMATION") --队伍邀请
+VoidFrame:RegisterEvent("UNIT_COMBAT")               --当 NPC 或玩家参与战斗并受到伤害时触发
+VoidFrame:RegisterEvent("UNIT_RESISTANCES")          --当单位抗性发生变化时
+VoidFrame:RegisterEvent("SKILL_LINES_CHANGED")       --当玩家技能列表内容发生变化时(武器熟练度)
 
 VoidFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_LOGIN" then
@@ -22,7 +23,7 @@ VoidFrame:SetScript("OnEvent", function(self, event, ...)
         self:Void_UpdatePlayerInfo()
     elseif event == "CHAT_MSG_WHISPER" then
         self:MessageStart(...)
-    elseif event == "PARTY_INVITE_REQUEST" then
+    elseif event == "PARTY_INVITE_REQUEST" or event == "GROUP_INVITE_CONFIRMATION" then
         local unit = ...
         if unit ~= nil then
             self:PartyStart(...)
