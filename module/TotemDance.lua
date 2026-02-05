@@ -53,7 +53,9 @@ function VoidFrame:Void_CreateTotemDance()
 end
 
 function VoidFrame:Void_UpdateTotemDance()
-    self.totemDurationText[2]:SetText(FormatRemaining())
+    if self.voidTotemDance then
+        self.totemDurationText[2]:SetText(FormatRemaining())
+    end
 end
 
 function FormatRemaining()
