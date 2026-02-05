@@ -49,28 +49,6 @@ VoidFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
         self:GetGroupBuffs()
     end
-    ---------------------
-    local timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destRaidFlags =
-        CombatLogGetCurrentEventInfo()
-    local spellId, amount, critical
-
-    if subevent == "SWING_DAMAGE" then
-        amount, _, _, _, _, _, critical = select(12, CombatLogGetCurrentEventInfo())
-        print("普攻", spellId, amount, critical)
-    elseif subevent == "SPELL_DAMAGE" then
-        spellId, _, _, amount, _, _, _, _, _, critical = select(12, CombatLogGetCurrentEventInfo())
-        print("法术", spellId, amount, critical)
-    elseif subevent == "SPELL_CAST_SUCCESS" then
-        spellId = select(12, CombatLogGetCurrentEventInfo())
-        print("释放", subevent, spellId, amount, critical)
-    elseif subevent == "SPELL_SUMMON" then
-        local spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand =
-            select(12, CombatLogGetCurrentEventInfo())
-        print("召唤", event, subevent, spellId, spellName, amount, critical)
-    end
-
-    -- print("其他", subevent, amount, critical)
-    ---------------------
 end)
 
 VoidFrame:SetScript("OnUpdate", function(self, delta)
