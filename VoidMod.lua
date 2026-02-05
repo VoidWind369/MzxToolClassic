@@ -66,9 +66,6 @@ function VoidFrame:Initialize()
     local className, classFilename, classId = UnitClass("player")
     print("|cFF33937FVoidMod|r |cFF69CCF0Player|r |cFF00FF00Info:|r \n » Name: " ..
         className .. "\n » FileName: " .. classFilename .. "\n » Id: " .. classId)
-    -- local hand_info = self:Void_GetWeaponEnchantInfo()
-    -- local illusion_info = C_TransmogCollection.GetIllusionInfo(hand_info.main.enchant_id)
-    -- print(hand_info.main.enchant_id, illusion_info.visualID, illusion_info.sourceID)
 
     -- WOW客户端信息
     self:ClientInfo()

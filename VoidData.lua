@@ -1,7 +1,6 @@
 function InitDatabase()
     VoidModClassicDB = VoidModClassicDB or {}
     VoidModClassicCharacterDB = VoidModClassicCharacterDB or {
-        status = {},
         point = {}
     }
     VoidModClassicCharacterDB.status = VoidModClassicCharacterDB.status or {
