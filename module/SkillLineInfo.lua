@@ -24,7 +24,7 @@ function VoidFrame.GetSkillLineInfo()
 end
 
 --- # 创建武器熟练度框体
-function VoidFrame:Void_CreateSkillLineInfoDisplay(name_table, rank_table)
+function VoidFrame:Void_CreateSkillLineInfoFrame(name_table, rank_table)
     VoidModClassicCharacterDB.point.skill_line = VoidModClassicCharacterDB.point.skill_line or {
         p = skill_line.up.p,
         x = skill_line.up.x,
@@ -49,11 +49,11 @@ end
 
 --- # 创建武器熟练度信息框体
 function VoidFrame:Void_CreateSkillLineInfo()
-    self:Void_CreateSkillLineInfoDisplay(VoidFrame:GetSkillLineInfo())
+    self:Void_CreateSkillLineInfoFrame(VoidFrame:GetSkillLineInfo())
 
     MovableDisplay(self.voidSkillLineInfo)
 
-    MovableSkillLineDisplayStop()
+    MovableSkillLineFrameStop()
 end
 
 --- # 刷新武器熟练度信息框体
@@ -67,7 +67,7 @@ function VoidFrame:Void_UpdateSkillLineInfo()
     end
 end
 
-function MovableSkillLineDisplayStop()
+function MovableSkillLineFrameStop()
     -- 拖动停止
     VoidFrame.voidSkillLineInfo:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()

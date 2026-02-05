@@ -77,7 +77,7 @@ VoidFrame:SetScript("OnUpdate", function(self, delta)
     self:Void_UpdateTotemTimeLeft()
     self:UpdateWeaponEnchant()
     -- self:Void_UpdateSkillLineInfo()
-    self:UpdateShamanBuff()
+    self:Void_UpdateTotemDance()
 end)
 
 function VoidFrame:Initialize()
@@ -113,8 +113,8 @@ function VoidFrame:Initialize()
         end
         if VoidModClassicCharacterDB.status.TotemInfo == true then
             self:Void_CreateTotemInfo()
+            self:Void_CreateTotemDance()
         end
-        self:CreateShamanBuffFrame()
     end
 
     -- 注册斜杠命令

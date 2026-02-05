@@ -93,7 +93,7 @@ function VoidFrame:Void_CreateShieldInfo()
 
     GetShieldGameTooltip()
     MovableDisplay(self.dotFrame)
-    MovableShieldInfoDisplayStop()
+    MovableShieldInfoFrameStop()
 end
 
 function VoidFrame:Void_CreateWeaponEnchantInfoFrame(hand_table)
@@ -259,7 +259,7 @@ function GetShieldGameTooltip()
     end)
 end
 
-function MovableShieldInfoDisplayStop()
+function MovableShieldInfoFrameStop()
     -- 拖动停止
     VoidFrame.dotFrame:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()

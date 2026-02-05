@@ -67,7 +67,7 @@ function VoidFrame:Void_PlayerInfo()
 end
 
 --- # 创建主属性框体
-function VoidFrame:Void_CreatePlayerInfoDisplay_UP(first)
+function VoidFrame:Void_CreatePlayerInfoFrame_UP(first)
     VoidModClassicCharacterDB.point.player_up = VoidModClassicCharacterDB.point.player_up or {
         p = point.player_up.p,
         x = point.player_up.x,
@@ -87,7 +87,7 @@ function VoidFrame:Void_CreatePlayerInfoDisplay_UP(first)
 end
 
 --- # 创建副属性框体
-function VoidFrame:Void_CreatePlayerInfoDisplay_Down(info)
+function VoidFrame:Void_CreatePlayerInfoFrame_Down(info)
     VoidModClassicCharacterDB.point.player_down = VoidModClassicCharacterDB.point.player_down or {
         p = point.player_down.p,
         x = point.player_down.x,
@@ -110,13 +110,13 @@ function VoidFrame:Void_CreatePlayerInfo()
     VoidModClassicCharacterDB.point = VoidModClassicCharacterDB.point or point
 
     local first, info = VoidFrame:Void_PlayerInfo()
-    self:Void_CreatePlayerInfoDisplay_UP(first)
-    self:Void_CreatePlayerInfoDisplay_Down(info)
+    self:Void_CreatePlayerInfoFrame_UP(first)
+    self:Void_CreatePlayerInfoFrame_Down(info)
 
     MovableDisplay(self.voidPlayerInfo_UP)
     MovableDisplay(self.voidPlayerInfo_DOWN)
 
-    MovableDisplayStop()
+    MovableFrameStop()
 end
 
 --- # 刷新玩家信息框体
@@ -128,7 +128,7 @@ function VoidFrame:Void_UpdatePlayerInfo()
     end
 end
 
-function MovableDisplayStop()
+function MovableFrameStop()
     -- 拖动停止
     VoidFrame.voidPlayerInfo_UP:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()

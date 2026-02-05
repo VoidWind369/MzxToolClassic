@@ -42,7 +42,7 @@ function VoidFrame.GetTotemTimeLeft()
 end
 
 --- # 创建图腾框体
-function VoidFrame:Void_CreateTotemInfoDisplay(totem_info)
+function VoidFrame:Void_CreateTotemInfoFrame(totem_info)
     VoidModClassicCharacterDB.point.totem = VoidModClassicCharacterDB.point.totem or {
         p = totem.up.p,
         x = totem.up.x,
@@ -74,12 +74,12 @@ end
 
 --- # 创建图腾信息框体
 function VoidFrame:Void_CreateTotemInfo()
-    self:Void_CreateTotemInfoDisplay(VoidFrame:GetTotemInfo())
+    self:Void_CreateTotemInfoFrame(VoidFrame:GetTotemInfo())
 
     MovableDisplay(self.voidTotemInfo)
     self:RecycleTotem()
 
-    MovableTotemDisplayStop()
+    MovableTotemFrameStop()
 end
 
 --- # 刷新图腾信息框体
@@ -135,7 +135,7 @@ function GetTotemGameTooltip()
     end
 end
 
-function MovableTotemDisplayStop()
+function MovableTotemFrameStop()
     -- 拖动停止
     VoidFrame.voidTotemInfo:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
