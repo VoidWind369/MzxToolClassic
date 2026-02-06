@@ -3,7 +3,7 @@
 ## Notes: Mzx classic tools
 ## Notes-zhCN: Mzx怀旧服插件整合，By -- 【月溪晓月】公会
 ## Author: 慕梓茜
-## Version: 1.0
+## Version: 1.0.1
 ## SavedVariables: VoidModClassicDB
 ## SavedVariablesPerCharacter: VoidModClassicCharacterDB
 ## IconTexture: Interface\AddOns\VoidModClassic\Moon.png
