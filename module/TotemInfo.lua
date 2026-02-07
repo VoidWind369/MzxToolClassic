@@ -33,7 +33,7 @@ function VoidFrame.GetTotemTimeLeft()
     for index, value in ipairs(color) do
         local seconds = GetTotemTimeLeft(index)
         local est_color_str = string.format(seconds > 10 and "|cFFFFFF00%.1f|r" or "|cFFFF0000%.1f|r", seconds)
-        local est_dur = seconds > 0 and est_color_str or "|cFFC0C0C0Nil|r"
+        local est_dur = seconds > 0 and est_color_str or "|cFFC0C0C0--|r"
         totem_info[index] = {
             dur = est_dur,
         }

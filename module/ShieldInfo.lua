@@ -35,15 +35,15 @@ function VoidFrame:GetWeaponEnchantInfo()
     local main_color_str = hasMainHandEnchant and
         string.format("%s%s|r", mainHandExpiration > 10000 and "|cFFFFFF00" or "|cFFFF0000",
             MinutesOrSeconds(mainHandExpiration)) or
-        "|cFFC0C0C0Nil|r"
+        "|cFFC0C0C0主手|r"
     local off_color_str = hasOffHandEnchant and
         string.format("%s%s|r", offHandExpiration > 10000 and "|cFFFFFF00" or "|cFFFF0000",
             MinutesOrSeconds(offHandExpiration)) or
-        "|cFFC0C0C0Nil|r"
+        "|cFFC0C0C0副手|r"
     local ranged_color_str = hasRangedEnchant and
         string.format("%s%s|r", rangedExpiration > 10000 and "|cFFFFFF00" or "|cFFFF0000",
             MinutesOrSeconds(rangedExpiration)) or
-        "|cFFC0C0C0Nil|r"
+        "|cFFC0C0C0弓箭|r"
 
     return {
         main = {
