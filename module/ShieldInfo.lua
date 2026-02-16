@@ -12,6 +12,7 @@ local shield = {
     water_shield_id = { 24398, 33736 },                                             -- 水之护盾
     earth_shield_id = { 947, 32593, 32594 },                                        -- 大地之盾
     focus_spell_id = 43339,                                                         -- 萨满专注
+    elemental_focus_spell_id = 16246,                                               -- 元素集中
 
     now_shield_id = nil,                                                            -- 当前护盾
 
@@ -118,9 +119,15 @@ end
 
 -- 设定萨满专注颜色
 function UpdateDotFrameProgress(hasGaleWindsData)
-    if hasGaleWindsData then
+    if hasGaleWindsData == 1 then -- 蓝
         VoidFrame.dotFrame:SetBackdropColor(0, 0.4, 1, 0.55)
         VoidFrame.dotFrame:SetBackdropBorderColor(0, 0.1, 0.4, 0.8)
+    elseif hasGaleWindsData == 2 then -- 红
+        VoidFrame.dotFrame:SetBackdropColor(1, 0, 0, 0.55)
+        VoidFrame.dotFrame:SetBackdropBorderColor(0.4, 0, 0.1, 0.8)
+    elseif hasGaleWindsData == 3 then -- 紫
+        VoidFrame.dotFrame:SetBackdropColor(1, 0, 1, 0.55)
+        VoidFrame.dotFrame:SetBackdropBorderColor(0.4, 0, 0.4, 0.8)
     else
         VoidFrame.dotFrame:SetBackdropColor(0, 0, 0, 0.15)
         VoidFrame.dotFrame:SetBackdropBorderColor(0.2, 0.2, 0.2, 0.5)
@@ -186,6 +193,8 @@ function VoidFrame:UpdateShieldInfo()
 
     -- 萨满专注
     local focusData = C_UnitAuras.GetUnitAuraBySpellID("player", shield.focus_spell_id)
+    -- 元素集中
+    local elementalFocusData = C_UnitAuras.GetUnitAuraBySpellID("player", shield.elemental_focus_spell_id)
 
     -- 闪电护盾
     local lightning_shield = { 0, 0 }
@@ -237,10 +246,14 @@ function VoidFrame:UpdateShieldInfo()
 
     -- 更新小圆点进度
     UpdateDotProgress(shield.currentStacks)
-    if focusData then
-        UpdateDotFrameProgress(true)
+    if focusData and not elementalFocusData then
+        UpdateDotFrameProgress(1)
+    elseif elementalFocusData and not focusData then
+        UpdateDotFrameProgress(2)
+    elseif focusData and elementalFocusData then
+        UpdateDotFrameProgress(3)
     else
-        UpdateDotFrameProgress(false)
+        UpdateDotFrameProgress(0)
     end
 end
 
