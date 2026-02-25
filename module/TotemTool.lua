@@ -64,36 +64,6 @@ function GetTotems()
         end
     end
 
-    -- for slot = 1, 500 do
-    --     local spellType, id = GetSpellBookItemInfo(slot, "spell")
-    --     if not id then
-    --         break
-    --     end
-    --     local name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon = GetSpellInfo(slot, "spell")
-    --     subtext = C_Spell.GetSpellSubtext(spellID)
-
-    --     local spell = TotemArgs(name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon)
-    --     for index, value in ipairs(totem_map.earth) do
-    --         if name == value then
-    --             table.insert(totems[1], spell)
-    --         end
-    --     end
-    --     for index, value in ipairs(totem_map.fire) do
-    --         if name == value then
-    --             table.insert(totems[2], spell)
-    --         end
-    --     end
-    --     for index, value in ipairs(totem_map.water) do
-    --         if name == value then
-    --             table.insert(totems[3], spell)
-    --         end
-    --     end
-    --     for index, value in ipairs(totem_map.air) do
-    --         if name == value then
-    --             table.insert(totems[4], spell)
-    --         end
-    --     end
-    -- end
     return totems
 end
 
@@ -182,6 +152,10 @@ function VoidFrame:TotemFrame(frame, totem_spells, x, type_index)
             if button == "RightButton" then
                 self.voidTotemToolIcons[type_index]:SetNormalTexture(totem.icon)
                 self.voidTotemToolIcons[type_index]:SetAttribute("spell", totem.spellID) -- 设置要施放的技能名
+                for index, value in ipairs(self.voidTotemToolTotemFrame) do
+                    value:Hide()
+                end
+                totem_tool.button_frame = { false, false, false, false }
             end
         end)
 
