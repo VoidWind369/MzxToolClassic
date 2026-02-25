@@ -101,6 +101,25 @@ function AddIconBottom(texture, image, size, x, y)
     AddImage("BOTTOM", texture, image, size, size, x, y)
 end
 
+--- # 面板按钮通用属性
+function AddButton(button_frame, spell, width, height, point, x, y)
+    button_frame:SetSize(width, height)
+    button_frame:SetPoint(point, x, y)
+    button_frame:SetAttribute("type", "spell")
+    button_frame:SetAttribute("spell", spell) -- 设置要施放的技能名
+    button_frame:RegisterForClicks("AnyUp", "AnyDown")
+end
+
+--- # 技能按钮通用属性
+function AddLeftButton(button_frame, icon, spell, size, point, x, y)
+    button_frame:SetNormalTexture(icon)
+    button_frame:SetSize(size, size)
+    button_frame:SetPoint(point, x, y)
+    button_frame:SetAttribute("type1", "spell")
+    button_frame:SetAttribute("spell", spell) -- 设置要施放的技能名
+    button_frame:RegisterForClicks("AnyUp", "AnyDown")
+end
+
 function MinutesOrSeconds(seconds)
     if seconds > 60000 then
         return string.format("%.0fm", seconds / 60000)

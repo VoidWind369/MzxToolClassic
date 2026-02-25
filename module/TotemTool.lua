@@ -19,45 +19,86 @@ function GetTotems()
         air = { "空气之怒图腾", "风怒图腾", "风之优雅图腾", "风墙图腾", "宁静之风图腾", "根基图腾", "自然抗性图腾", "岗哨图腾" },
     }
 
-    for slot = 1, 200 do
+    local spells = {}
+    for slot = 1, 500 do
         local spellType, id = GetSpellBookItemInfo(slot, "spell")
         if not id then
             break
         end
         local name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon = GetSpellInfo(slot, "spell")
         subtext = C_Spell.GetSpellSubtext(spellID)
+
+        if spells[name] then
+            local sava_rank = tonumber(string.match(spells[name].subtext, "(%d+)"))
+            local rank = tonumber(string.match(subtext, "(%d+)"))
+            if rank > sava_rank then
+                spells[name] = TotemArgs(name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon)
+            end
+
+            print(name, "等级", sava_rank, rank)
+        else
+            spells[name] = TotemArgs(name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon)
+        end
+    end
+
+    for key, spell in pairs(spells) do
         for index, value in ipairs(totem_map.earth) do
-            if name == value then
-                local totem = TotemArgs("earth", name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon)
-                table.insert(totems[1], totem)
+            if spell.name == value then
+                table.insert(totems[1], spell)
             end
         end
         for index, value in ipairs(totem_map.fire) do
-            if name == value then
-                local totem = TotemArgs("fire", name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon)
-                table.insert(totems[2], totem)
+            if spell.name == value then
+                table.insert(totems[2], spell)
             end
         end
         for index, value in ipairs(totem_map.water) do
-            if name == value then
-                local totem = TotemArgs("water", name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon)
-                table.insert(totems[3], totem)
+            if spell.name == value then
+                table.insert(totems[3], spell)
             end
         end
         for index, value in ipairs(totem_map.air) do
-            if name == value then
-                local totem = TotemArgs("air", name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon)
-                table.insert(totems[4], totem)
+            if spell.name == value then
+                table.insert(totems[4], spell)
             end
         end
     end
 
+    -- for slot = 1, 500 do
+    --     local spellType, id = GetSpellBookItemInfo(slot, "spell")
+    --     if not id then
+    --         break
+    --     end
+    --     local name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon = GetSpellInfo(slot, "spell")
+    --     subtext = C_Spell.GetSpellSubtext(spellID)
+
+    --     local spell = TotemArgs(name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon)
+    --     for index, value in ipairs(totem_map.earth) do
+    --         if name == value then
+    --             table.insert(totems[1], spell)
+    --         end
+    --     end
+    --     for index, value in ipairs(totem_map.fire) do
+    --         if name == value then
+    --             table.insert(totems[2], spell)
+    --         end
+    --     end
+    --     for index, value in ipairs(totem_map.water) do
+    --         if name == value then
+    --             table.insert(totems[3], spell)
+    --         end
+    --     end
+    --     for index, value in ipairs(totem_map.air) do
+    --         if name == value then
+    --             table.insert(totems[4], spell)
+    --         end
+    --     end
+    -- end
     return totems
 end
 
-function TotemArgs(type, name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon)
+function TotemArgs(name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon)
     return {
-        type = type,
         name = name,
         subtext = subtext,
         icon = icon,
@@ -89,12 +130,7 @@ function VoidFrame:CreateTotemToolFrame()
     for index, totem in ipairs(totems) do
         self.voidTotemToolIcons[index] = CreateFrame("Button", nil, self.voidTotemTool,
             "SecureActionButtonTemplate")
-        self.voidTotemToolIcons[index]:SetNormalTexture(totem[1].icon)
-        self.voidTotemToolIcons[index]:SetSize(40, 40)
-        self.voidTotemToolIcons[index]:SetPoint("LEFT", index * 50 - 35, 0)
-        self.voidTotemToolIcons[index]:SetAttribute("type1", "spell")
-        self.voidTotemToolIcons[index]:SetAttribute("spell", totem[1].spellID) -- 设置要施放的技能名
-        self.voidTotemToolIcons[index]:RegisterForClicks("AnyUp", "AnyDown")
+        AddLeftButton(self.voidTotemToolIcons[index], totem[1].icon, totem[1].spellID, 40, "LEFT", index * 50 - 35, 0)
 
         -- 创建一个Frame来承载技能图标和技能名
         self.voidTotemToolTotemFrame[index] = CreateFrame("Frame", "TotemFrame" .. index, self.voidTotemTool,
@@ -137,11 +173,13 @@ function VoidFrame:TotemFrame(frame, totem_spells, x, type_index)
 
     local icons = {}
     for index, totem in ipairs(totem_spells) do
-        icons[index] = frame:CreateTexture()
-        AddIconBottom(icons[index], totem.icon, 34, 0, (index - 1) * 40 + 5)
+        -- icons[index] = frame:CreateTexture()
+        -- AddIconBottom(icons[index], totem.icon, 34, 0, (index - 1) * 40 + 5)
+        icons[index] = CreateFrame("Button", nil, frame, "SecureActionButtonTemplate")
+        AddLeftButton(icons[index], totem.icon, totem.spellID, 34, "BOTTOM", 0, (index - 1) * 40 + 5)
 
         icons[index]:SetScript("OnMouseUp", function(s, button)
-            if button == "LeftButton" then
+            if button == "RightButton" then
                 self.voidTotemToolIcons[type_index]:SetNormalTexture(totem.icon)
                 self.voidTotemToolIcons[type_index]:SetAttribute("spell", totem.spellID) -- 设置要施放的技能名
             end
