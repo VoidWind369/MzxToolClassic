@@ -80,15 +80,25 @@ function AddStringRight(fontString, string, scale, x, y)
 end
 
 --- # 显示图片通用属性
-function AddImage(texture, image, width, height, x, y)
+function AddImage(point, texture, image, width, height, x, y)
     texture:SetTexture(image)
     texture:SetSize(width, height)
-    texture:SetPoint("LEFT", x, y)
+    texture:SetPoint(point, x, y)
 end
 
 --- # 显示图标通用属性
-function AddIcon(texture, image, size, x, y)
-    AddImage(texture, image, size, size, x, y)
+function AddIconLeft(texture, image, size, x, y)
+    AddImage("LEFT", texture, image, size, size, x, y)
+end
+
+--- # 显示图标通用属性
+function AddIconCenter(texture, image, size, x, y)
+    AddImage("CENTER", texture, image, size, size, x, y)
+end
+
+--- # 显示图标通用属性
+function AddIconBottom(texture, image, size, x, y)
+    AddImage("BOTTOM", texture, image, size, size, x, y)
 end
 
 function MinutesOrSeconds(seconds)

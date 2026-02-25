@@ -19,4 +19,5 @@ module\PlayerInfo.lua
 module\SkillLineInfo.lua
 module\TotemInfo.lua
 module\TotemDance.lua
+module\TotemTool.lua
 module\ButtonAuto.lua

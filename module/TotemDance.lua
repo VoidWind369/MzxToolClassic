@@ -20,7 +20,6 @@ function VoidFrame:GetGroupBuffs()
         if tContains(totem_dance.windfury_totem_spell_id, spellId) then
             -- 更新时间
             totem_dance.totem_end_time = GetTime() + 10.000
-            print("|cFFFFFF00召唤", sourceName, subevent, spellId, spellName, amount, critical, "|r")
         end
         -- 更新时间
     end
@@ -44,7 +43,7 @@ function VoidFrame:CreateTotemDanceFrame(dance_time)
         self.voidTotemDance:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
         self.voidTotemDance:CreateFontString(nil, "OVERLAY", "GameTooltipText")
     }
-    AddIcon(self.voidTotemDanceIcon, 136114, 26, 13.5, -1.2)
+    AddIconLeft(self.voidTotemDanceIcon, 136114, 26, 13.5, -1.2)
     AddStringLeft(self.voidTotemDanceText[1], "|cFFFF1493图腾舞|r", 1.6, 45)
     AddStringRight(self.voidTotemDanceText[2], dance_time, 1.6)
 

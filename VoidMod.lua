@@ -2,6 +2,7 @@
 VoidFrame = CreateFrame("Frame", "VoidModFrame", UIParent)
 VoidFrame:RegisterEvent("PLAYER_LOGIN")                --用户登录
 VoidFrame:RegisterEvent("UNIT_AURA")                   --获得或消失的增益、减益、状态或物品加成
+VoidFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")    -- 当法术成功施放时触发
 VoidFrame:RegisterEvent("CHAT_MSG_WHISPER")            --收到其他玩家的低语
 VoidFrame:RegisterEvent("PARTY_INVITE_REQUEST")        --排本邀请
 VoidFrame:RegisterEvent("GROUP_INVITE_CONFIRMATION")   --队伍邀请
@@ -20,11 +21,11 @@ VoidFrame:SetScript("OnEvent", function(self, event, ...)
             self:CheckBloodlust()
             self:UpdateShieldInfo()
         end
-        self:Void_UpdatePlayerInfo()
+        -- self:Void_UpdatePlayerInfo()
     end
 
-    if event == "UNIT_RESISTANCES" or "UNIT_COMBAT" then
-        self:Void_UpdatePlayerInfo()
+    if event == "UNIT_RESISTANCES" or event == "UNIT_COMBAT" or event == "UNIT_SPELLCAST_SUCCEEDED" then
+        -- self:Void_UpdatePlayerInfo()
     end
 
     if event == "CHAT_MSG_WHISPER" then
@@ -56,6 +57,7 @@ VoidFrame:SetScript("OnUpdate", function(self, delta)
     self:UpdateWeaponEnchant()
     -- self:Void_UpdateSkillLineInfo()
     self:Void_UpdateTotemDance()
+    self:Void_UpdatePlayerInfo()
 end)
 
 function VoidFrame:Initialize()
@@ -89,6 +91,7 @@ function VoidFrame:Initialize()
         if VoidModClassicCharacterDB.status.TotemInfo == true then
             self:Void_CreateTotemInfo()
             self:Void_CreateTotemDance()
+            self:Void_CreateTotemTool()
         end
     end
 

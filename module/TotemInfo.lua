@@ -65,7 +65,7 @@ function VoidFrame:Void_CreateTotemInfoFrame(totem_info)
         self.voidTotemInfoDurText[index] = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
 
         local y = 36 - (index - 1) * 24
-        AddIcon(self.voidTotemInfoIcon[index], value.icon, 17, 13.5, y - 1)
+        AddIconLeft(self.voidTotemInfoIcon[index], value.icon, 17, 13.5, y - 1)
         AddStringLeft(self.voidTotemInfoNameText[index], value.name, 1.2, 35, y)
         AddStringRight(self.voidTotemInfoDurText[index], value.dur, 1.2, -10, y)
     end
