@@ -15,6 +15,9 @@ VoidFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED") -- 战斗日志
 VoidFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_LOGIN" then
         self:Initialize()
+        C_Timer.After(0, function()
+            self:InitializeWorld() -- 你的扫描函数
+        end)
     elseif event == "UNIT_AURA" then
         local unit = ...
         if unit == "player" then
@@ -91,7 +94,7 @@ function VoidFrame:Initialize()
         if VoidModClassicCharacterDB.status.TotemInfo == true then
             self:Void_CreateTotemInfo()
             self:Void_CreateTotemDance()
-            self:Void_CreateTotemTool()
+            -- self:Void_CreateTotemTool()
         end
     end
 
@@ -106,6 +109,9 @@ end
 
 -- 延后加载
 function VoidFrame:InitializeWorld()
+    -- 职业框架
+    local _, _, class_id = UnitClass("player")
+
     -- 萨满
     if class_id == 7 then
         if VoidModClassicCharacterDB.status.TotemInfo == true then
@@ -129,26 +135,26 @@ function VoidFrame:HandleSlashCommand(msg)
         self:TestDisplay()
     elseif string.find(command, "show") then
         for index, value in ipairs(strsplittable(" ", command)) do
-            if value == "shield" then
+            if value == "1" then
                 VoidModClassicCharacterDB.status.ShieldInfo = true
-            elseif value == "player" then
+            elseif value == "2" then
                 VoidModClassicCharacterDB.status.PlayerInfo = true
-            elseif value == "skillline" then
+            elseif value == "3" then
                 VoidModClassicCharacterDB.status.SkillLineInfo = true
-            elseif value == "totem" then
+            elseif value == "4" then
                 VoidModClassicCharacterDB.status.TotemInfo = true
             end
         end
         ReloadUI()
     elseif string.find(command, "hide") then
         for index, value in ipairs(strsplittable(" ", command)) do
-            if value == "shield" then
+            if value == "1" then
                 VoidModClassicCharacterDB.status.Shield = false
-            elseif value == "player" then
+            elseif value == "2" then
                 VoidModClassicCharacterDB.status.PlayerInfo = false
-            elseif value == "skillline" then
+            elseif value == "3" then
                 VoidModClassicCharacterDB.status.SkillLineInfo = false
-            elseif value == "totem" then
+            elseif value == "4" then
                 VoidModClassicCharacterDB.status.TotemInfo = false
             end
         end
@@ -172,12 +178,12 @@ end
 
 function VoidFrame:PrintHelp()
     DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00恶龙咆哮菜单:|r")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void show|r |cFA500FF0module1 module2|r - 开启模块")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void hide|r |cFA500FF0module1 module2|r - 关闭模块")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void show|r |cFF00CCFF1 2|r - 开启模块")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void hide|r |cFF00CCFF1 2|r - 关闭模块")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void|r - 显示帮助")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00可选module:|r")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFA500FF0 shield|r - 萨满护盾监控")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFA500FF0 player|r - 角色属性面板")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFA500FF0 skillline|r - 武器熟练度面板")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFA500FF0 totem|r - 萨满图腾监控")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00可选功能:|r")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 1|r - 萨满护盾监控")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 2|r - 角色属性面板")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 3|r - 武器熟练度面板")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 4|r - 萨满图腾监控")
 end

@@ -9,4 +9,7 @@ function InitDatabase()
         ShieldInfo = true,
         TotemInfo = true
     }
+    VoidModClassicCharacterDB.totem = VoidModClassicCharacterDB.totem or {
+
+    }
 end

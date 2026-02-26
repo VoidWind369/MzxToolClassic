@@ -7,6 +7,12 @@ local totem_tool = {
     button_frame = {
         false, false, false, false
     },
+    default_btn = {
+        { 136098, 8071 },
+        { 135825, 3599 },
+        { 135127, 5394 },
+        { 136114, 8512 }
+    }
 }
 
 function GetTotems()
@@ -14,7 +20,7 @@ function GetTotems()
 
     local totem_map = {
         earth = { "石肤图腾", "石爪图腾", "土元素图腾", "大地之力图腾", "地缚图腾", "战栗图腾" },
-        fire = { "灼热图腾", "熔岩图腾", "火元素图腾", "火焰新星图腾", "火舌图腾", "抗寒图腾" },
+        fire = { "灼热图腾", "熔岩图腾", "火元素图腾", "火焰新星图腾", "火舌图腾", "抗寒图腾", "天怒图腾" },
         water = { "治疗之泉图腾", "法力之泉图腾", "清毒图腾", "祛病图腾", "抗火图腾" },
         air = { "空气之怒图腾", "风怒图腾", "风之优雅图腾", "风墙图腾", "宁静之风图腾", "根基图腾", "自然抗性图腾", "岗哨图腾" },
     }
@@ -23,12 +29,11 @@ function GetTotems()
     for slot = 1, 500 do
         local spellType, id = GetSpellBookItemInfo(slot, "spell")
         if not id then
+            print("加载", slot - 1, "法术")
             break
         end
         local name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon = GetSpellInfo(slot, "spell")
         subtext = C_Spell.GetSpellSubtext(spellID)
-
-        print("加载法术书", slot, name, subtext)
 
         if spells[name] then
             local sava_rank = tonumber(string.match(spells[name].subtext, "(%d+)"))
@@ -86,6 +91,9 @@ function VoidFrame:CreateTotemToolFrame(totems)
         x = totem_tool.up.x,
         y = totem_tool.up.y,
     }
+    -- 加载图腾配置
+    VoidModClassicCharacterDB.totem.default_btn = VoidModClassicCharacterDB.totem.default_btn or totem_tool.default_btn
+
     self.voidTotemTool = CreateFrame("Frame", "TotemTool", UIParent, "BackdropTemplate")
     self.voidTotemTool:SetSize(220, 60)
     self.voidTotemTool:SetPoint(VoidModClassicCharacterDB.point.totem_tool.p,
@@ -99,7 +107,10 @@ function VoidFrame:CreateTotemToolFrame(totems)
     for index, totem in ipairs(totems) do
         self.voidTotemToolIcons[index] = CreateFrame("Button", nil, self.voidTotemTool,
             "SecureActionButtonTemplate")
-        AddLeftButton(self.voidTotemToolIcons[index], totem[1].icon, totem[1].spellID, 40, "LEFT", index * 50 - 35, 0)
+
+        -- 添加图腾按钮
+        AddLeftButton(self.voidTotemToolIcons[index], VoidModClassicCharacterDB.totem.default_btn[index][1],
+            VoidModClassicCharacterDB.totem.default_btn[index][2], 40, "LEFT", index * 50 - 35, 0)
 
         -- 创建一个Frame来承载技能图标和技能名
         self.voidTotemToolTotemFrame[index] = CreateFrame("Frame", "TotemFrame" .. index, self.voidTotemTool,
@@ -145,10 +156,12 @@ function VoidFrame:TotemFrame(frame, totem_spells, x, type_index)
         icons[index] = CreateFrame("Button", nil, frame, "SecureActionButtonTemplate")
         AddLeftButton(icons[index], totem.icon, totem.spellID, 34, "BOTTOM", 0, (index - 1) * 40 + 5)
 
+        -- 右键设置图标
         icons[index]:SetScript("OnMouseUp", function(s, button)
             if button == "RightButton" then
                 self.voidTotemToolIcons[type_index]:SetNormalTexture(totem.icon)
                 self.voidTotemToolIcons[type_index]:SetAttribute("spell", totem.spellID) -- 设置要施放的技能名
+                VoidModClassicCharacterDB.totem.default_btn[index] = { totem.icon, totem.spellID }
                 for index, value in ipairs(self.voidTotemToolTotemFrame) do
                     value:Hide()
                 end
