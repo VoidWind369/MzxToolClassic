@@ -79,7 +79,7 @@ function VoidFrame:Initialize()
     if VoidModClassicCharacterDB.status.PlayerInfo == true then
         self:Void_CreatePlayerInfo()
     end
-    if VoidModClassicCharacterDB.status.SkillLineInfo == true then
+    if VoidModClassicCharacterDB.status.SkillLine == true then
         self:Void_CreateSkillLineInfo()
     end
 
@@ -139,16 +139,16 @@ function VoidFrame:HandleSlashCommand(msg)
             elseif value == "2" then
                 VoidModClassicCharacterDB.status.PlayerInfo = true
             elseif value == "3" then
-                VoidModClassicCharacterDB.status.SkillLineInfo = true
+                VoidModClassicCharacterDB.status.SkillLine = true
             elseif value == "4" then
                 VoidModClassicCharacterDB.status.TotemInfo = true
             elseif value == "5" then
                 VoidModClassicCharacterDB.status.TotemTool = true
             else
                 VoidModClassicCharacterDB.status = {
-                    Shield = true,
+                    ShieldInfo = true,
                     PlayerInfo = true,
-                    SkillLineInfo = true,
+                    SkillLine = true,
                     TotemInfo = true,
                     TotemTool = true
                 }
@@ -162,16 +162,16 @@ function VoidFrame:HandleSlashCommand(msg)
             elseif value == "2" then
                 VoidModClassicCharacterDB.status.PlayerInfo = false
             elseif value == "3" then
-                VoidModClassicCharacterDB.status.SkillLineInfo = false
+                VoidModClassicCharacterDB.status.SkillLine = false
             elseif value == "4" then
                 VoidModClassicCharacterDB.status.TotemInfo = false
             elseif value == "5" then
                 VoidModClassicCharacterDB.status.TotemTool = false
             else
                 VoidModClassicCharacterDB.status = {
-                    Shield = false,
+                    ShieldInfo = false,
                     PlayerInfo = false,
-                    SkillLineInfo = false,
+                    SkillLine = false,
                     TotemInfo = false,
                     TotemTool = false
                 }
