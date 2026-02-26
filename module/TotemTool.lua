@@ -80,8 +80,7 @@ function TotemArgs(name, subtext, icon, castTime, minRange, maxRange, spellID, o
     }
 end
 
-function VoidFrame:CreateTotemToolFrame()
-    local totems = GetTotems()
+function VoidFrame:CreateTotemToolFrame(totems)
     VoidModClassicCharacterDB.point.totem_tool = VoidModClassicCharacterDB.point.totem_tool or {
         p = totem_tool.up.p,
         x = totem_tool.up.x,
@@ -122,11 +121,9 @@ function VoidFrame:CreateTotemToolFrame()
         self.voidTotemToolIcons[index]:SetScript("OnMouseUp", function(s, button)
             if button == "RightButton" and self.voidTotemToolTotemFrame[index] then
                 if totem_tool.button_frame[index] then
-                    print("Right click Hide" .. index)
                     self.voidTotemToolTotemFrame[index]:Hide()
                     totem_tool.button_frame[index] = false
                 else
-                    print("Right click Show" .. index)
                     self.voidTotemToolTotemFrame[index]:Show()
                     totem_tool.button_frame[index] = true
                 end
@@ -179,7 +176,15 @@ function VoidFrame:TotemFrame(frame, totem_spells, x, type_index)
 end
 
 function VoidFrame:Void_CreateTotemTool()
-    self:CreateTotemToolFrame()
+    local totems = nil
+    while (true) do
+        local t = GetTotems()
+        if t then
+            totems = t
+            break
+        end
+    end
+    self:CreateTotemToolFrame(totems)
     MovableDisplay(self.voidTotemTool)
     MovableFrameStop(self.voidTotemTool, VoidModClassicCharacterDB.point.totem_tool, totem_tool.up)
 end

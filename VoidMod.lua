@@ -1,16 +1,16 @@
 -- 创建主框架
 VoidFrame = CreateFrame("Frame", "VoidModFrame", UIParent)
-VoidFrame:RegisterEvent("PLAYER_LOGIN")                --用户登录
-VoidFrame:RegisterEvent("UNIT_AURA")                   --获得或消失的增益、减益、状态或物品加成
+VoidFrame:RegisterEvent("PLAYER_LOGIN")                -- 用户登录
+VoidFrame:RegisterEvent("UNIT_AURA")                   -- 获得或消失的增益、减益、状态或物品加成
 VoidFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")    -- 当法术成功施放时触发
-VoidFrame:RegisterEvent("CHAT_MSG_WHISPER")            --收到其他玩家的低语
-VoidFrame:RegisterEvent("PARTY_INVITE_REQUEST")        --排本邀请
-VoidFrame:RegisterEvent("GROUP_INVITE_CONFIRMATION")   --队伍邀请
-VoidFrame:RegisterEvent("UNIT_COMBAT")                 --当 NPC 或玩家参与战斗并受到伤害时触发
-VoidFrame:RegisterEvent("UNIT_RESISTANCES")            --当单位抗性发生变化时
-VoidFrame:RegisterEvent("SKILL_LINES_CHANGED")         --当玩家技能列表内容发生变化时(武器熟练度)
-VoidFrame:RegisterEvent("PLAYER_TOTEM_UPDATE")         --当图腾施放或被摧毁（召回或击杀）时
-VoidFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED") --战斗日志
+VoidFrame:RegisterEvent("CHAT_MSG_WHISPER")            -- 收到其他玩家的低语
+VoidFrame:RegisterEvent("PARTY_INVITE_REQUEST")        -- 排本邀请
+VoidFrame:RegisterEvent("GROUP_INVITE_CONFIRMATION")   -- 队伍邀请
+VoidFrame:RegisterEvent("UNIT_COMBAT")                 -- 当 NPC 或玩家参与战斗并受到伤害时触发
+VoidFrame:RegisterEvent("UNIT_RESISTANCES")            -- 当单位抗性发生变化时
+VoidFrame:RegisterEvent("SKILL_LINES_CHANGED")         -- 当玩家技能列表内容发生变化时(武器熟练度)
+VoidFrame:RegisterEvent("PLAYER_TOTEM_UPDATE")         -- 当图腾施放或被摧毁（召回或击杀）时
+VoidFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED") -- 战斗日志
 
 VoidFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_LOGIN" then
@@ -102,6 +102,16 @@ function VoidFrame:Initialize()
     end
     DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000恶！龙！咆！哮！|r|cFF00FF00启动！|r")
     DEFAULT_CHAT_FRAME:AddMessage("周年服 |cFFFF69B4月溪晓月|r 公会")
+end
+
+-- 延后加载
+function VoidFrame:InitializeWorld()
+    -- 萨满
+    if class_id == 7 then
+        if VoidModClassicCharacterDB.status.TotemInfo == true then
+            self:Void_CreateTotemTool()
+        end
+    end
 end
 
 function VoidFrame:HandleSlashCommand(msg)
