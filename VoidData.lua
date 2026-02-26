@@ -7,7 +7,8 @@ function InitDatabase()
         PlayerInfo = true,
         SkillLine = true,
         ShieldInfo = true,
-        TotemInfo = true
+        TotemInfo = true,
+        TotemTool = true,
     }
     VoidModClassicCharacterDB.totem = VoidModClassicCharacterDB.totem or {
 

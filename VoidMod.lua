@@ -79,7 +79,7 @@ function VoidFrame:Initialize()
     if VoidModClassicCharacterDB.status.PlayerInfo == true then
         self:Void_CreatePlayerInfo()
     end
-    if VoidModClassicCharacterDB.status.SkillLine == true then
+    if VoidModClassicCharacterDB.status.SkillLineInfo == true then
         self:Void_CreateSkillLineInfo()
     end
 
@@ -94,7 +94,6 @@ function VoidFrame:Initialize()
         if VoidModClassicCharacterDB.status.TotemInfo == true then
             self:Void_CreateTotemInfo()
             self:Void_CreateTotemDance()
-            -- self:Void_CreateTotemTool()
         end
     end
 
@@ -114,7 +113,7 @@ function VoidFrame:InitializeWorld()
 
     -- 萨满
     if class_id == 7 then
-        if VoidModClassicCharacterDB.status.TotemInfo == true then
+        if VoidModClassicCharacterDB.status.TotemTool == true then
             self:Void_CreateTotemTool()
         end
     end
@@ -143,6 +142,16 @@ function VoidFrame:HandleSlashCommand(msg)
                 VoidModClassicCharacterDB.status.SkillLineInfo = true
             elseif value == "4" then
                 VoidModClassicCharacterDB.status.TotemInfo = true
+            elseif value == "5" then
+                VoidModClassicCharacterDB.status.TotemTool = true
+            else
+                VoidModClassicCharacterDB.status = {
+                    Shield = true,
+                    PlayerInfo = true,
+                    SkillLineInfo = true,
+                    TotemInfo = true,
+                    TotemTool = true
+                }
             end
         end
         ReloadUI()
@@ -156,6 +165,16 @@ function VoidFrame:HandleSlashCommand(msg)
                 VoidModClassicCharacterDB.status.SkillLineInfo = false
             elseif value == "4" then
                 VoidModClassicCharacterDB.status.TotemInfo = false
+            elseif value == "5" then
+                VoidModClassicCharacterDB.status.TotemTool = false
+            else
+                VoidModClassicCharacterDB.status = {
+                    Shield = false,
+                    PlayerInfo = false,
+                    SkillLineInfo = false,
+                    TotemInfo = false,
+                    TotemTool = false
+                }
             end
         end
         ReloadUI()
@@ -186,4 +205,5 @@ function VoidFrame:PrintHelp()
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 2|r - 角色属性面板")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 3|r - 武器熟练度面板")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 4|r - 萨满图腾监控")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 5|r - 萨满图腾收纳")
 end
