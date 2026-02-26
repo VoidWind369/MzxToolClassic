@@ -28,14 +28,14 @@ function GetTotems()
         local name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon = GetSpellInfo(slot, "spell")
         subtext = C_Spell.GetSpellSubtext(spellID)
 
+        print("加载法术书", slot, name, subtext)
+
         if spells[name] then
             local sava_rank = tonumber(string.match(spells[name].subtext, "(%d+)"))
             local rank = tonumber(string.match(subtext, "(%d+)"))
             if rank > sava_rank then
                 spells[name] = TotemArgs(name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon)
             end
-
-            print(name, "等级", sava_rank, rank)
         else
             spells[name] = TotemArgs(name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon)
         end
@@ -178,7 +178,7 @@ end
 function VoidFrame:Void_CreateTotemTool()
     local totems = nil
     while (true) do
-        local t = GetTotems()
+        local t = GetTotems() -- 用 pcall 捕获错误
         if t then
             totems = t
             break
