@@ -8,13 +8,14 @@ local totem_tool = {
         false, false, false, false
     },
     default_btn = {
-        { 136098, 8071 },
-        { 135825, 3599 },
-        { 135127, 5394 },
-        { 136114, 8512 }
+        { icon = 136098, spell_id = 8071 },
+        { icon = 135825, spell_id = 3599 },
+        { icon = 135127, spell_id = 5394 },
+        { icon = 136114, spell_id = 8512 }
     }
 }
 
+-- # Api接口
 function GetTotems()
     local totems = { {}, {}, {}, {} }
 
@@ -72,6 +73,7 @@ function GetTotems()
     return totems
 end
 
+--- # Api打包
 function TotemArgs(name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon)
     return {
         name = name,
@@ -85,6 +87,7 @@ function TotemArgs(name, subtext, icon, castTime, minRange, maxRange, spellID, o
     }
 end
 
+--- 创建图腾收纳面板
 function VoidFrame:CreateTotemToolFrame(totems)
     VoidModClassicCharacterDB.point.totem_tool = VoidModClassicCharacterDB.point.totem_tool or {
         p = totem_tool.up.p,
@@ -108,9 +111,9 @@ function VoidFrame:CreateTotemToolFrame(totems)
         self.voidTotemToolIcons[index] = CreateFrame("Button", nil, self.voidTotemTool,
             "SecureActionButtonTemplate")
 
-        -- 添加图腾按钮
-        AddLeftButton(self.voidTotemToolIcons[index], VoidModClassicCharacterDB.totem.default_btn[index][1],
-            VoidModClassicCharacterDB.totem.default_btn[index][2], 40, "LEFT", index * 50 - 35, 0)
+        -- 加载保存的图腾按钮
+        AddLeftButton(self.voidTotemToolIcons[index], VoidModClassicCharacterDB.totem.default_btn[index].icon,
+            VoidModClassicCharacterDB.totem.default_btn[index].spellID, 40, "LEFT", index * 50 - 35, 0)
 
         -- 创建一个Frame来承载技能图标和技能名
         self.voidTotemToolTotemFrame[index] = CreateFrame("Frame", "TotemFrame" .. index, self.voidTotemTool,
@@ -160,8 +163,9 @@ function VoidFrame:TotemFrame(frame, totem_spells, x, type_index)
         icons[index]:SetScript("OnMouseUp", function(s, button)
             if button == "RightButton" then
                 self.voidTotemToolIcons[type_index]:SetNormalTexture(totem.icon)
-                self.voidTotemToolIcons[type_index]:SetAttribute("spell", totem.spellID) -- 设置要施放的技能名
-                VoidModClassicCharacterDB.totem.default_btn[index] = { totem.icon, totem.spellID }
+                self.voidTotemToolIcons[type_index]:SetAttribute("spell", totem.spellID)
+                -- 保存图腾设置
+                VoidModClassicCharacterDB.totem.default_btn[type_index] = { icon = totem.icon, spellID = totem.spellID }
                 for index, value in ipairs(self.voidTotemToolTotemFrame) do
                     value:Hide()
                 end
