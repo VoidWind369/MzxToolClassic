@@ -10,7 +10,21 @@ function InitDatabase()
         TotemInfo = true,
         TotemTool = true,
     }
-    VoidModClassicCharacterDB.totem = VoidModClassicCharacterDB.totem or {
+    VoidModClassicCharacterDB.totem = VoidModClassicCharacterDB.totem or {}
+end
 
+function NewDatabase()
+    VoidModClassicDB = {}
+    VoidModClassicCharacterDB = {
+        point = {}
     }
+    VoidModClassicCharacterDB.status = {
+        PlayerInfo = true,
+        SkillLine = true,
+        ShieldInfo = true,
+        TotemInfo = true,
+        TotemTool = true,
+    }
+    VoidModClassicCharacterDB.totem = {}
+    ReloadUI()
 end

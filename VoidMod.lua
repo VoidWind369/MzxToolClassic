@@ -132,6 +132,8 @@ function VoidFrame:HandleSlashCommand(msg)
         self:DebugEleBuff()
     elseif command == "si test" then
         self:TestDisplay()
+    elseif command == "new" then
+        NewDatabase()
     elseif string.find(command, "show") then
         for index, value in ipairs(strsplittable(" ", command)) do
             if value == "1" then
@@ -197,6 +199,7 @@ end
 
 function VoidFrame:PrintHelp()
     DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00恶龙咆哮菜单:|r")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void new|r - 初始化设置")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void show|r |cFF00CCFF1 2|r - 开启模块")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void hide|r |cFF00CCFF1 2|r - 关闭模块")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void|r - 显示帮助")

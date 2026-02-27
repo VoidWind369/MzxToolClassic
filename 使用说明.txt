@@ -1,5 +1,6 @@
 菜单命令
  /void 显示帮助
+ /void new 初始化设置（更新后可使用刷新数据）
  /void show module1 module2 开启模块
  /void hide module1 module2 关闭模块
  （可一次性开启关闭多模块）
