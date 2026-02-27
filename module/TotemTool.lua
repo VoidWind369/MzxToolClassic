@@ -95,7 +95,7 @@ function VoidFrame:CreateTotemToolFrame(totems)
         y = totem_tool.up.y,
     }
     -- 加载图腾配置
-    VoidModClassicCharacterDB.totem.default_btn = VoidModClassicCharacterDB.totem.default_btn or totem_tool.default_btn
+    VoidModClassicCharacterDB.totem.default_btn = VoidModClassicCharacterDB.totem.default_btn or {}
 
     self.voidTotemTool = CreateFrame("Frame", "TotemTool", UIParent, "BackdropTemplate")
     self.voidTotemTool:SetSize(220, 60)
@@ -108,6 +108,12 @@ function VoidFrame:CreateTotemToolFrame(totems)
 
     self.voidTotemToolIcons = {}
     for index, totem in ipairs(totems) do
+        -- 初始化
+        VoidModClassicCharacterDB.totem.default_btn[index] = VoidModClassicCharacterDB.totem.default_btn[index] or {
+            icon = totem_tool.default_btn[index].icon,
+            spellID = totem_tool.default_btn[index].spell_id
+        }
+
         self.voidTotemToolIcons[index] = CreateFrame("Button", nil, self.voidTotemTool,
             "SecureActionButtonTemplate")
 
@@ -118,7 +124,7 @@ function VoidFrame:CreateTotemToolFrame(totems)
         -- 创建一个Frame来承载技能图标和技能名
         self.voidTotemToolTotemFrame[index] = CreateFrame("Frame", "TotemFrame" .. index, self.voidTotemTool,
             "BackdropTemplate")
-        self:TotemFrame(self.voidTotemToolTotemFrame[index], totems[index], -75 + (index - 1) * 50, index)
+        self:TotemFrame(self.voidTotemToolTotemFrame[index], totem, -75 + (index - 1) * 50, index)
 
         -- 鼠标悬停事件
         self.voidTotemToolIcons[index]:SetScript("OnEnter", function(s)
