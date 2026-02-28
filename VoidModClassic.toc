@@ -21,3 +21,4 @@ module\TotemInfo.lua
 module\TotemDance.lua
 module\TotemTool.lua
 module\ButtonAuto.lua
+module\Priest\PowerWordShield.lua

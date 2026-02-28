@@ -183,7 +183,7 @@ function VoidFrame:HandleSlashCommand(msg)
     elseif command == "info" then
         self:Void_PlayerInfo()
     elseif command == "test" then
-        self:GetGroupBuffs()
+        self:GetPowerWordShield()
     else
         self:ClientInfo()
         self:PrintHelp()
