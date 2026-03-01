@@ -61,6 +61,7 @@ function VoidFrame:Void_PlayerInfo()
     }
     -------------------------------------------------------------------------
     local attribute = {
+        name = "强度",
         damage = 0
     }
     for index, value in ipairs({ attackPower, spellBonus, spellBonusHealing }) do
