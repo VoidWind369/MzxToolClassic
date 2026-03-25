@@ -1,5 +1,5 @@
 ## Interface: 11508,20505
-## Title: VoidMod
+## Title: |CFF8845ECV|r|CFFA037E9o|r|CFFA435E8i|r|CFFB32DE6d|r|CFFBC26E5M|r|CFFCB1EE3o|r|CFFDD14E0d|r
 ## Notes: Mzx classic tools
 ## Notes-zhCN: Mzx怀旧服插件整合，By -- 【月溪晓月】公会
 ## Author: 慕梓茜
