@@ -106,7 +106,7 @@ function VoidFrame:Void_PlayerInfo()
         },
         value = {
             attribute.damage,
-            string.format(" %.2f%%", attribute.chance),
+            string.format(" %.2f%%", attribute.chance or 0),
             attribute.rating,
             string.format(" %.2f%%", attribute.ratingBonus),
             string.format(" %.1f%%", haste),
