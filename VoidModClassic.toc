@@ -8,6 +8,11 @@
 ## SavedVariablesPerCharacter: VoidModClassicCharacterDB
 ## IconTexture: Interface\AddOns\VoidModClassic\Moon.png
 ## X-Curse-Project-ID: 1495336
+## Changelog:
+v1.0.1
+- 新增萨满图腾舞提示
+- 优化已知bug
+- 优化文本显示
 
 VoidMod.lua
 VoidData.lua
