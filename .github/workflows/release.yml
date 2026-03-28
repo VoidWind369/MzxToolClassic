@@ -14,6 +14,9 @@ env:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # 允许创建 Release
+      packages: write # 可选，如果不需要可删除
     steps:
       # 1. 检出你的代码
       - name: Checkout
