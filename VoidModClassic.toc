@@ -7,6 +7,7 @@
 ## SavedVariables: VoidModClassicDB
 ## SavedVariablesPerCharacter: VoidModClassicCharacterDB
 ## IconTexture: Interface\AddOns\VoidModClassic\Moon.png
+## X-Curse-Project-ID: 1495336
 
 VoidMod.lua
 VoidData.lua
