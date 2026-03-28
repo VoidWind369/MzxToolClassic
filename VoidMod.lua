@@ -194,7 +194,7 @@ function VoidFrame:ClientInfo()
     local version, build, date, toc_version = GetBuildInfo()
     print("|cFF33937FVoidMod|r |cFF69CCF0Client|r |cFF00FF00Info:|r \n » Version: " ..
         version .. "\n » Build: " .. build .. "\n » Date: " .. date .. "\n » TocVersion: " .. toc_version)
-    print("|cFF00FF00VersionDate|r 202603251330")
+    print("|cFF00FF00VersionDate|r 202603281301")
 end
 
 function VoidFrame:PrintHelp()
