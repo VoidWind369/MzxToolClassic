@@ -9,6 +9,7 @@ function InitDatabase()
         ShieldInfo = true,
         TotemInfo = true,
         TotemTool = true,
+        Debug = false
     }
     VoidModClassicCharacterDB.totem = VoidModClassicCharacterDB.totem or {}
 end
@@ -24,6 +25,7 @@ function NewDatabase()
         ShieldInfo = true,
         TotemInfo = true,
         TotemTool = true,
+        Debug = false
     }
     VoidModClassicCharacterDB.totem = {}
     ReloadUI()

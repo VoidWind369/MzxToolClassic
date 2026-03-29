@@ -30,7 +30,7 @@ function GetTotems()
     for slot = 1, 500 do
         local spellType, id = GetSpellBookItemInfo(slot, "spell")
         if not id then
-            print("加载", slot - 1, "法术")
+            MzxDebug("加载", slot - 1, "法术")
             break
         end
         local name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon = GetSpellInfo(slot, "spell")
@@ -111,7 +111,8 @@ function VoidFrame:CreateTotemToolFrame(totems)
         -- 初始化
         VoidModClassicCharacterDB.totem.default_btn[index] = VoidModClassicCharacterDB.totem.default_btn[index] or {
             icon = totem_tool.default_btn[index].icon,
-            spellID = totem_tool.default_btn[index].spell_id
+            spellID = totem_tool.default_btn[index].spell_id,
+            name = totem_tool.default_btn[index].name
         }
 
         self.voidTotemToolIcons[index] = CreateFrame("Button", nil, self.voidTotemTool,
@@ -120,6 +121,8 @@ function VoidFrame:CreateTotemToolFrame(totems)
         -- 加载保存的图腾按钮
         AddLeftButton(self.voidTotemToolIcons[index], VoidModClassicCharacterDB.totem.default_btn[index].icon,
             VoidModClassicCharacterDB.totem.default_btn[index].spellID, 40, "LEFT", index * 50 - 35, 0)
+        MzxDebug("加载图腾", VoidModClassicCharacterDB.totem.default_btn[index].spellID,
+            VoidModClassicCharacterDB.totem.default_btn[index].name)
 
         -- 创建一个Frame来承载技能图标和技能名
         self.voidTotemToolTotemFrame[index] = CreateFrame("Frame", "TotemFrame" .. index, self.voidTotemTool,
@@ -152,6 +155,7 @@ function VoidFrame:CreateTotemToolFrame(totems)
     end
 end
 
+-- 图腾列表
 function VoidFrame:TotemFrame(frame, totem_spells, x, type_index)
     local len = #totem_spells
     frame:SetSize(45, len * 40 + 6)
@@ -171,7 +175,12 @@ function VoidFrame:TotemFrame(frame, totem_spells, x, type_index)
                 self.voidTotemToolIcons[type_index]:SetNormalTexture(totem.icon)
                 self.voidTotemToolIcons[type_index]:SetAttribute("spell", totem.spellID)
                 -- 保存图腾设置
-                VoidModClassicCharacterDB.totem.default_btn[type_index] = { icon = totem.icon, spellID = totem.spellID }
+                VoidModClassicCharacterDB.totem.default_btn[type_index] = {
+                    icon = totem.icon,
+                    spellID = totem.spellID,
+                    name =
+                        totem.name
+                }
                 for index, value in ipairs(self.voidTotemToolTotemFrame) do
                     value:Hide()
                 end

@@ -129,3 +129,9 @@ function MinutesOrSeconds(seconds)
         return string.format("%.0fs", seconds / 1000)
     end
 end
+
+function MzxDebug(...)
+    if VoidModClassicCharacterDB.status.Debug then
+        print(...)
+    end
+end

@@ -67,13 +67,17 @@ function VoidFrame:Initialize()
     -- 加载数据库
     InitDatabase()
 
-    -- 调试打印区域
+    -- 玩家信息
     local className, classFilename, classId = UnitClass("player")
-    print("|cFF33937FVoidMod|r |cFF69CCF0Player|r |cFF00FF00Info:|r \n » Name: " ..
-        className .. "\n » FileName: " .. classFilename .. "\n » Id: " .. classId)
 
-    -- WOW客户端信息
-    self:ClientInfo()
+    -- 调试打印区域
+    if VoidModClassicCharacterDB.status.Debug then
+        print("|cFF33937FMzxToolbox|r |cFF69CCF0Player|r |cFF00FF00Info:|r \n » Name: " ..
+            className .. "\n » FileName: " .. classFilename .. "\n » Id: " .. classId)
+
+        -- WOW客户端信息
+        self:ClientInfo()
+    end
 
     -- 创建属性显示框架
     if VoidModClassicCharacterDB.status.PlayerInfo == true then
@@ -83,11 +87,8 @@ function VoidFrame:Initialize()
         self:Void_CreateSkillLineInfo()
     end
 
-    -- 职业框架
-    local _, _, class_id = UnitClass("player")
-
     -- 萨满
-    if class_id == 7 then
+    if classId == 7 then
         if VoidModClassicCharacterDB.status.ShieldInfo == true then
             self:Void_CreateShieldInfo()
         end
@@ -98,7 +99,13 @@ function VoidFrame:Initialize()
     end
 
     -- 注册斜杠命令
-    SLASH_VOID_MOD1 = "/void"
+    SLASH_VOID_MOD1 = "/mzxtoolbox"
+    SLASH_VOID_MOD2 = "/voidmod"
+    SLASH_VOID_MOD3 = "/void"
+    SLASH_VOID_MOD4 = "/moon"
+    SLASH_VOID_MOD5 = "/mzx"
+    SLASH_VOID_MOD6 = "/mt"
+    SLASH_VOID_MOD7 = "/vm"
     SlashCmdList["VOID_MOD"] = function(msg)
         self:HandleSlashCommand(msg)
     end
@@ -109,10 +116,11 @@ end
 -- 延后加载
 function VoidFrame:InitializeWorld()
     -- 职业框架
-    local _, _, class_id = UnitClass("player")
+    -- 玩家信息
+    local className, classFilename, classId = UnitClass("player")
 
     -- 萨满
-    if class_id == 7 then
+    if classId == 7 then
         if VoidModClassicCharacterDB.status.TotemTool == true then
             self:Void_CreateTotemTool()
         end
@@ -180,6 +188,12 @@ function VoidFrame:HandleSlashCommand(msg)
             end
         end
         ReloadUI()
+    elseif command == "debug on" then
+        VoidModClassicCharacterDB.status.Debug = true
+        ReloadUI()
+    elseif command == "debug off" then
+        VoidModClassicCharacterDB.status.Debug = false
+        ReloadUI()
     elseif command == "info" then
         self:Void_PlayerInfo()
     elseif command == "test" then
@@ -192,7 +206,7 @@ end
 
 function VoidFrame:ClientInfo()
     local version, build, date, toc_version = GetBuildInfo()
-    print("|cFF33937FVoidMod|r |cFF69CCF0Client|r |cFF00FF00Info:|r \n » Version: " ..
+    print("|cFF33937FWoW|r |cFF69CCF0Client|r |cFF00FF00Info:|r \n » Version: " ..
         version .. "\n » Build: " .. build .. "\n » Date: " .. date .. "\n » TocVersion: " .. toc_version)
     print("|cFF00FF00VersionDate|r 202603281301")
 end
@@ -202,8 +216,8 @@ function VoidFrame:PrintHelp()
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void new|r - 初始化设置")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void show|r |cFF00CCFF[module编号]|r - 开启模块")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /void hide|r |cFF00CCFF[module编号]|r - 关闭模块")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00 可选module编号:|r")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00 module编号可多选，空格隔开即可，不选任何编号即全部加载或关闭:|r")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00 可选|cFF00CCFFmodule编号|r:|r")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00 |cFF00CCFFmodule编号|r可多选，空格隔开即可，不选任何编号即全部加载或关闭:|r")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 1|r - 萨满护盾监控")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 2|r - 角色属性面板")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 3|r - 武器熟练度面板")
