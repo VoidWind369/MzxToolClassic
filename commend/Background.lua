@@ -3,7 +3,6 @@ function WhiteTransparentFrame(self, infos)
     local bar_height = infos.dot_size + 10
 
     self:SetSize(bar_width + infos.dot_spacing + 12, bar_height + infos.dot_spacing)
-    self:SetFrameStrata("HIGH")
     self:SetBackdrop({
         bgFile = "Interface/Tooltips/UI-Tooltip-Background",
         edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
@@ -43,7 +42,6 @@ end
 
 --- # 框体通用属性
 function SetInfoFrameStyle(frame)
-    frame:SetFrameStrata("HIGH")
     frame:SetBackdrop({
         bgFile = "Interface/Tooltips/UI-Tooltip-Background",
         edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
@@ -52,6 +50,24 @@ function SetInfoFrameStyle(frame)
     })
     frame:SetBackdropColor(0, 0, 0, 0.3)
     frame:SetBackdropBorderColor(0.2, 0.2, 0.2, 0.5)
+end
+
+--- # 框体通用属性
+function SetInfoTextureStyle(texture)
+    texture:SetTexture("Interface/Tooltips/UI-Tooltip-Background")
+    texture:SetAlpha(0.3)
+end
+
+--- # 按钮通用属性
+function SetButtonFrameStyle(frame)
+    frame:SetBackdrop({
+        bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+        edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+        edgeSize = 8,
+        -- insets = { left = 1, right = 1, top = 1, bottom = 1 },
+    })
+    frame:SetBackdropColor(0.8, 0, 0.7, 0.8)
+    frame:SetBackdropBorderColor(0.1, 0.1, 0.1, 1)
 end
 
 --- # 显示数字通用属性

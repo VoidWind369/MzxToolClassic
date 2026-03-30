@@ -1,8 +1,8 @@
 local totem_tool = {
     up = {
         p = "CENTER",
-        x = 100,
-        y = -180
+        x = 0,
+        y = -28
     },
     button_frame = {
         false, false, false, false
@@ -104,54 +104,71 @@ function VoidFrame:CreateTotemToolFrame(totems)
         VoidModClassicCharacterDB.point.totem_tool.y)
     SetInfoFrameStyle(self.voidTotemTool)
 
-    self.voidTotemToolTotemFrame = {}
-
+    self.voidTotemToolBg = {}
     self.voidTotemToolIcons = {}
     for index, totem in ipairs(totems) do
         -- 初始化
-        VoidModClassicCharacterDB.totem.default_btn[index] = VoidModClassicCharacterDB.totem.default_btn[index] or {
+        local db = VoidModClassicCharacterDB.totem.default_btn[index] or {
             icon = totem_tool.default_btn[index].icon,
             spellID = totem_tool.default_btn[index].spell_id,
             name = totem_tool.default_btn[index].name
         }
 
-        self.voidTotemToolIcons[index] = CreateFrame("Button", nil, self.voidTotemTool,
-            "SecureActionButtonTemplate")
+        -- local icon_bg = CreateFrame("Frame", nil, self.voidTotemTool, "BackdropTemplate")
+        local icon = CreateFrame("Button", nil, self.voidTotemTool, "SecureActionButtonTemplate")
+        icon.bg = CreateFrame("Frame", nil, self.voidTotemTool, "BackdropTemplate")
+        -- 添加边框
+        icon.bg:SetSize(46, 46)
+        icon.bg:SetPoint("LEFT", index * 50 - 38, 0)
+        SetButtonFrameStyle(icon.bg)
 
         -- 加载保存的图腾按钮
-        AddLeftButton(self.voidTotemToolIcons[index], VoidModClassicCharacterDB.totem.default_btn[index].icon,
-            VoidModClassicCharacterDB.totem.default_btn[index].spellID, 40, "LEFT", index * 50 - 35, 0)
-        MzxDebug("加载图腾", VoidModClassicCharacterDB.totem.default_btn[index].spellID,
-            VoidModClassicCharacterDB.totem.default_btn[index].name)
+        AddLeftButton(icon, db.icon, db.spellID, 36, "LEFT", index * 50 - 33, 0)
+        MzxDebug("加载图腾", db.spellID, db.name)
 
-        -- 创建一个Frame来承载技能图标和技能名
-        self.voidTotemToolTotemFrame[index] = CreateFrame("Frame", "TotemFrame" .. index, self.voidTotemTool,
-            "BackdropTemplate")
-        self:TotemFrame(self.voidTotemToolTotemFrame[index], totem, -75 + (index - 1) * 50, index)
+        icon.totem_frame = CreateFrame("Frame", "TotemFrame" .. index, icon, "SecureHandlerStateTemplate")
+        -- 注册右键显示/隐藏状态
+        -- RegisterStateDriver(icon.totem_frame, "visibility", "[button:2] show; hide")
+        icon.totem_frame.tex = icon.totem_frame:CreateTexture()
+
+        -- 创建一个图腾选择Frame
+        -- self.voidTotemToolTotemFrame[index] = CreateFrame("Frame", "TotemFrame" .. index, self.voidTotemTool,
+        --     "BackdropTemplate")
+
+        -- totem_frame.bg = CreateFrame("Frame", "TotemFrame" .. index, totem_frame, "BackdropTemplate")
+        self:TotemFrame(icon.totem_frame, totem, -75 + (index - 1) * 50, index) -- Start blocking (popup starts hidden)
 
         -- 鼠标悬停事件
-        self.voidTotemToolIcons[index]:SetScript("OnEnter", function(s)
+        icon:SetScript("OnEnter", function(s)
             GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
             GameTooltip:SetSpellByID(self.voidTotemToolIcons[index]:GetAttribute("spell"))
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("|cFF00FF00鼠标左键|r释放图腾", 0.9, 0.9, 0.9)
+            GameTooltip:AddLine("|cFF00FF00鼠标右键|r打开该系图腾栏", 0.9, 0.9, 0.9)
             GameTooltip:Show()
+            s.bg:SetBackdropColor(1, 0.8, 0.1, 0.8)
+            s.bg:SetBackdropBorderColor(0.9, 0.9, 0.9, 1)
         end)
 
-        self.voidTotemToolIcons[index]:SetScript("OnLeave", function()
+        icon:SetScript("OnLeave", function(s)
             GameTooltip:Hide()
+            s.bg:SetBackdropColor(0.8, 0, 0.7, 0.8)
+            s.bg:SetBackdropBorderColor(0.1, 0.1, 0.1, 1)
         end)
 
         -- 鼠标右击事件
-        self.voidTotemToolIcons[index]:SetScript("OnMouseUp", function(s, button)
-            if button == "RightButton" and self.voidTotemToolTotemFrame[index] then
+        icon:SetScript("OnMouseUp", function(s, button)
+            if button == "RightButton" and s.totem_frame then
                 if totem_tool.button_frame[index] then
-                    self.voidTotemToolTotemFrame[index]:Hide()
+                    s.totem_frame:Hide()
                     totem_tool.button_frame[index] = false
                 else
-                    self.voidTotemToolTotemFrame[index]:Show()
+                    s.totem_frame:Show()
                     totem_tool.button_frame[index] = true
                 end
             end
         end)
+        self.voidTotemToolIcons[index] = icon
     end
 end
 
@@ -159,18 +176,22 @@ end
 function VoidFrame:TotemFrame(frame, totem_spells, x, type_index)
     local len = #totem_spells
     frame:SetSize(45, len * 40 + 6)
-    frame:SetPoint("BOTTOM", x, 60)
-    SetInfoFrameStyle(frame)
+    frame:SetPoint("BOTTOM", 0, 45)
+    SetInfoTextureStyle(frame.tex)
 
-    local icons = {}
     for index, totem in ipairs(totem_spells) do
         -- icons[index] = frame:CreateTexture()
         -- AddIconBottom(icons[index], totem.icon, 34, 0, (index - 1) * 40 + 5)
-        icons[index] = CreateFrame("Button", nil, frame, "SecureActionButtonTemplate")
-        AddLeftButton(icons[index], totem.icon, totem.spellID, 34, "BOTTOM", 0, (index - 1) * 40 + 5)
+        local icon = CreateFrame("Button", nil, frame, "SecureActionButtonTemplate")
+        icon.bg = CreateFrame("Frame", nil, frame, "BackdropTemplate")
+        -- 添加边框
+        icon.bg:SetSize(43, 43)
+        icon.bg:SetPoint("BOTTOM", 0, (index - 1) * 44 + 1)
+        SetButtonFrameStyle(icon.bg)
+        AddLeftButton(icon, totem.icon, totem.spellID, 34, "BOTTOM", 0, (index - 1) * 44 + 5)
 
         -- 右键设置图标
-        icons[index]:SetScript("OnMouseUp", function(s, button)
+        icon:SetScript("OnMouseUp", function(s, button)
             if button == "RightButton" then
                 self.voidTotemToolIcons[type_index]:SetNormalTexture(totem.icon)
                 self.voidTotemToolIcons[type_index]:SetAttribute("spell", totem.spellID)
@@ -181,22 +202,29 @@ function VoidFrame:TotemFrame(frame, totem_spells, x, type_index)
                     name =
                         totem.name
                 }
-                for index, value in ipairs(self.voidTotemToolTotemFrame) do
-                    value:Hide()
+                for index, value in ipairs(self.voidTotemToolIcons) do
+                    value.totem_frame:Hide()
                 end
                 totem_tool.button_frame = { false, false, false, false }
             end
         end)
 
         -- 鼠标悬停事件
-        icons[index]:SetScript("OnEnter", function(s)
+        icon:SetScript("OnEnter", function(s)
             GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
             GameTooltip:SetSpellByID(totem.spellID)
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("|cFF00FF00鼠标左键|r释放图腾", 0.9, 0.9, 0.9)
+            GameTooltip:AddLine("|cFF00FF00鼠标右键|r设置为常用", 0.9, 0.9, 0.9)
             GameTooltip:Show()
+            s.bg:SetBackdropColor(1, 0.8, 0.1, 0.8)
+            s.bg:SetBackdropBorderColor(0.9, 0.9, 0.9, 1)
         end)
 
-        icons[index]:SetScript("OnLeave", function()
+        icon:SetScript("OnLeave", function(s)
             GameTooltip:Hide()
+            s.bg:SetBackdropColor(0.8, 0, 0.7, 0.8)
+            s.bg:SetBackdropBorderColor(0.1, 0.1, 0.1, 1)
         end)
     end
 
