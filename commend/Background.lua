@@ -59,7 +59,9 @@ function SetInfoTextureStyle(texture)
 end
 
 --- # 按钮通用属性
-function SetButtonFrameStyle(frame)
+function SetButtonFrameStyle(frame, width, height, point, x, y)
+    frame:SetSize(width, height)
+    frame:SetPoint(point, x, y)
     frame:SetBackdrop({
         bgFile = "Interface/Tooltips/UI-Tooltip-Background",
         edgeFile = "Interface/Tooltips/UI-Tooltip-Border",

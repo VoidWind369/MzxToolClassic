@@ -10,6 +10,8 @@ VoidFrame:RegisterEvent("UNIT_COMBAT")                 -- 当 NPC 或玩家参�
 VoidFrame:RegisterEvent("UNIT_RESISTANCES")            -- 当单位抗性发生变化时
 VoidFrame:RegisterEvent("SKILL_LINES_CHANGED")         -- 当玩家技能列表内容发生变化时(武器熟练度)
 VoidFrame:RegisterEvent("PLAYER_TOTEM_UPDATE")         -- 当图腾施放或被摧毁（召回或击杀）时
+VoidFrame:RegisterEvent("PLAYER_REGEN_DISABLED")       -- 进入战斗（脱离恢复状态）
+VoidFrame:RegisterEvent("PLAYER_REGEN_ENABLED")        -- 脱离战斗（进入恢复状态）
 VoidFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED") -- 战斗日志
 
 VoidFrame:SetScript("OnEvent", function(self, event, ...)
@@ -25,6 +27,12 @@ VoidFrame:SetScript("OnEvent", function(self, event, ...)
             self:UpdateShieldInfo()
         end
         -- self:Void_UpdatePlayerInfo()
+    end
+
+    if event == "PLAYER_REGEN_DISABLED" then
+        self:TotemRegenDisabled()
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        self:TotemRegenEnabled()
     end
 
     if event == "UNIT_RESISTANCES" or event == "UNIT_COMBAT" or event == "UNIT_SPELLCAST_SUCCEEDED" then
