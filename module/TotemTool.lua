@@ -107,11 +107,18 @@ function VoidFrame:CreateTotemToolFrame(totems)
 
     self.voidTotemToolIcons = {}
     for index, totem in ipairs(totems) do
+        if not totem[1] then
+            totem[1] = {
+                icon = totem_tool.default_btn[index].icon,
+                spellID = totem_tool.default_btn[index].spell_id,
+                name = totem_tool.default_btn[index].name
+            }
+        end
         -- 初始化保存的图腾
         local db = VoidModClassicCharacterDB.totem.default_btn[index] or {
-            icon = totem_tool.default_btn[index].icon,
-            spellID = totem_tool.default_btn[index].spell_id,
-            name = totem_tool.default_btn[index].name
+            icon = totem[1].icon,
+            spellID = totem[1].spellID,
+            name = totem[1].name
         }
 
         -- 创建主框体上的图标
@@ -130,7 +137,7 @@ function VoidFrame:CreateTotemToolFrame(totems)
 
         -- 创建用于战斗显示的遮罩
         icon.totem_frame.blocker = CreateFrame("Frame", nil, icon.totem_frame)
-        self:TotemFrame(icon.totem_frame, totem, -75 + (index - 1) * 50, index) -- Start blocking (popup starts hidden)
+        self:TotemFrame(icon.totem_frame, totem, index) -- Start blocking (popup starts hidden)
 
         -- 鼠标悬停事件
         icon:SetScript("OnEnter", function(s)
@@ -170,7 +177,7 @@ function VoidFrame:CreateTotemToolFrame(totems)
 end
 
 -- 四系图腾列表框体
-function VoidFrame:TotemFrame(frame, totem_spells, x, type_index)
+function VoidFrame:TotemFrame(frame, totem_spells, type_index)
     local len = #totem_spells
     frame:SetSize(45, len * 40 + 6)
     frame:SetPoint("BOTTOM", 0, 45)

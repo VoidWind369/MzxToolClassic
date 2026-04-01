@@ -125,7 +125,7 @@ function AddButton(button_frame, spell, width, height, point, x, y)
     button_frame:SetPoint(point, x, y)
     button_frame:SetAttribute("type", "spell")
     button_frame:SetAttribute("spell", spell) -- 设置要施放的技能名
-    button_frame:RegisterForClicks("AnyUp", "AnyDown")
+    button_frame:RegisterForClicks("LeftButtonUp", "LeftButtonDown")
 end
 
 --- # 技能按钮通用属性
@@ -135,7 +135,7 @@ function AddLeftButton(button_frame, icon, spell, size, point, x, y)
     button_frame:SetPoint(point, x, y)
     button_frame:SetAttribute("type1", "spell")
     button_frame:SetAttribute("spell", spell) -- 设置要施放的技能名
-    button_frame:RegisterForClicks("AnyUp", "AnyDown")
+    button_frame:RegisterForClicks("LeftButtonUp", "LeftButtonDown")
 end
 
 function MinutesOrSeconds(seconds)
