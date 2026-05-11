@@ -30,9 +30,17 @@ VoidFrame:SetScript("OnEvent", function(self, event, ...)
     end
 
     if event == "PLAYER_REGEN_DISABLED" then
-        self:TotemRegenDisabled()
+        -- 玩家信息
+        local className, classFilename, classId = UnitClass("player")
+        if classId == 7 then
+            self:TotemRegenDisabled()
+        end
     elseif event == "PLAYER_REGEN_ENABLED" then
-        self:TotemRegenEnabled()
+        -- 玩家信息
+        local className, classFilename, classId = UnitClass("player")
+        if classId == 7 then
+            self:TotemRegenEnabled()
+        end
     end
 
     if event == "UNIT_RESISTANCES" or event == "UNIT_COMBAT" or event == "UNIT_SPELLCAST_SUCCEEDED" then

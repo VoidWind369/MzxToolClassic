@@ -81,8 +81,8 @@ function VoidFrame:Void_CreateShieldInfo()
         local dot = CreateFrame("Frame", nil, self.dotFrame)
         WhiteTransparentDot(i, dot, shield)
 
-        dot.glow = dot:CreateTexture(nil, "BACKGROUND")
-        WhiteTransparentDotGlow(dot.glow, shield)
+        -- dot.glow = dot:CreateTexture(nil, "BACKGROUND")
+        -- WhiteTransparentDotGlow(dot.glow, shield)
 
         dot.tex = dot:CreateTexture(nil, "OVERLAY")
         WhiteTransparentDotTex(dot.tex, shield)
@@ -146,8 +146,8 @@ function UpdateDotProgress(stacks)
             dot.tex:SetGradient("VERTICAL", topColor, bottomColor)
 
             -- 发光效果
-            dot.glow:SetGradient("VERTICAL", topColor, bottomColor)
-            dot.glow:Show()
+            -- dot.glow:SetGradient("VERTICAL", topColor, bottomColor)
+            -- dot.glow:Show()
             dot:SetAlpha(1)
         else
             -- 未激活的小圆点 - 深灰色渐变
@@ -155,7 +155,7 @@ function UpdateDotProgress(stacks)
                 CreateColor(0.5, 0.5, 0.5, alpha),
                 CreateColor(0.2, 0.2, 0.2, alpha)
             )
-            dot.glow:Hide()
+            -- dot.glow:Hide()
             dot:SetAlpha(0.3)
         end
     end

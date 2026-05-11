@@ -32,6 +32,13 @@ end
 function WhiteTransparentDotTex(dotTex, infos)
     dotTex:SetSize(infos.dot_size, infos.dot_size)
     dotTex:SetPoint("CENTER")
+    -- dotTex:SetTexture("interface/housing/exteriorcustomization")
+    -- dotTex:SetTexCoord(0.41015625, 0.80859375, 0.00390625, 0.40234375)
+    -- -- 初始状态
+    -- dotTex:SetGradient("VERTICAL",
+    --     CreateColor(0.5, 0.5, 0.5, 1),
+    --     CreateColor(0.6, 0.6, 0.6, 1)
+    -- )
     dotTex:SetTexture(518448)
     -- 初始状态
     dotTex:SetGradient("VERTICAL",
