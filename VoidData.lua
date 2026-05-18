@@ -4,8 +4,8 @@ function InitDatabase()
         point = {}
     }
     VoidModClassicCharacterDB.status = VoidModClassicCharacterDB.status or {
-        PlayerInfo = true,
-        SkillLine = true,
+        PlayerInfo = false,
+        SkillLine = false,
         ShieldInfo = true,
         TotemInfo = true,
         TotemTool = true,
