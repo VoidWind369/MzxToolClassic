@@ -135,7 +135,7 @@ function VoidFrame:Void_CreatePlayerInfoFrame_UP(first)
     }
 
     self.voidPlayerInfo_UP = CreateFrame("Frame", "PlayerInfo_UP", UIParent, "BackdropTemplate")
-    self.voidPlayerInfo_UP:SetSize(145, 115)
+    self.voidPlayerInfo_UP:SetSize(150, 115)
     self.voidPlayerInfo_UP:SetPoint(VoidModClassicCharacterDB.point.player_up.p,
         VoidModClassicCharacterDB.point.player_up.x,
         VoidModClassicCharacterDB.point.player_up.y)
@@ -158,7 +158,7 @@ function VoidFrame:Void_CreatePlayerInfoFrame_Down(info)
         y = point.player_down.y
     }
     self.voidPlayerInfo_DOWN = CreateFrame("Frame", "PlayerInfo_DOWN", UIParent, "BackdropTemplate")
-    self.voidPlayerInfo_DOWN:SetSize(85, 115)
+    self.voidPlayerInfo_DOWN:SetSize(90, 115)
     self.voidPlayerInfo_DOWN:SetPoint(VoidModClassicCharacterDB.point.player_down.p,
         VoidModClassicCharacterDB.point.player_down.x,
         VoidModClassicCharacterDB.point.player_down.y)

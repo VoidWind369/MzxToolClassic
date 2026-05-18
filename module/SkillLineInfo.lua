@@ -5,6 +5,7 @@ local skill_line = {
         x = -430,
         y = 30
     },
+    wight = 160
 }
 
 function VoidFrame.GetSkillLineInfo()
@@ -32,7 +33,7 @@ function VoidFrame:Void_CreateSkillLineInfoFrame(name_table, rank_table)
     }
 
     self.voidSkillLineInfo = CreateFrame("Frame", "SkillLine", UIParent, "BackdropTemplate")
-    self.voidSkillLineInfo:SetSize(145, #name_table * 18 + 10)
+    self.voidSkillLineInfo:SetSize(skill_line.wight, #name_table * 18 + 10)
     self.voidSkillLineInfo:SetPoint(VoidModClassicCharacterDB.point.skill_line.p,
         VoidModClassicCharacterDB.point.skill_line.x,
         VoidModClassicCharacterDB.point.skill_line.y)
@@ -60,7 +61,7 @@ end
 function VoidFrame:Void_UpdateSkillLineInfo()
     if self.voidSkillLineInfo then
         local name_table, rank_table = VoidFrame:GetSkillLineInfo()
-        self.voidSkillLineInfo:SetSize(145, #name_table * 18 + 10)
+        self.voidSkillLineInfo:SetSize(skill_line.wight, #name_table * 18 + 10)
         if self.voidSkillLineInfoText then
             self.voidSkillLineInfoText[1]:SetText(table.concat(name_table, "\n"))
             self.voidSkillLineInfoText[2]:SetText(table.concat(rank_table, "\n"))
