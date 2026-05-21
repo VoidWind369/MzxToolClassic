@@ -155,6 +155,32 @@ function MinutesOrSeconds(seconds)
     end
 end
 
+-- 屏幕提示
+function ShowSimpleAlert(text)
+    -- 屏幕中央错误提示
+    UIErrorsFrame:AddMessage(text, 1.0, 1.0, 0.0, 1.0)
+
+    -- 创建大文字提示
+    if not self.alertText then
+        self.alertText = UIParent:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
+        self.alertText:SetPoint("CENTER", 0, 100)
+        self.alertText:SetTextColor(1, 0, 0, 1)
+        self.alertText:SetShadowColor(0, 0, 0, 1)
+        self.alertText:SetShadowOffset(2, -2)
+    end
+
+    self.alertText:SetText(text)
+    self.alertText:SetAlpha(1)
+
+    -- 淡出动画
+    self.alertText.fadeInfo = {}
+    self.alertText.fadeInfo.mode = "OUT"
+    self.alertText.fadeInfo.timeToFade = 3
+    self.alertText.fadeInfo.startAlpha = 1
+    self.alertText.fadeInfo.endAlpha = 0
+    UIFrameFade(self.alertText, self.alertText.fadeInfo)
+end
+
 function MzxDebug(...)
     if VoidModClassicCharacterDB.status.Debug then
         print(...)

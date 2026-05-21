@@ -200,21 +200,27 @@ function VoidFrame:TotemFrame(frame, totem_spells, type_index)
         -- 右键设置图标
         icon:SetScript("OnMouseUp", function(s, button)
             if button == "RightButton" then
-                self.voidTotemToolIcons[type_index]:SetNormalTexture(totem.icon)
-                self.voidTotemToolIcons[type_index]:SetAttribute("spell", totem.spellID)
-                -- 保存图腾设置
-                VoidModClassicCharacterDB.totem.default_btn[type_index] = {
-                    icon = totem.icon,
-                    spellID = totem.spellID,
-                    name = totem.name
-                }
-                for index, value in ipairs(self.voidTotemToolIcons) do
-                    -- value.totem_frame:Hide()
-                    value.totem_frame:SetAlpha(0)
-                    HideTotemFrame(value.totem_frame)
+                if InCombatLockdown() then
+                    ShowSimpleAlert(
+                        "|CFF8845ECM|r|CFFA037E9z|r|CFFA435E8x|r：战斗中无法设置图腾！")
+                else
+                    self.voidTotemToolIcons[type_index]:SetNormalTexture(totem.icon)
+                    self.voidTotemToolIcons[type_index]:SetAttribute("spell", totem.spellID)
+                    -- 保存图腾设置
+                    VoidModClassicCharacterDB.totem.default_btn[type_index] = {
+                        icon = totem.icon,
+                        spellID = totem.spellID,
+                        name = totem.name
+                    }
+                    for index, value in ipairs(self.voidTotemToolIcons) do
+                        -- value.totem_frame:Hide()
+                        value.totem_frame:SetAlpha(0)
+                        HideTotemFrame(value.totem_frame)
+                    end
                 end
-                totem_tool.button_frame = { false, false, false, false }
             end
+            -- 关闭框体
+            totem_tool.button_frame = { false, false, false, false }
         end)
 
         -- 鼠标悬停事件
