@@ -1,9 +1,9 @@
-## Interface: 11508,20505
+## Interface: 20506
 ## Title: |CFF8845ECM|r|CFFA037E9z|r|CFFA435E8x|r|CFFB32DE6T|r|CFFBC26E5o|r|CFFCB1EE3o|r|CFFDD14E0l|r|CFFEB0BDDB|r|CFFFB04DAo|r|CFFFF00D8x|r
 ## Notes: Mzx classic tools
 ## Notes-zhCN: Mzx怀旧服工具箱，By -- 【月溪晓月】公会
 ## Author: 慕梓茜
-## Version: 1.0.3-r4
+## Version: 1.0.3-r5
 ## SavedVariables: VoidModClassicDB
 ## SavedVariablesPerCharacter: VoidModClassicCharacterDB
 ## IconTexture: Interface\AddOns\VoidModClassic\Moon.png
