@@ -159,18 +159,27 @@ function VoidFrame:HandleSlashCommand(msg)
     elseif command == "new" then
         NewDatabase()
     elseif string.find(command, "show") then
+        MzxDebug(command)
         for index, value in ipairs(strsplittable(" ", command)) do
-            if value == "1" then
+            if value == "show" then
+                MzxDebug("Off")
+            elseif value == "1" then
+                MzxDebug("Shield on")
                 VoidModClassicCharacterDB.status.ShieldInfo = true
             elseif value == "2" then
+                MzxDebug("PlayerInfo on")
                 VoidModClassicCharacterDB.status.PlayerInfo = true
             elseif value == "3" then
+                MzxDebug("SkillLine on")
                 VoidModClassicCharacterDB.status.SkillLine = true
             elseif value == "4" then
+                MzxDebug("TotemInfo on")
                 VoidModClassicCharacterDB.status.TotemInfo = true
             elseif value == "5" then
+                MzxDebug("TotemTool on")
                 VoidModClassicCharacterDB.status.TotemTool = true
             else
+                MzxDebug("All on")
                 VoidModClassicCharacterDB.status = {
                     ShieldInfo = true,
                     PlayerInfo = true,
@@ -182,18 +191,27 @@ function VoidFrame:HandleSlashCommand(msg)
         end
         ReloadUI()
     elseif string.find(command, "hide") then
+        MzxDebug(command)
         for index, value in ipairs(strsplittable(" ", command)) do
-            if value == "1" then
-                VoidModClassicCharacterDB.status.Shield = false
+            if value == "hide" then
+                MzxDebug("On")
+            elseif value == "1" then
+                MzxDebug("Shield off")
+                VoidModClassicCharacterDB.status.ShieldInfo = false
             elseif value == "2" then
+                MzxDebug("PlayerInfo off")
                 VoidModClassicCharacterDB.status.PlayerInfo = false
             elseif value == "3" then
+                MzxDebug("SkillLine off")
                 VoidModClassicCharacterDB.status.SkillLine = false
             elseif value == "4" then
+                MzxDebug("TotemInfo off")
                 VoidModClassicCharacterDB.status.TotemInfo = false
             elseif value == "5" then
+                MzxDebug("TotemTool off")
                 VoidModClassicCharacterDB.status.TotemTool = false
             else
+                MzxDebug("All off")
                 VoidModClassicCharacterDB.status = {
                     ShieldInfo = false,
                     PlayerInfo = false,
