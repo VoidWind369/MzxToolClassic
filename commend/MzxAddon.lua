@@ -45,6 +45,12 @@ function MzxToolAddon:OnInitialize()
     -- 注册聊天命令
     self:RegisterChatCommand("mzx", "ShowConfig")
     self:RegisterChatCommand("mzxtool", "ShowConfig")
+    self:RegisterChatCommand("mzxtoolbox", "ShowConfig")
+    self:RegisterChatCommand("voidmod", "ShowConfig")
+    self:RegisterChatCommand("void", "ShowConfig")
+    self:RegisterChatCommand("moon", "ShowConfig")
+    self:RegisterChatCommand("mt", "ShowConfig")
+    self:RegisterChatCommand("vm", "ShowConfig")
 
     print("|cFF33FF99MzxToolAddon|r 已加载，输入 /mzx 打开设置")
 end
