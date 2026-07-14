@@ -3,14 +3,15 @@
 ## Notes: Mzx classic tools
 ## Notes-zhCN: Mzx怀旧服工具箱，By -- 【月溪晓月】公会
 ## Author: 慕梓茜
-## Version: 1.0.4
+## Version: 1.0.5
 ## SavedVariables: VoidModClassicDB
 ## SavedVariablesPerCharacter: VoidModClassicCharacterDB
 ## IconTexture: Interface\AddOns\VoidModClassic\Moon.png
 ## X-Curse-Project-ID: 1495336
 
-VoidMod.lua
 VoidData.lua
+VoidMod.lua
+commend\MzxAddon.lua
 commend\Background.lua
 commend\Movable.lua
 module\ShieldInfo.lua

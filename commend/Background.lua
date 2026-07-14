@@ -1,10 +1,20 @@
+local LSM = LibStub("LibSharedMedia-3.0")
+
+local texturePath = "Interface/Tooltips/UI-Tooltip-Background"
+local textureBorder = "Interface/Tooltips/UI-Tooltip-Border"
+if ElvUI then
+    print("检测到ElvUI")
+    texturePath = LSM:Fetch("statusbar", "ElvUI Norm") -- 获取名为 "ElvUI Norm" 的纹理
+    -- textureBorder = LSM:Fetch("statusbar", "ElvUI Norm") -- 获取名为 "ElvUI Norm" 的纹理
+end
+
 function WhiteTransparentFrame(self, infos)
     local bar_width = (infos.dot_size + infos.dot_spacing) * infos.max_stacks
     local bar_height = infos.dot_size + 10
 
     self:SetSize(bar_width + infos.dot_spacing + 12, bar_height + infos.dot_spacing)
     self:SetBackdrop({
-        bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+        bgFile = texturePath,
         edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
         edgeSize = 12,
         insets = { left = 6, right = 6, top = 6, bottom = 6 },
@@ -50,8 +60,8 @@ end
 --- # 框体通用属性
 function SetInfoFrameStyle(frame)
     frame:SetBackdrop({
-        bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-        edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+        bgFile = texturePath,
+        edgeFile = textureBorder,
         edgeSize = 12,
         insets = { left = 6, right = 6, top = 6, bottom = 6 },
     })
@@ -61,7 +71,7 @@ end
 
 --- # 框体通用属性
 function SetInfoTextureStyle(texture)
-    texture:SetTexture("Interface/Tooltips/UI-Tooltip-Background")
+    texture:SetTexture(texturePath)
     texture:SetAlpha(0.3)
 end
 
@@ -70,7 +80,7 @@ function SetButtonFrameStyle(frame, width, height, point, x, y)
     frame:SetSize(width, height)
     frame:SetPoint(point, x, y)
     frame:SetBackdrop({
-        bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+        bgFile = texturePath,
         edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
         edgeSize = 8,
         -- insets = { left = 1, right = 1, top = 1, bottom = 1 },
