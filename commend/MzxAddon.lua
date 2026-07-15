@@ -1,4 +1,5 @@
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local AceConfig = LibStub("AceConfig-3.0")
 
 -- ============================================
 -- 插件主文件: core.lua
@@ -37,10 +38,10 @@ function MzxToolAddon:OnInitialize()
     self.charDB = VoidModClassicCharacterDB
 
     -- 注册选项表
-    LibStub("AceConfig-3.0"):RegisterOptionsTable("MzxToolAddon", self.options)
+    AceConfig:RegisterOptionsTable("MzxToolAddon", self.options)
 
     -- 添加到游戏设置面板
-    self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("MzxToolAddon", "MzxTool 设置")
+    self.optionsFrame = AceConfigDialog:AddToBlizOptions("MzxToolAddon", "MzxTool 设置")
 
     -- 注册聊天命令
     self:RegisterChatCommand("mzx", "ShowConfig")
@@ -59,10 +60,10 @@ end
 -- 3. 打开配置窗口
 -- ============================================
 function MzxToolAddon:ShowConfig()
-    if LibStub("AceConfigDialog-3.0").OpenFrames["MzxToolAddon"] then
-        LibStub("AceConfigDialog-3.0"):Close("MzxToolAddon")
+    if AceConfigDialog.OpenFrames["MzxToolAddon"] then
+        AceConfigDialog:Close("MzxToolAddon")
     else
-        LibStub("AceConfigDialog-3.0"):Open("MzxToolAddon")
+        AceConfigDialog:Open("MzxToolAddon")
     end
 end
 
@@ -162,7 +163,7 @@ MzxToolAddon.options = {
                     name = "全部开启",
                     desc = "开启所有功能",
                     order = 1,
-                    width = 1.5,
+                    width = "0.5",
                     func = function()
                         for key, _ in pairs(VoidModClassicCharacterDB.status) do
                             VoidModClassicCharacterDB.status[key] = true
@@ -180,7 +181,7 @@ MzxToolAddon.options = {
                     name = "全部关闭",
                     desc = "关闭所有功能",
                     order = 2,
-                    width = 1.5,
+                    width = "0.5",
                     func = function()
                         for key, _ in pairs(VoidModClassicCharacterDB.status) do
                             VoidModClassicCharacterDB.status[key] = false
@@ -197,21 +198,15 @@ MzxToolAddon.options = {
                     name = "重置默认值",
                     desc = "恢复所有设置为默认状态",
                     order = 3,
-                    width = "full",
+                    width = "0.5",
                     func = function()
-                        VoidModClassicCharacterDB.status = {
-                            PlayerInfo = false,
-                            SkillLine = false,
-                            ShieldInfo = true,
-                            TotemInfo = true,
-                            TotemTool = true,
-                            Debug = false
-                        }
+                        NewDatabase()
                         print("|CFFFFAA00设置已重置为默认值|r")
                         if AceConfigDialog.OpenFrames and AceConfigDialog.OpenFrames["MzxToolAddon"] then
                             AceConfigDialog:Close("MzxToolAddon")
                             AceConfigDialog:Open("MzxToolAddon")
                         end
+                        ReloadUI()
                     end,
                 },
             }
