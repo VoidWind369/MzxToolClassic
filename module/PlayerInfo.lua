@@ -12,7 +12,7 @@ local point = {
 }
 
 --- # 玩家信息获取
-function VoidFrame:Void_PlayerInfo()
+function MzxToolFrame:Void_PlayerInfo()
     -- 主属性
     local strength = UnitStat("player", 1)  -- 力量
     local agility = UnitStat("player", 2)   -- 敏捷
@@ -127,8 +127,8 @@ function VoidFrame:Void_PlayerInfo()
 end
 
 --- # 创建主属性框体
-function VoidFrame:Void_CreatePlayerInfoFrame_UP(first)
-    VoidModClassicCharacterDB.point.player_up = VoidModClassicCharacterDB.point.player_up or {
+function MzxToolFrame:Void_CreatePlayerInfoFrame_UP(first)
+    MzxToolClassicCharacterDB.point.player_up = MzxToolClassicCharacterDB.point.player_up or {
         p = point.player_up.p,
         x = point.player_up.x,
         y = point.player_up.y
@@ -136,9 +136,9 @@ function VoidFrame:Void_CreatePlayerInfoFrame_UP(first)
 
     self.voidPlayerInfo_UP = CreateFrame("Frame", "PlayerInfo_UP", UIParent, "BackdropTemplate")
     self.voidPlayerInfo_UP:SetSize(150, 115)
-    self.voidPlayerInfo_UP:SetPoint(VoidModClassicCharacterDB.point.player_up.p,
-        VoidModClassicCharacterDB.point.player_up.x,
-        VoidModClassicCharacterDB.point.player_up.y)
+    self.voidPlayerInfo_UP:SetPoint(MzxToolClassicCharacterDB.point.player_up.p,
+        MzxToolClassicCharacterDB.point.player_up.x,
+        MzxToolClassicCharacterDB.point.player_up.y)
     SetInfoFrameStyle(self.voidPlayerInfo_UP)
 
     self.voidPlayerInfoText_UP = {
@@ -151,17 +151,17 @@ function VoidFrame:Void_CreatePlayerInfoFrame_UP(first)
 end
 
 --- # 创建副属性框体
-function VoidFrame:Void_CreatePlayerInfoFrame_Down(info)
-    VoidModClassicCharacterDB.point.player_down = VoidModClassicCharacterDB.point.player_down or {
+function MzxToolFrame:Void_CreatePlayerInfoFrame_Down(info)
+    MzxToolClassicCharacterDB.point.player_down = MzxToolClassicCharacterDB.point.player_down or {
         p = point.player_down.p,
         x = point.player_down.x,
         y = point.player_down.y
     }
     self.voidPlayerInfo_DOWN = CreateFrame("Frame", "PlayerInfo_DOWN", UIParent, "BackdropTemplate")
     self.voidPlayerInfo_DOWN:SetSize(90, 115)
-    self.voidPlayerInfo_DOWN:SetPoint(VoidModClassicCharacterDB.point.player_down.p,
-        VoidModClassicCharacterDB.point.player_down.x,
-        VoidModClassicCharacterDB.point.player_down.y)
+    self.voidPlayerInfo_DOWN:SetPoint(MzxToolClassicCharacterDB.point.player_down.p,
+        MzxToolClassicCharacterDB.point.player_down.x,
+        MzxToolClassicCharacterDB.point.player_down.y)
     SetInfoFrameStyle(self.voidPlayerInfo_DOWN)
 
     self.voidPlayerInfoText_DOWN = {
@@ -174,24 +174,24 @@ function VoidFrame:Void_CreatePlayerInfoFrame_Down(info)
 end
 
 --- # 创建玩家信息框体
-function VoidFrame:Void_CreatePlayerInfo()
-    VoidModClassicCharacterDB.point = VoidModClassicCharacterDB.point or point
+function MzxToolFrame:Void_CreatePlayerInfo()
+    MzxToolClassicCharacterDB.point = MzxToolClassicCharacterDB.point or point
 
-    local first, info = VoidFrame:Void_PlayerInfo()
+    local first, info = MzxToolFrame:Void_PlayerInfo()
     self:Void_CreatePlayerInfoFrame_UP(first)
     self:Void_CreatePlayerInfoFrame_Down(info)
 
     MovableDisplay(self.voidPlayerInfo_UP)
     MovableDisplay(self.voidPlayerInfo_DOWN)
 
-    MovableFrameStop(self.voidPlayerInfo_UP, VoidModClassicCharacterDB.point.player_up, point.player_up)
-    MovableFrameStop(self.voidPlayerInfo_DOWN, VoidModClassicCharacterDB.point.player_down, point.player_down)
+    MovableFrameStop(self.voidPlayerInfo_UP, MzxToolClassicCharacterDB.point.player_up, point.player_up)
+    MovableFrameStop(self.voidPlayerInfo_DOWN, MzxToolClassicCharacterDB.point.player_down, point.player_down)
 end
 
 --- # 刷新玩家信息框体
-function VoidFrame:Void_UpdatePlayerInfo()
+function MzxToolFrame:Void_UpdatePlayerInfo()
     if self.voidPlayerInfo_UP and self.voidPlayerInfo_DOWN then
-        local first, info = VoidFrame:Void_PlayerInfo()
+        local first, info = MzxToolFrame:Void_PlayerInfo()
         self.voidPlayerInfoText_UP[1]:SetText(table.concat(first.name, "\n"))
         self.voidPlayerInfoText_UP[2]:SetText(table.concat(first.value, "\n"))
         self.voidPlayerInfoText_DOWN[1]:SetText(table.concat(info.name, "\n"))

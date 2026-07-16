@@ -8,7 +8,7 @@ local skill_line = {
     wight = 160
 }
 
-function VoidFrame.GetSkillLineInfo()
+function MzxToolFrame.GetSkillLineInfo()
     local name_table = {}
     local rank_table = {}
     for i = 1, GetNumSkillLines() do
@@ -25,8 +25,8 @@ function VoidFrame.GetSkillLineInfo()
 end
 
 --- # 创建武器熟练度框体
-function VoidFrame:Void_CreateSkillLineInfoFrame(name_table, rank_table)
-    VoidModClassicCharacterDB.point.skill_line = VoidModClassicCharacterDB.point.skill_line or {
+function MzxToolFrame:Void_CreateSkillLineInfoFrame(name_table, rank_table)
+    MzxToolClassicCharacterDB.point.skill_line = MzxToolClassicCharacterDB.point.skill_line or {
         p = skill_line.up.p,
         x = skill_line.up.x,
         y = skill_line.up.y
@@ -34,9 +34,9 @@ function VoidFrame:Void_CreateSkillLineInfoFrame(name_table, rank_table)
 
     self.voidSkillLineInfo = CreateFrame("Frame", "SkillLine", UIParent, "BackdropTemplate")
     self.voidSkillLineInfo:SetSize(skill_line.wight, #name_table * 18 + 10)
-    self.voidSkillLineInfo:SetPoint(VoidModClassicCharacterDB.point.skill_line.p,
-        VoidModClassicCharacterDB.point.skill_line.x,
-        VoidModClassicCharacterDB.point.skill_line.y)
+    self.voidSkillLineInfo:SetPoint(MzxToolClassicCharacterDB.point.skill_line.p,
+        MzxToolClassicCharacterDB.point.skill_line.x,
+        MzxToolClassicCharacterDB.point.skill_line.y)
     SetInfoFrameStyle(self.voidSkillLineInfo)
 
     self.voidSkillLineInfoText = {
@@ -49,8 +49,8 @@ function VoidFrame:Void_CreateSkillLineInfoFrame(name_table, rank_table)
 end
 
 --- # 创建武器熟练度信息框体
-function VoidFrame:Void_CreateSkillLineInfo()
-    self:Void_CreateSkillLineInfoFrame(VoidFrame:GetSkillLineInfo())
+function MzxToolFrame:Void_CreateSkillLineInfo()
+    self:Void_CreateSkillLineInfoFrame(MzxToolFrame:GetSkillLineInfo())
 
     MovableDisplay(self.voidSkillLineInfo)
 
@@ -58,9 +58,9 @@ function VoidFrame:Void_CreateSkillLineInfo()
 end
 
 --- # 刷新武器熟练度信息框体
-function VoidFrame:Void_UpdateSkillLineInfo()
+function MzxToolFrame:Void_UpdateSkillLineInfo()
     if self.voidSkillLineInfo then
-        local name_table, rank_table = VoidFrame:GetSkillLineInfo()
+        local name_table, rank_table = MzxToolFrame:GetSkillLineInfo()
         self.voidSkillLineInfo:SetSize(skill_line.wight, #name_table * 18 + 10)
         if self.voidSkillLineInfoText then
             self.voidSkillLineInfoText[1]:SetText(table.concat(name_table, "\n"))
@@ -71,25 +71,25 @@ end
 
 function MovableSkillLineFrameStop()
     -- 拖动停止
-    VoidFrame.voidSkillLineInfo:SetScript("OnDragStop", function(self)
+    MzxToolFrame.voidSkillLineInfo:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
         self.isMoving = false
         local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
-        VoidModClassicCharacterDB.point.skill_line.p = p    -- 保存
-        VoidModClassicCharacterDB.point.skill_line.x = xOfs -- 保存
-        VoidModClassicCharacterDB.point.skill_line.y = yOfs -- 保存
+        MzxToolClassicCharacterDB.point.skill_line.p = p    -- 保存
+        MzxToolClassicCharacterDB.point.skill_line.x = xOfs -- 保存
+        MzxToolClassicCharacterDB.point.skill_line.y = yOfs -- 保存
     end)
 
     -- 双击居中
-    VoidFrame.voidSkillLineInfo:SetScript("OnMouseUp", function(self, button)
+    MzxToolFrame.voidSkillLineInfo:SetScript("OnMouseUp", function(self, button)
         if button == "LeftButton" and self.doubleClick then
             self:ClearAllPoints()
             self:SetPoint(skill_line.up.p, skill_line.up.x, skill_line.up.y)
             local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
             -- 保存到变量或保存文件
-            VoidModClassicCharacterDB.point.skill_line.p = p    -- 保存
-            VoidModClassicCharacterDB.point.skill_line.x = xOfs -- 保存
-            VoidModClassicCharacterDB.point.skill_line.y = yOfs -- 保存
+            MzxToolClassicCharacterDB.point.skill_line.p = p    -- 保存
+            MzxToolClassicCharacterDB.point.skill_line.x = xOfs -- 保存
+            MzxToolClassicCharacterDB.point.skill_line.y = yOfs -- 保存
             self.doubleClick = false
         end
     end)

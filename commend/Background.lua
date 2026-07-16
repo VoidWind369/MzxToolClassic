@@ -192,7 +192,7 @@ function ShowSimpleAlert(text)
 end
 
 function MzxDebug(...)
-    if VoidModClassicCharacterDB.status.Debug then
+    if MzxToolClassicCharacterDB.status.Debug then
         print(...)
     end
 end

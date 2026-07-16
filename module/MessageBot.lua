@@ -1,4 +1,4 @@
-function VoidFrame:MessageStart(text, playerName, languageName, channelName)
+function MzxToolFrame:MessageStart(text, playerName, languageName, channelName)
     print(channelName .. "|cFA500FF0" .. playerName .. "|r say: " .. text)
     if text == "123" then
         C_PartyInfo.InviteUnit(playerName)
@@ -16,7 +16,7 @@ function VoidFrame:MessageStart(text, playerName, languageName, channelName)
     end
 end
 
-function VoidFrame:PartyStart(name, isTank, isHealer, isDamage, isNativeRealm, allowMultipleRoles, inviterGUID, questSessionActive)
+function MzxToolFrame:PartyStart(name, isTank, isHealer, isDamage, isNativeRealm, allowMultipleRoles, inviterGUID, questSessionActive)
     AcceptGroup()
     StaticPopup_Hide("PARTY_INVITE")
     print("被|cFA500FF0" .. name .. "|r邀请进组")

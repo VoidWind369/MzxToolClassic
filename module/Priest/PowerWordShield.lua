@@ -1,4 +1,4 @@
-function VoidFrame:GetPowerWordShield()
+function MzxToolFrame:GetPowerWordShield()
     local aura = C_UnitAuras.GetPlayerAuraBySpellID(600)
 
     local name =  UnitBuff("player", 1)
