@@ -1,14 +1,13 @@
-local AceConfigDialog = LibStub("AceConfigDialog-3.0")
-local AceConfig = LibStub("AceConfig-3.0")
-
 -- ============================================
 -- 插件主文件: core.lua
 -- ============================================
 
+local AceConfig = LibStub("AceConfig-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local MzxToolAddon = LibStub("AceAddon-3.0"):NewAddon("MzxToolAddon", "AceConsole-3.0")
 
 -- ============================================
--- 2. 初始化
+-- 1. 初始化
 -- ============================================
 function MzxToolAddon:OnInitialize()
     -- 调用你的数据库初始化
@@ -38,18 +37,15 @@ function MzxToolAddon:OnInitialize()
 end
 
 -- ============================================
--- 3. 打开配置窗口
+-- 2. 打开配置窗口
 -- ============================================
-function MzxToolAddon:ShowConfig()
-    if AceConfigDialog.OpenFrames["MzxToolAddon"] then
-        AceConfigDialog:Close("MzxToolAddon")
-    else
-        AceConfigDialog:Open("MzxToolAddon")
-    end
+function MzxToolAddon:ShowConfig(input)
+    -- 如果输入为空或空格，打开设置面板
+    MzxToolFrame:HandleSlashCommand(input)
 end
 
 -- ============================================
--- 4. 选项表定义
+-- 3. 选项表定义
 -- ============================================
 MzxToolAddon.options = {
     type = "group",
@@ -245,7 +241,7 @@ MzxToolAddon.options = {
             name = "保存并重载",
             desc = "保存当前设置并重载界面",
             order = 4,
-            width = "full",         -- 独占一行更醒目
+            width = "full", -- 独占一行更醒目
             func = function()
                 -- 先保存（其实 AceDB 已经自动保存了，这里主要是给用户一个反馈）
                 print("|CFF00FF00设置已保存，正在重载界面...|r")
@@ -255,3 +251,119 @@ MzxToolAddon.options = {
         },
     }
 }
+
+-- ============================================
+-- 命令菜单
+-- ============================================
+function MzxToolFrame:HandleSlashCommand(msg)
+    local command = strlower(strtrim(msg))
+
+    if command == "new" then
+        NewDatabase()
+    elseif string.find(command, "show") then
+        MzxDebug(command)
+        for index, value in ipairs(strsplittable(" ", command)) do
+            if value == "show" then
+                MzxDebug("Off")
+            elseif value == "1" then
+                MzxDebug("Shield on")
+                MzxToolClassicCharacterDB.status.ShieldInfo = true
+            elseif value == "2" then
+                MzxDebug("PlayerInfo on")
+                MzxToolClassicCharacterDB.status.PlayerInfo = true
+            elseif value == "3" then
+                MzxDebug("SkillLine on")
+                MzxToolClassicCharacterDB.status.SkillLine = true
+            elseif value == "4" then
+                MzxDebug("TotemInfo on")
+                MzxToolClassicCharacterDB.status.TotemInfo = true
+            elseif value == "5" then
+                MzxDebug("TotemTool on")
+                MzxToolClassicCharacterDB.status.TotemTool = true
+            else
+                MzxDebug("All on")
+                MzxToolClassicCharacterDB.status = {
+                    ShieldInfo = true,
+                    PlayerInfo = true,
+                    SkillLine = true,
+                    TotemInfo = true,
+                    TotemTool = true
+                }
+            end
+        end
+        ReloadUI()
+    elseif string.find(command, "hide") then
+        MzxDebug(command)
+        for index, value in ipairs(strsplittable(" ", command)) do
+            if value == "hide" then
+                MzxDebug("On")
+            elseif value == "1" then
+                MzxDebug("Shield off")
+                MzxToolClassicCharacterDB.status.ShieldInfo = false
+            elseif value == "2" then
+                MzxDebug("PlayerInfo off")
+                MzxToolClassicCharacterDB.status.PlayerInfo = false
+            elseif value == "3" then
+                MzxDebug("SkillLine off")
+                MzxToolClassicCharacterDB.status.SkillLine = false
+            elseif value == "4" then
+                MzxDebug("TotemInfo off")
+                MzxToolClassicCharacterDB.status.TotemInfo = false
+            elseif value == "5" then
+                MzxDebug("TotemTool off")
+                MzxToolClassicCharacterDB.status.TotemTool = false
+            else
+                MzxDebug("All off")
+                MzxToolClassicCharacterDB.status = {
+                    ShieldInfo = false,
+                    PlayerInfo = false,
+                    SkillLine = false,
+                    TotemInfo = false,
+                    TotemTool = false
+                }
+            end
+        end
+        ReloadUI()
+    elseif command == "debug on" then
+        MzxToolClassicCharacterDB.status.Debug = true
+        ReloadUI()
+    elseif command == "debug off" then
+        MzxToolClassicCharacterDB.status.Debug = false
+        ReloadUI()
+    elseif command == "info" then
+        self:Void_PlayerInfo()
+    elseif command == "test" then
+        self:GetPowerWordShield()
+    elseif command == "help" then
+        self:ClientInfo()
+        self:PrintHelp()
+    else
+        if AceConfigDialog.OpenFrames["MzxToolAddon"] then
+            AceConfigDialog:Close("MzxToolAddon")
+        else
+            AceConfigDialog:Open("MzxToolAddon")
+        end
+    end
+end
+
+function MzxToolFrame:ClientInfo()
+    local version, build, date, toc_version = GetBuildInfo()
+    print("|cFF33937FWoW|r |cFF69CCF0Client|r |cFF00FF00Info:|r \n » Version: " ..
+        version .. "\n » Build: " .. build .. "\n » Date: " .. date .. "\n » TocVersion: " .. toc_version)
+    print("|cFF00FF00VersionDate|r 202603281301")
+end
+
+function MzxToolFrame:PrintHelp()
+    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00恶龙咆哮菜单:|r")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /mzx new|r - 初始化设置")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /mzx show|r |cFF00CCFF[module编号]|r - 开启模块")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /mzx hide|r |cFF00CCFF[module编号]|r - 关闭模块")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00 可选|cFF00CCFFmodule编号|r:|r")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00 |cFF00CCFFmodule编号|r可多选，空格隔开即可，不选任何编号即全部加载或关闭:|r")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 1|r - 萨满护盾监控")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 2|r - 角色属性面板")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 3|r - 武器熟练度面板")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 4|r - 萨满图腾监控")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00CCFF 5|r - 萨满图腾收纳")
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /mzx|r - 显示帮助")
+end
