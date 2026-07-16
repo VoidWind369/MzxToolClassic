@@ -29,7 +29,7 @@ local shield = {
 }
 
 --- # 获取武器临时附魔信息
-function VoidFrame:GetWeaponEnchantInfo()
+function MzxToolFrame:GetWeaponEnchantInfo()
     local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID, hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantID, hasRangedEnchant, rangedExpiration, rangedCharges, rangedEnchantID =
         GetWeaponEnchantInfo()
 
@@ -60,8 +60,8 @@ function VoidFrame:GetWeaponEnchantInfo()
 end
 
 --- # 创建护盾检测框体
-function VoidFrame:Void_CreateShieldInfo()
-    VoidModClassicCharacterDB.point.shield = VoidModClassicCharacterDB.point.shield or {
+function MzxToolFrame:Void_CreateShieldInfo()
+    MzxToolClassicCharacterDB.point.shield = MzxToolClassicCharacterDB.point.shield or {
         p = shield.up.p,
         x = shield.up.x,
         y = shield.up.y
@@ -69,9 +69,9 @@ function VoidFrame:Void_CreateShieldInfo()
 
     -- 主框架
     self.dotFrame = CreateFrame("Frame", "TotemWeapon", UIParent, "BackdropTemplate")
-    self.dotFrame:SetPoint(VoidModClassicCharacterDB.point.shield.p,
-        VoidModClassicCharacterDB.point.shield.x,
-        VoidModClassicCharacterDB.point.shield.y)
+    self.dotFrame:SetPoint(MzxToolClassicCharacterDB.point.shield.p,
+        MzxToolClassicCharacterDB.point.shield.x,
+        MzxToolClassicCharacterDB.point.shield.y)
     WhiteTransparentFrame(self.dotFrame, shield)
 
     -- 创建10个小圆点
@@ -97,7 +97,7 @@ function VoidFrame:Void_CreateShieldInfo()
     MovableShieldInfoFrameStop()
 end
 
-function VoidFrame:Void_CreateWeaponEnchantInfoFrame(hand_table)
+function MzxToolFrame:Void_CreateWeaponEnchantInfoFrame(hand_table)
     self.dotFrame.weaponEnchantMain = CreateFrame("Frame", "WeaponEnchantMain", self.dotFrame, "BackdropTemplate")
     self.dotFrame.weaponEnchantMain:SetSize(50, shield.dot_size + shield.dot_spacing + 10)
     self.dotFrame.weaponEnchantMain:SetPoint("CENTER", -90, 0)
@@ -120,17 +120,17 @@ end
 -- 设定萨满专注颜色
 function UpdateDotFrameProgress(hasGaleWindsData)
     if hasGaleWindsData == 1 then -- 蓝
-        VoidFrame.dotFrame:SetBackdropColor(0, 0.4, 1, 0.55)
-        VoidFrame.dotFrame:SetBackdropBorderColor(0, 0.1, 0.4, 0.8)
+        MzxToolFrame.dotFrame:SetBackdropColor(0, 0.4, 1, 0.55)
+        MzxToolFrame.dotFrame:SetBackdropBorderColor(0, 0.1, 0.4, 0.8)
     elseif hasGaleWindsData == 2 then -- 红
-        VoidFrame.dotFrame:SetBackdropColor(1, 0, 0, 0.55)
-        VoidFrame.dotFrame:SetBackdropBorderColor(0.4, 0, 0.1, 0.8)
+        MzxToolFrame.dotFrame:SetBackdropColor(1, 0, 0, 0.55)
+        MzxToolFrame.dotFrame:SetBackdropBorderColor(0.4, 0, 0.1, 0.8)
     elseif hasGaleWindsData == 3 then -- 紫
-        VoidFrame.dotFrame:SetBackdropColor(1, 0, 1, 0.55)
-        VoidFrame.dotFrame:SetBackdropBorderColor(0.4, 0, 0.4, 0.8)
+        MzxToolFrame.dotFrame:SetBackdropColor(1, 0, 1, 0.55)
+        MzxToolFrame.dotFrame:SetBackdropBorderColor(0.4, 0, 0.4, 0.8)
     else
-        VoidFrame.dotFrame:SetBackdropColor(0, 0, 0, 0.15)
-        VoidFrame.dotFrame:SetBackdropBorderColor(0.2, 0.2, 0.2, 0.5)
+        MzxToolFrame.dotFrame:SetBackdropColor(0, 0, 0, 0.15)
+        MzxToolFrame.dotFrame:SetBackdropBorderColor(0.2, 0.2, 0.2, 0.5)
     end
 end
 
@@ -138,7 +138,7 @@ end
 function UpdateDotProgress(stacks)
     local alpha = 1
     for i = 1, shield.max_stacks do
-        local dot = VoidFrame.shieldDots[i]
+        local dot = MzxToolFrame.shieldDots[i]
 
         if i <= stacks then
             -- 激活的小圆点 - 饱满的纵向渐变
@@ -162,7 +162,7 @@ function UpdateDotProgress(stacks)
 end
 
 --- # 刷新武器临时附魔信息
-function VoidFrame:UpdateWeaponEnchant()
+function MzxToolFrame:UpdateWeaponEnchant()
     local hand = self:GetWeaponEnchantInfo()
     if self.dotFrame then
         self.dotFrame.weaponEnchantMainText:SetText(hand.main.expiration)
@@ -185,7 +185,7 @@ function GetGradientColorsSM(shield_type, alpha)
 end
 
 -- 增强萨buff监控进程
-function VoidFrame:UpdateShieldInfo()
+function MzxToolFrame:UpdateShieldInfo()
     -- 判断是否加载
     if not self.dotFrame then
         return
@@ -259,7 +259,7 @@ end
 
 function GetShieldGameTooltip()
     -- 鼠标悬停事件
-    VoidFrame.shieldDots[2]:SetScript("OnEnter", function(self)
+    MzxToolFrame.shieldDots[2]:SetScript("OnEnter", function(self)
         if shield.now_shield_id then
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             GameTooltip:SetSpellByID(shield.now_shield_id)
@@ -267,38 +267,38 @@ function GetShieldGameTooltip()
         end
     end)
 
-    VoidFrame.shieldDots[2]:SetScript("OnLeave", function()
+    MzxToolFrame.shieldDots[2]:SetScript("OnLeave", function()
         GameTooltip:Hide()
     end)
 end
 
 function MovableShieldInfoFrameStop()
     -- 拖动停止
-    VoidFrame.dotFrame:SetScript("OnDragStop", function(self)
+    MzxToolFrame.dotFrame:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
         self.isMoving = false
         local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
-        VoidModClassicCharacterDB.point.shield.p = p    -- 保存
-        VoidModClassicCharacterDB.point.shield.x = xOfs -- 保存
-        VoidModClassicCharacterDB.point.shield.y = yOfs -- 保存
+        MzxToolClassicCharacterDB.point.shield.p = p    -- 保存
+        MzxToolClassicCharacterDB.point.shield.x = xOfs -- 保存
+        MzxToolClassicCharacterDB.point.shield.y = yOfs -- 保存
     end)
 
     -- 双击居中
-    VoidFrame.dotFrame:SetScript("OnMouseUp", function(self, button)
+    MzxToolFrame.dotFrame:SetScript("OnMouseUp", function(self, button)
         if button == "LeftButton" and self.doubleClick then
             self:ClearAllPoints()
             self:SetPoint(shield.up.p, shield.up.x, shield.up.y)
             local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
             -- 保存到变量或保存文件
-            VoidModClassicCharacterDB.point.shield.p = p    -- 保存
-            VoidModClassicCharacterDB.point.shield.x = xOfs -- 保存
-            VoidModClassicCharacterDB.point.shield.y = yOfs -- 保存
+            MzxToolClassicCharacterDB.point.shield.p = p    -- 保存
+            MzxToolClassicCharacterDB.point.shield.x = xOfs -- 保存
+            MzxToolClassicCharacterDB.point.shield.y = yOfs -- 保存
             self.doubleClick = false
         end
     end)
 end
 
-function VoidFrame:TestDisplay()
+function MzxToolFrame:TestDisplay()
     -- 测试显示不同层数
     DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00测试小圆点进度...|r")
 

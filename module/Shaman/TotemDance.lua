@@ -10,7 +10,7 @@ local totem_dance = {
     remaining_time = 0
 }
 
-function VoidFrame:GetGroupBuffs()
+function MzxToolFrame:GetGroupBuffs()
     local timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destRaidFlags =
         CombatLogGetCurrentEventInfo()
     if subevent == "SPELL_SUMMON" and sourceGUID == UnitGUID("player") then
@@ -25,17 +25,17 @@ function VoidFrame:GetGroupBuffs()
     end
 end
 
-function VoidFrame:CreateTotemDanceFrame(dance_time)
-    VoidModClassicCharacterDB.point.totem_dance = VoidModClassicCharacterDB.point.totem_dance or {
+function MzxToolFrame:CreateTotemDanceFrame(dance_time)
+    MzxToolClassicCharacterDB.point.totem_dance = MzxToolClassicCharacterDB.point.totem_dance or {
         p = totem_dance.up.p,
         x = totem_dance.up.x,
         y = totem_dance.up.y,
     }
     self.voidTotemDance = CreateFrame("Frame", "TotemDance", UIParent, "BackdropTemplate")
     self.voidTotemDance:SetSize(231, 50)
-    self.voidTotemDance:SetPoint(VoidModClassicCharacterDB.point.totem_dance.p,
-        VoidModClassicCharacterDB.point.totem_dance.x,
-        VoidModClassicCharacterDB.point.totem_dance.y)
+    self.voidTotemDance:SetPoint(MzxToolClassicCharacterDB.point.totem_dance.p,
+        MzxToolClassicCharacterDB.point.totem_dance.x,
+        MzxToolClassicCharacterDB.point.totem_dance.y)
     SetInfoFrameStyle(self.voidTotemDance)
 
     self.voidTotemDanceIcon = self.voidTotemDance:CreateTexture()
@@ -50,18 +50,18 @@ function VoidFrame:CreateTotemDanceFrame(dance_time)
     GetTotemDanceGameTooltip()
 end
 
-function VoidFrame:Void_CreateTotemDance()
+function MzxToolFrame:Void_CreateTotemDance()
     self:CreateTotemDanceFrame(FormatRemaining())
     MovableDisplay(self.voidTotemDance)
     MovableTotemDanceFrameStop()
 end
 
-function VoidFrame:Void_UpdateTotemDance()
+function MzxToolFrame:Void_UpdateTotemDance()
     if self.voidTotemDance then
         if totem_dance.remaining_time > 2 then
-            VoidFrame.voidTotemDanceIcon:SetTexture(136046)
+            MzxToolFrame.voidTotemDanceIcon:SetTexture(136046)
         else
-            VoidFrame.voidTotemDanceIcon:SetTexture(136114)
+            MzxToolFrame.voidTotemDanceIcon:SetTexture(136114)
         end
         self.voidTotemDanceText[2]:SetText(FormatRemaining())
     end
@@ -76,7 +76,7 @@ end
 
 function GetTotemDanceGameTooltip()
     -- 鼠标悬停事件
-    VoidFrame.voidTotemDanceIcon:SetScript("OnEnter", function(self)
+    MzxToolFrame.voidTotemDanceIcon:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:SetText("|cFFFF1493图腾舞|r")
         GameTooltip:AddLine("用于高端萨满玩家同时保持风怒图腾与风之优雅", 1, 0.9, 0) -- RGB白色
@@ -84,32 +84,32 @@ function GetTotemDanceGameTooltip()
         GameTooltip:Show()
     end)
 
-    VoidFrame.voidTotemDanceIcon:SetScript("OnLeave", function()
+    MzxToolFrame.voidTotemDanceIcon:SetScript("OnLeave", function()
         GameTooltip:Hide()
     end)
 end
 
 function MovableTotemDanceFrameStop()
     -- 拖动停止
-    VoidFrame.voidTotemDance:SetScript("OnDragStop", function(self)
+    MzxToolFrame.voidTotemDance:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
         self.isMoving = false
         local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
-        VoidModClassicCharacterDB.point.totem_dance.p = p    -- 保存
-        VoidModClassicCharacterDB.point.totem_dance.x = xOfs -- 保存
-        VoidModClassicCharacterDB.point.totem_dance.y = yOfs -- 保存
+        MzxToolClassicCharacterDB.point.totem_dance.p = p    -- 保存
+        MzxToolClassicCharacterDB.point.totem_dance.x = xOfs -- 保存
+        MzxToolClassicCharacterDB.point.totem_dance.y = yOfs -- 保存
     end)
 
     -- 双击居中
-    VoidFrame.voidTotemDance:SetScript("OnMouseUp", function(self, button)
+    MzxToolFrame.voidTotemDance:SetScript("OnMouseUp", function(self, button)
         if button == "LeftButton" and self.doubleClick then
             self:ClearAllPoints()
             self:SetPoint(totem_dance.up.p, totem_dance.up.x, totem_dance.up.y)
             local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
             -- 保存到变量或保存文件
-            VoidModClassicCharacterDB.point.totem_dance.p = p    -- 保存
-            VoidModClassicCharacterDB.point.totem_dance.x = xOfs -- 保存
-            VoidModClassicCharacterDB.point.totem_dance.y = yOfs -- 保存
+            MzxToolClassicCharacterDB.point.totem_dance.p = p    -- 保存
+            MzxToolClassicCharacterDB.point.totem_dance.x = xOfs -- 保存
+            MzxToolClassicCharacterDB.point.totem_dance.y = yOfs -- 保存
             self.doubleClick = false
         end
     end)

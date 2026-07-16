@@ -4,23 +4,24 @@
 ## Notes-zhCN: Mzx怀旧服工具箱，By -- 【月溪晓月】公会
 ## Author: 慕梓茜
 ## Version: 1.0.5-r1
-## SavedVariables: VoidModClassicDB
-## SavedVariablesPerCharacter: VoidModClassicCharacterDB
+## SavedVariables: MzxToolClassicDB
+## SavedVariablesPerCharacter: MzxToolClassicCharacterDB
 ## IconTexture: Interface\AddOns\VoidModClassic\Moon.png
 ## X-Curse-Project-ID: 1495336
 
-VoidData.lua
-VoidMod.lua
+MzxData.lua
+MzxTool.lua
 commend\MzxAddon.lua
 commend\Background.lua
 commend\Movable.lua
-module\ShieldInfo.lua
-module\BloodlustSimple.lua
+module\Shaman\ShieldInfo.lua
+module\Shaman\BloodlustSimple.lua
 module\MessageBot.lua
 module\PlayerInfo.lua
 module\SkillLineInfo.lua
-module\TotemInfo.lua
-module\TotemDance.lua
-module\TotemTool.lua
+module\Shaman\TotemInfo.lua
+module\Shaman\TotemDance.lua
+module\Shaman\TotemTool.lua
 module\ButtonAuto.lua
+module\Mage\TeleportTool.lua
 module\Priest\PowerWordShield.lua

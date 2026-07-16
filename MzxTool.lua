@@ -1,20 +1,20 @@
 -- 创建主框架
-VoidFrame = CreateFrame("Frame", "VoidModFrame", UIParent)
-VoidFrame:RegisterEvent("PLAYER_LOGIN")                -- 用户登录
-VoidFrame:RegisterEvent("UNIT_AURA")                   -- 获得或消失的增益、减益、状态或物品加成
-VoidFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")    -- 当法术成功施放时触发
-VoidFrame:RegisterEvent("CHAT_MSG_WHISPER")            -- 收到其他玩家的低语
-VoidFrame:RegisterEvent("PARTY_INVITE_REQUEST")        -- 排本邀请
-VoidFrame:RegisterEvent("GROUP_INVITE_CONFIRMATION")   -- 队伍邀请
-VoidFrame:RegisterEvent("UNIT_COMBAT")                 -- 当 NPC 或玩家参与战斗并受到伤害时触发
-VoidFrame:RegisterEvent("UNIT_RESISTANCES")            -- 当单位抗性发生变化时
-VoidFrame:RegisterEvent("SKILL_LINES_CHANGED")         -- 当玩家技能列表内容发生变化时(武器熟练度)
-VoidFrame:RegisterEvent("PLAYER_TOTEM_UPDATE")         -- 当图腾施放或被摧毁（召回或击杀）时
-VoidFrame:RegisterEvent("PLAYER_REGEN_DISABLED")       -- 进入战斗（脱离恢复状态）
-VoidFrame:RegisterEvent("PLAYER_REGEN_ENABLED")        -- 脱离战斗（进入恢复状态）
-VoidFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED") -- 战斗日志
+MzxToolFrame = CreateFrame("Frame", "VoidModFrame", UIParent)
+MzxToolFrame:RegisterEvent("PLAYER_LOGIN")                -- 用户登录
+MzxToolFrame:RegisterEvent("UNIT_AURA")                   -- 获得或消失的增益、减益、状态或物品加成
+MzxToolFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")    -- 当法术成功施放时触发
+MzxToolFrame:RegisterEvent("CHAT_MSG_WHISPER")            -- 收到其他玩家的低语
+MzxToolFrame:RegisterEvent("PARTY_INVITE_REQUEST")        -- 排本邀请
+MzxToolFrame:RegisterEvent("GROUP_INVITE_CONFIRMATION")   -- 队伍邀请
+MzxToolFrame:RegisterEvent("UNIT_COMBAT")                 -- 当 NPC 或玩家参与战斗并受到伤害时触发
+MzxToolFrame:RegisterEvent("UNIT_RESISTANCES")            -- 当单位抗性发生变化时
+MzxToolFrame:RegisterEvent("SKILL_LINES_CHANGED")         -- 当玩家技能列表内容发生变化时(武器熟练度)
+MzxToolFrame:RegisterEvent("PLAYER_TOTEM_UPDATE")         -- 当图腾施放或被摧毁（召回或击杀）时
+MzxToolFrame:RegisterEvent("PLAYER_REGEN_DISABLED")       -- 进入战斗（脱离恢复状态）
+MzxToolFrame:RegisterEvent("PLAYER_REGEN_ENABLED")        -- 脱离战斗（进入恢复状态）
+MzxToolFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED") -- 战斗日志
 
-VoidFrame:SetScript("OnEvent", function(self, event, ...)
+MzxToolFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_LOGIN" then
         self:Initialize()
         C_Timer.After(0, function()
@@ -71,7 +71,7 @@ VoidFrame:SetScript("OnEvent", function(self, event, ...)
     end
 end)
 
-VoidFrame:SetScript("OnUpdate", function(self, delta)
+MzxToolFrame:SetScript("OnUpdate", function(self, delta)
     self:Void_UpdateTotemTimeLeft()
     self:UpdateWeaponEnchant()
     -- self:Void_UpdateSkillLineInfo()
@@ -79,7 +79,7 @@ VoidFrame:SetScript("OnUpdate", function(self, delta)
     self:Void_UpdatePlayerInfo()
 end)
 
-function VoidFrame:Initialize()
+function MzxToolFrame:Initialize()
     -- 加载数据库
     InitDatabase()
 
@@ -87,7 +87,7 @@ function VoidFrame:Initialize()
     local className, classFilename, classId = UnitClass("player")
 
     -- 调试打印区域
-    if VoidModClassicCharacterDB.status.Debug then
+    if MzxToolClassicCharacterDB.status.Debug then
         print("|cFF33937FMzxToolbox|r |cFF69CCF0Player|r |cFF00FF00Info:|r \n » Name: " ..
             className .. "\n » FileName: " .. classFilename .. "\n » Id: " .. classId)
 
@@ -96,19 +96,19 @@ function VoidFrame:Initialize()
     end
 
     -- 创建属性显示框架
-    if VoidModClassicCharacterDB.status.PlayerInfo == true then
+    if MzxToolClassicCharacterDB.status.PlayerInfo == true then
         self:Void_CreatePlayerInfo()
     end
-    if VoidModClassicCharacterDB.status.SkillLine == true then
+    if MzxToolClassicCharacterDB.status.SkillLine == true then
         self:Void_CreateSkillLineInfo()
     end
 
     -- 萨满
     if classId == 7 then
-        if VoidModClassicCharacterDB.status.ShieldInfo == true then
+        if MzxToolClassicCharacterDB.status.ShieldInfo == true then
             self:Void_CreateShieldInfo()
         end
-        if VoidModClassicCharacterDB.status.TotemInfo == true then
+        if MzxToolClassicCharacterDB.status.TotemInfo == true then
             self:Void_CreateTotemInfo()
             self:Void_CreateTotemDance()
         end
@@ -130,20 +130,27 @@ function VoidFrame:Initialize()
 end
 
 -- 延后加载
-function VoidFrame:InitializeWorld()
+function MzxToolFrame:InitializeWorld()
     -- 职业框架
     -- 玩家信息
     local className, classFilename, classId = UnitClass("player")
 
     -- 萨满
     if classId == 7 then
-        if VoidModClassicCharacterDB.status.TotemTool == true then
+        if MzxToolClassicCharacterDB.status.TotemTool == true then
             self:Void_CreateTotemTool()
+        end
+    end
+
+    -- 法师
+    if classId == 8 then
+        if MzxToolClassicCharacterDB.status.TeleportTool == true then
+            self:Void_CreateTeleportTool()
         end
     end
 end
 
-function VoidFrame:HandleSlashCommand(msg)
+function MzxToolFrame:HandleSlashCommand(msg)
     local command = strlower(strtrim(msg))
 
     if command == "bls test" then
@@ -165,22 +172,22 @@ function VoidFrame:HandleSlashCommand(msg)
                 MzxDebug("Off")
             elseif value == "1" then
                 MzxDebug("Shield on")
-                VoidModClassicCharacterDB.status.ShieldInfo = true
+                MzxToolClassicCharacterDB.status.ShieldInfo = true
             elseif value == "2" then
                 MzxDebug("PlayerInfo on")
-                VoidModClassicCharacterDB.status.PlayerInfo = true
+                MzxToolClassicCharacterDB.status.PlayerInfo = true
             elseif value == "3" then
                 MzxDebug("SkillLine on")
-                VoidModClassicCharacterDB.status.SkillLine = true
+                MzxToolClassicCharacterDB.status.SkillLine = true
             elseif value == "4" then
                 MzxDebug("TotemInfo on")
-                VoidModClassicCharacterDB.status.TotemInfo = true
+                MzxToolClassicCharacterDB.status.TotemInfo = true
             elseif value == "5" then
                 MzxDebug("TotemTool on")
-                VoidModClassicCharacterDB.status.TotemTool = true
+                MzxToolClassicCharacterDB.status.TotemTool = true
             else
                 MzxDebug("All on")
-                VoidModClassicCharacterDB.status = {
+                MzxToolClassicCharacterDB.status = {
                     ShieldInfo = true,
                     PlayerInfo = true,
                     SkillLine = true,
@@ -197,22 +204,22 @@ function VoidFrame:HandleSlashCommand(msg)
                 MzxDebug("On")
             elseif value == "1" then
                 MzxDebug("Shield off")
-                VoidModClassicCharacterDB.status.ShieldInfo = false
+                MzxToolClassicCharacterDB.status.ShieldInfo = false
             elseif value == "2" then
                 MzxDebug("PlayerInfo off")
-                VoidModClassicCharacterDB.status.PlayerInfo = false
+                MzxToolClassicCharacterDB.status.PlayerInfo = false
             elseif value == "3" then
                 MzxDebug("SkillLine off")
-                VoidModClassicCharacterDB.status.SkillLine = false
+                MzxToolClassicCharacterDB.status.SkillLine = false
             elseif value == "4" then
                 MzxDebug("TotemInfo off")
-                VoidModClassicCharacterDB.status.TotemInfo = false
+                MzxToolClassicCharacterDB.status.TotemInfo = false
             elseif value == "5" then
                 MzxDebug("TotemTool off")
-                VoidModClassicCharacterDB.status.TotemTool = false
+                MzxToolClassicCharacterDB.status.TotemTool = false
             else
                 MzxDebug("All off")
-                VoidModClassicCharacterDB.status = {
+                MzxToolClassicCharacterDB.status = {
                     ShieldInfo = false,
                     PlayerInfo = false,
                     SkillLine = false,
@@ -223,10 +230,10 @@ function VoidFrame:HandleSlashCommand(msg)
         end
         ReloadUI()
     elseif command == "debug on" then
-        VoidModClassicCharacterDB.status.Debug = true
+        MzxToolClassicCharacterDB.status.Debug = true
         ReloadUI()
     elseif command == "debug off" then
-        VoidModClassicCharacterDB.status.Debug = false
+        MzxToolClassicCharacterDB.status.Debug = false
         ReloadUI()
     elseif command == "info" then
         self:Void_PlayerInfo()
@@ -238,14 +245,14 @@ function VoidFrame:HandleSlashCommand(msg)
     end
 end
 
-function VoidFrame:ClientInfo()
+function MzxToolFrame:ClientInfo()
     local version, build, date, toc_version = GetBuildInfo()
     print("|cFF33937FWoW|r |cFF69CCF0Client|r |cFF00FF00Info:|r \n » Version: " ..
         version .. "\n » Build: " .. build .. "\n » Date: " .. date .. "\n » TocVersion: " .. toc_version)
     print("|cFF00FF00VersionDate|r 202603281301")
 end
 
-function VoidFrame:PrintHelp()
+function MzxToolFrame:PrintHelp()
     DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00恶龙咆哮菜单:|r")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /mzx new|r - 初始化设置")
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 /mzx show|r |cFF00CCFF[module编号]|r - 开启模块")

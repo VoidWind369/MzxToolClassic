@@ -88,16 +88,16 @@ function TotemArgs(name, subtext, icon, castTime, minRange, maxRange, spellID, o
 end
 
 --- 创建图腾收纳面板
-function VoidFrame:CreateTotemToolFrame(totems)
+function MzxToolFrame:CreateTotemToolFrame(totems)
     -- 初始化位置
-    VoidModClassicCharacterDB.point.totem_tool = VoidModClassicCharacterDB.point.totem_tool or {
+    MzxToolClassicCharacterDB.point.totem_tool = MzxToolClassicCharacterDB.point.totem_tool or {
         p = totem_tool.up.p,
         x = totem_tool.up.x,
         y = totem_tool.up.y,
     }
-    local point = VoidModClassicCharacterDB.point.totem_tool
+    local point = MzxToolClassicCharacterDB.point.totem_tool
     -- 加载图腾配置
-    VoidModClassicCharacterDB.totem.default_btn = VoidModClassicCharacterDB.totem.default_btn or {}
+    MzxToolClassicCharacterDB.totem.default_btn = MzxToolClassicCharacterDB.totem.default_btn or {}
 
     -- 创建主框体
     self.voidTotemTool = CreateFrame("Frame", "TotemTool", UIParent, "BackdropTemplate")
@@ -115,7 +115,7 @@ function VoidFrame:CreateTotemToolFrame(totems)
             }
         end
         -- 初始化保存的图腾
-        local db = VoidModClassicCharacterDB.totem.default_btn[index] or {
+        local db = MzxToolClassicCharacterDB.totem.default_btn[index] or {
             icon = totem[1].icon,
             spellID = totem[1].spellID,
             name = totem[1].name
@@ -177,7 +177,7 @@ function VoidFrame:CreateTotemToolFrame(totems)
 end
 
 -- 四系图腾列表框体
-function VoidFrame:TotemFrame(frame, totem_spells, type_index)
+function MzxToolFrame:TotemFrame(frame, totem_spells, type_index)
     local len = #totem_spells
     frame:SetSize(45, len * 40 + 6)
     frame:SetPoint("BOTTOM", 0, 45)
@@ -207,7 +207,7 @@ function VoidFrame:TotemFrame(frame, totem_spells, type_index)
                     self.voidTotemToolIcons[type_index]:SetNormalTexture(totem.icon)
                     self.voidTotemToolIcons[type_index]:SetAttribute("spell", totem.spellID)
                     -- 保存图腾设置
-                    VoidModClassicCharacterDB.totem.default_btn[type_index] = {
+                    MzxToolClassicCharacterDB.totem.default_btn[type_index] = {
                         icon = totem.icon,
                         spellID = totem.spellID,
                         name = totem.name
@@ -256,7 +256,7 @@ function VoidFrame:TotemFrame(frame, totem_spells, type_index)
     end
 end
 
-function VoidFrame:Void_CreateTotemTool()
+function MzxToolFrame:Void_CreateTotemTool()
     local totems = nil
     while (true) do
         local t = GetTotems() -- 用 pcall 捕获错误
@@ -267,7 +267,7 @@ function VoidFrame:Void_CreateTotemTool()
     end
     self:CreateTotemToolFrame(totems)
     MovableDisplay(self.voidTotemTool)
-    MovableFrameStop(self.voidTotemTool, VoidModClassicCharacterDB.point.totem_tool, totem_tool.up)
+    MovableFrameStop(self.voidTotemTool, MzxToolClassicCharacterDB.point.totem_tool, totem_tool.up)
 end
 
 function ShowTotemFrame(frame)
@@ -302,7 +302,7 @@ function HideTotemFrame(frame)
     end
 end
 
-function VoidFrame:TotemRegenDisabled()
+function MzxToolFrame:TotemRegenDisabled()
     MzxDebug("图腾工具进入战斗")
     for elem, container in pairs(self.voidTotemToolIcons) do
         if not container.totem_frame:IsShown() then
@@ -325,7 +325,7 @@ function VoidFrame:TotemRegenDisabled()
     end
 end
 
-function VoidFrame:TotemRegenEnabled()
+function MzxToolFrame:TotemRegenEnabled()
     MzxDebug("图腾工具离开战斗")
     for elem, container in pairs(self.voidTotemToolIcons) do
         if not totem_tool.button_frame[elem] then

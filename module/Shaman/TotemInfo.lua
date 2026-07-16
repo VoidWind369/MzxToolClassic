@@ -6,7 +6,7 @@ local totem = {
     },
 }
 
-function VoidFrame.GetTotemInfo()
+function MzxToolFrame.GetTotemInfo()
     local totem_info = {}
     local color = { { "|cFFFF4500", "(火焰图腾)" }, { "|cFF8B4513", "(大地图腾)" }, { "|cFF1E90FF", "(水之图腾)" }, { "|cFF40E0D0", "(空气图腾)" } }
     for index, value in ipairs(color) do
@@ -27,7 +27,7 @@ function VoidFrame.GetTotemInfo()
     return totem_info
 end
 
-function VoidFrame.GetTotemTimeLeft()
+function MzxToolFrame.GetTotemTimeLeft()
     local totem_info = {}
     local color = { { "|cFFFF4500", "(火焰图腾)" }, { "|cFF8B4513", "(大地图腾)" }, { "|cFF1E90FF", "(水之图腾)" }, { "|cFF40E0D0", "(空气图腾)" } }
     for index, value in ipairs(color) do
@@ -42,8 +42,8 @@ function VoidFrame.GetTotemTimeLeft()
 end
 
 --- # 创建图腾框体
-function VoidFrame:Void_CreateTotemInfoFrame(totem_info)
-    VoidModClassicCharacterDB.point.totem = VoidModClassicCharacterDB.point.totem or {
+function MzxToolFrame:Void_CreateTotemInfoFrame(totem_info)
+    MzxToolClassicCharacterDB.point.totem = MzxToolClassicCharacterDB.point.totem or {
         p = totem.up.p,
         x = totem.up.x,
         y = totem.up.y,
@@ -51,9 +51,9 @@ function VoidFrame:Void_CreateTotemInfoFrame(totem_info)
 
     self.voidTotemInfo = CreateFrame("Frame", "Totem", UIParent, "BackdropTemplate")
     self.voidTotemInfo:SetSize(231, #totem_info * 26 + 10)
-    self.voidTotemInfo:SetPoint(VoidModClassicCharacterDB.point.totem.p,
-        VoidModClassicCharacterDB.point.totem.x,
-        VoidModClassicCharacterDB.point.totem.y)
+    self.voidTotemInfo:SetPoint(MzxToolClassicCharacterDB.point.totem.p,
+        MzxToolClassicCharacterDB.point.totem.x,
+        MzxToolClassicCharacterDB.point.totem.y)
     SetInfoFrameStyle(self.voidTotemInfo)
 
     self.voidTotemInfoIcon = {}
@@ -73,8 +73,8 @@ function VoidFrame:Void_CreateTotemInfoFrame(totem_info)
 end
 
 --- # 创建图腾信息框体
-function VoidFrame:Void_CreateTotemInfo()
-    self:Void_CreateTotemInfoFrame(VoidFrame:GetTotemInfo())
+function MzxToolFrame:Void_CreateTotemInfo()
+    self:Void_CreateTotemInfoFrame(MzxToolFrame:GetTotemInfo())
 
     MovableDisplay(self.voidTotemInfo)
     self:RecycleTotem()
@@ -83,10 +83,10 @@ function VoidFrame:Void_CreateTotemInfo()
 end
 
 --- # 刷新图腾信息框体
-function VoidFrame:Void_UpdateTotemInfo()
+function MzxToolFrame:Void_UpdateTotemInfo()
     -- 判断是否启用
     if self.voidTotemInfo then
-        local info = VoidFrame:GetTotemInfo()
+        local info = MzxToolFrame:GetTotemInfo()
         for index, value in ipairs(info) do
             self.voidTotemInfoIcon[index]:SetTexture(value.icon)
             self.voidTotemInfoNameText[index]:SetText(value.name)
@@ -96,18 +96,18 @@ function VoidFrame:Void_UpdateTotemInfo()
 end
 
 --- # 刷新图腾剩余时间
-function VoidFrame:Void_UpdateTotemTimeLeft()
+function MzxToolFrame:Void_UpdateTotemTimeLeft()
     -- 判断是否启用
     if self.voidTotemInfo then
-        local info = VoidFrame:GetTotemTimeLeft()
+        local info = MzxToolFrame:GetTotemTimeLeft()
         for index, value in ipairs(info) do
             self.voidTotemInfoDurText[index]:SetText(value.dur)
         end
     end
 end
 
-function VoidFrame:RecycleTotem()
-    VoidFrame.voidTotemInfo.secureBtn = CreateFrame("Button", "RecycleTotemBtn", self.voidTotemInfo,
+function MzxToolFrame:RecycleTotem()
+    MzxToolFrame.voidTotemInfo.secureBtn = CreateFrame("Button", "RecycleTotemBtn", self.voidTotemInfo,
         "SecureActionButtonTemplate")
     self.voidTotemInfo.secureBtn:SetSize(110, 100)
     -- self.voidTotemInfo.secureBtn:SetNormalTexture(136233)
@@ -120,7 +120,7 @@ function VoidFrame:RecycleTotem()
 end
 
 function GetTotemGameTooltip()
-    for index, value in ipairs(VoidFrame.voidTotemInfoIcon) do
+    for index, value in ipairs(MzxToolFrame.voidTotemInfoIcon) do
         -- 鼠标悬停事件
         value:SetScript("OnEnter", function(self)
             local haveTotem, totemName, startTime, duration, icon, modRate, spellID = GetTotemInfo(index)
@@ -137,25 +137,25 @@ end
 
 function MovableTotemFrameStop()
     -- 拖动停止
-    VoidFrame.voidTotemInfo:SetScript("OnDragStop", function(self)
+    MzxToolFrame.voidTotemInfo:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
         self.isMoving = false
         local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
-        VoidModClassicCharacterDB.point.totem.p = p    -- 保存
-        VoidModClassicCharacterDB.point.totem.x = xOfs -- 保存
-        VoidModClassicCharacterDB.point.totem.y = yOfs -- 保存
+        MzxToolClassicCharacterDB.point.totem.p = p    -- 保存
+        MzxToolClassicCharacterDB.point.totem.x = xOfs -- 保存
+        MzxToolClassicCharacterDB.point.totem.y = yOfs -- 保存
     end)
 
     -- 双击居中
-    VoidFrame.voidTotemInfo:SetScript("OnMouseUp", function(self, button)
+    MzxToolFrame.voidTotemInfo:SetScript("OnMouseUp", function(self, button)
         if button == "LeftButton" and self.doubleClick then
             self:ClearAllPoints()
             self:SetPoint(totem.up.p, totem.up.x, totem.up.y)
             local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
             -- 保存到变量或保存文件
-            VoidModClassicCharacterDB.point.totem.p = p    -- 保存
-            VoidModClassicCharacterDB.point.totem.x = xOfs -- 保存
-            VoidModClassicCharacterDB.point.totem.y = yOfs -- 保存
+            MzxToolClassicCharacterDB.point.totem.p = p    -- 保存
+            MzxToolClassicCharacterDB.point.totem.x = xOfs -- 保存
+            MzxToolClassicCharacterDB.point.totem.y = yOfs -- 保存
             self.doubleClick = false
         end
     end)

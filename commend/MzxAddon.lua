@@ -8,25 +8,6 @@ local AceConfig = LibStub("AceConfig-3.0")
 local MzxToolAddon = LibStub("AceAddon-3.0"):NewAddon("MzxToolAddon", "AceConsole-3.0")
 
 -- ============================================
--- 1. 使用你原有的数据库初始化函数
--- ============================================
-function InitDatabase()
-    VoidModClassicDB = VoidModClassicDB or {}
-    VoidModClassicCharacterDB = VoidModClassicCharacterDB or {
-        point = {}
-    }
-    VoidModClassicCharacterDB.status = VoidModClassicCharacterDB.status or {
-        PlayerInfo = false,
-        SkillLine = false,
-        ShieldInfo = true,
-        TotemInfo = true,
-        TotemTool = true,
-        Debug = false
-    }
-    VoidModClassicCharacterDB.totem = VoidModClassicCharacterDB.totem or {}
-end
-
--- ============================================
 -- 2. 初始化
 -- ============================================
 function MzxToolAddon:OnInitialize()
@@ -34,8 +15,8 @@ function MzxToolAddon:OnInitialize()
     InitDatabase()
 
     -- 将全局表关联到插件对象（方便后续调用）
-    self.db = VoidModClassicDB
-    self.charDB = VoidModClassicCharacterDB
+    self.db = MzxToolClassicDB
+    self.charDB = MzxToolClassicCharacterDB
 
     -- 注册选项表
     AceConfig:RegisterOptionsTable("MzxToolAddon", self.options)
@@ -88,9 +69,9 @@ MzxToolAddon.options = {
                     name = "玩家属性面板",
                     desc = "显示玩家详细信息",
                     order = 1,
-                    get = function() return VoidModClassicCharacterDB.status.PlayerInfo end,
+                    get = function() return MzxToolClassicCharacterDB.status.PlayerInfo end,
                     set = function(info, value)
-                        VoidModClassicCharacterDB.status.PlayerInfo = value
+                        MzxToolClassicCharacterDB.status.PlayerInfo = value
                     end,
                 },
                 SkillLine = {
@@ -98,9 +79,9 @@ MzxToolAddon.options = {
                     name = "武器技能信息",
                     desc = "显示技能条信息",
                     order = 2,
-                    get = function() return VoidModClassicCharacterDB.status.SkillLine end,
+                    get = function() return MzxToolClassicCharacterDB.status.SkillLine end,
                     set = function(info, value)
-                        VoidModClassicCharacterDB.status.SkillLine = value
+                        MzxToolClassicCharacterDB.status.SkillLine = value
                     end,
                 },
                 ShieldInfo = {
@@ -108,9 +89,9 @@ MzxToolAddon.options = {
                     name = "萨满元素护盾监控",
                     desc = "显示萨满元素护盾状态",
                     order = 3,
-                    get = function() return VoidModClassicCharacterDB.status.ShieldInfo end,
+                    get = function() return MzxToolClassicCharacterDB.status.ShieldInfo end,
                     set = function(info, value)
-                        VoidModClassicCharacterDB.status.ShieldInfo = value
+                        MzxToolClassicCharacterDB.status.ShieldInfo = value
                     end,
                 },
                 TotemInfo = {
@@ -118,9 +99,9 @@ MzxToolAddon.options = {
                     name = "萨满图腾信息",
                     desc = "显示图腾状态信息",
                     order = 4,
-                    get = function() return VoidModClassicCharacterDB.status.TotemInfo end,
+                    get = function() return MzxToolClassicCharacterDB.status.TotemInfo end,
                     set = function(info, value)
-                        VoidModClassicCharacterDB.status.TotemInfo = value
+                        MzxToolClassicCharacterDB.status.TotemInfo = value
                     end,
                 },
                 TotemTool = {
@@ -128,19 +109,29 @@ MzxToolAddon.options = {
                     name = "萨满图腾工具",
                     desc = "显示图腾辅助工具",
                     order = 5,
-                    get = function() return VoidModClassicCharacterDB.status.TotemTool end,
+                    get = function() return MzxToolClassicCharacterDB.status.TotemTool end,
                     set = function(info, value)
-                        VoidModClassicCharacterDB.status.TotemTool = value
+                        MzxToolClassicCharacterDB.status.TotemTool = value
+                    end,
+                },
+                TeleportTool = {
+                    type = "toggle",
+                    name = "法师传送工具",
+                    desc = "显示传送辅助工具",
+                    order = 6,
+                    get = function() return MzxToolClassicCharacterDB.status.TeleportTool end,
+                    set = function(info, value)
+                        MzxToolClassicCharacterDB.status.TeleportTool = value
                     end,
                 },
                 Debug = {
                     type = "toggle",
                     name = "调试模式",
                     desc = "开启调试信息输出",
-                    order = 6,
-                    get = function() return VoidModClassicCharacterDB.status.Debug end,
+                    order = 7,
+                    get = function() return MzxToolClassicCharacterDB.status.Debug end,
                     set = function(info, value)
-                        VoidModClassicCharacterDB.status.Debug = value
+                        MzxToolClassicCharacterDB.status.Debug = value
                         if value then
                             print("|CFFFFAA00调试模式已开启|r")
                         else
@@ -165,8 +156,8 @@ MzxToolAddon.options = {
                     order = 1,
                     width = "0.5",
                     func = function()
-                        for key, _ in pairs(VoidModClassicCharacterDB.status) do
-                            VoidModClassicCharacterDB.status[key] = true
+                        for key, _ in pairs(MzxToolClassicCharacterDB.status) do
+                            MzxToolClassicCharacterDB.status[key] = true
                         end
                         print("|CFF00FF00所有功能已开启|r")
                         -- 刷新配置面板显示
@@ -183,8 +174,8 @@ MzxToolAddon.options = {
                     order = 2,
                     width = "0.5",
                     func = function()
-                        for key, _ in pairs(VoidModClassicCharacterDB.status) do
-                            VoidModClassicCharacterDB.status[key] = false
+                        for key, _ in pairs(MzxToolClassicCharacterDB.status) do
+                            MzxToolClassicCharacterDB.status[key] = false
                         end
                         print("|CFFFF0000所有功能已关闭|r")
                         if AceConfigDialog.OpenFrames and AceConfigDialog.OpenFrames["MzxToolAddon"] then
@@ -207,51 +198,6 @@ MzxToolAddon.options = {
                             AceConfigDialog:Open("MzxToolAddon")
                         end
                         ReloadUI()
-                    end,
-                },
-            }
-        },
-
-        -- ===== 当前状态显示 =====
-        statusDisplay = {
-            type = "group",
-            name = "当前状态",
-            order = 3,
-            inline = true,
-            args = {
-                desc = {
-                    type = "description",
-                    name = function()
-                        local status = VoidModClassicCharacterDB.status
-                        return string.format(
-                            "|cFF88CCFF当前配置状态|r\n" ..
-                            "玩家信息: %s\n" ..
-                            "技能条: %s\n" ..
-                            "护盾信息: %s\n" ..
-                            "图腾信息: %s\n" ..
-                            "图腾工具: %s\n" ..
-                            "调试模式: %s",
-                            status.PlayerInfo and "|CFF00FF00 开启|r" or "|CFFFF0000 关闭|r",
-                            status.SkillLine and "|CFF00FF00 开启|r" or "|CFFFF0000 关闭|r",
-                            status.ShieldInfo and "|CFF00FF00 开启|r" or "|CFFFF0000 关闭|r",
-                            status.TotemInfo and "|CFF00FF00 开启|r" or "|CFFFF0000 关闭|r",
-                            status.TotemTool and "|CFF00FF00 开启|r" or "|CFFFF0000 关闭|r",
-                            status.Debug and "|CFF00FF00 开启|r" or "|CFFFF0000 关闭|r"
-                        )
-                    end,
-                    order = 1,
-                },
-                refreshBtn = {
-                    type = "execute",
-                    name = "刷新状态显示",
-                    desc = "刷新当前状态文本",
-                    order = 2,
-                    width = "full",
-                    func = function()
-                        if AceConfigDialog.OpenFrames and AceConfigDialog.OpenFrames["MzxToolAddon"] then
-                            AceConfigDialog:Close("MzxToolAddon")
-                            AceConfigDialog:Open("MzxToolAddon")
-                        end
                     end,
                 },
             }
