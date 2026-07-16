@@ -58,15 +58,20 @@ function WhiteTransparentDotTex(dotTex, infos)
 end
 
 --- # 框体通用属性
-function SetInfoFrameStyle(frame)
+function SetInfoFrameStyle(frame, no_border)
     frame:SetBackdrop({
         bgFile = texturePath,
         edgeFile = textureBorder,
         edgeSize = 12,
         insets = { left = 6, right = 6, top = 6, bottom = 6 },
     })
-    frame:SetBackdropColor(0, 0, 0, 0.3)
     frame:SetBackdropBorderColor(0.2, 0.2, 0.2, 0.5)
+    if no_border then
+        frame:SetBackdrop({
+            bgFile = texturePath,
+        })
+    end
+    frame:SetBackdropColor(0, 0, 0, 0.3)
 end
 
 --- # 框体通用属性

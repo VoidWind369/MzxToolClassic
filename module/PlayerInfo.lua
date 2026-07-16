@@ -86,44 +86,50 @@ function MzxToolFrame:Void_PlayerInfo()
     local speedPercent = (currentSpeed / 7) * 100 -- 7是基础奔跑速度
     --local power = UnitPower("player", Enum.PowerType.Mana)
 
+    local first_table = {
+        { name = "|cFFC41E3A" .. attribute.name .. "|r", value = attribute.damage },
+        { name = "|cFFC41E3A暴击几率|r", value = string.format(" %.2f%%", attribute.chance or 0) },
+        { name = "|cFF3FC7EB命中等级|r", value = attribute.rating },
+        { name = "|cFF3FC7EB命中几率|r", value = string.format(" %.2f%%", attribute.ratingBonus or 0) },
+        { name = "|cFFCD7F32急速等级|r", value = string.format(" %.1f%%", haste or 0) },
+        { name = "|cFFCD7F32移动速度|r", value = string.format(" %.1f%%", speedPercent or 0) },
+    }
+
     -- local first_table = {
-    --     string.format("|cFFC41E3A力量 %d|r", strength),
-    --     string.format("|cFFF48CBA敏捷 %d|r", agility),
-    --     string.format("|cFFFFF468耐力 %d|r", stamina),
-    --     string.format("|cFF3FC7EB智力 %d|r", intellect),
-    --     string.format("|cFF33937F精神 %d|r", spirit),
-    --     string.format("|cFFCD7F32护甲 %d|r", physical),
+    --     name = {
+    --         "|cFFC41E3A" .. attribute.name .. "|r",
+    --         "|cFFC41E3A暴击几率|r",
+    --         "|cFF3FC7EB命中等级|r",
+    --         "|cFF3FC7EB命中几率|r",
+    --         "|cFFCD7F32急速等级|r",
+    --         "|cFFCD7F32移动速度|r",
+    --     },
+    --     value = {
+    --         attribute.damage,
+    --         string.format(" %.2f%%", attribute.chance or 0),
+    --         attribute.rating,
+    --         string.format(" %.2f%%", attribute.ratingBonus or 0),
+    --         string.format(" %.1f%%", haste or 0),
+    --         string.format(" %.1f%%", speedPercent or 0),
+    --     }
     -- }
 
-    local first_table = {
-        name = {
-            "|cFFC41E3A" .. attribute.name .. "|r",
-            "|cFFC41E3A暴击几率|r",
-            "|cFF3FC7EB命中等级|r",
-            "|cFF3FC7EB命中几率|r",
-            "|cFFCD7F32急速等级|r",
-            "|cFFCD7F32移动速度|r",
-        },
-        value = {
-            attribute.damage,
-            string.format(" %.2f%%", attribute.chance or 0),
-            attribute.rating,
-            string.format(" %.2f%%", attribute.ratingBonus or 0),
-            string.format(" %.1f%%", haste or 0),
-            string.format(" %.1f%%", speedPercent or 0),
-        }
-    }
-
     local last_table = {
-        name = { "|cFFFFFF66神圣|r", "|cFFFF3300火焰|r", "|cFF00FF00自然|r", "|cFF00CCFF冰霜|r", "|cFF9933CC暗影|r", "|cFFFF66FF奥数|r" },
-        value = { holy, fire, nature, frost, shadow, arcane },
+        { name = "|cFFFFFF66物理|r", value = physical },
+        { name = "|cFFFFFF66神圣|r", value = holy },
+        { name = "|cFFFF3300火焰|r", value = fire },
+        { name = "|cFF00FF00自然|r", value = nature },
+        { name = "|cFF00CCFF冰霜|r", value = frost },
+        { name = "|cFF9933CC暗影|r", value = shadow },
+        { name = "|cFFFF66FF奥数|r", value = arcane }
     }
-    local last = table.concat(last_table, "\n")
 
-    local info = string.format("|cFFFFFF00生命 %d\n移速 %.2f%%|r", health, speedPercent)
-    local sub_attribute = string.format("暴击 %d\n急速 %d\n精通 %d", crit, haste, mastery)
+    -- local last_table = {
+    --     name = { "|cFFFFFF66物理|r", "|cFFFFFF66神圣|r", "|cFFFF3300火焰|r", "|cFF00FF00自然|r", "|cFF00CCFF冰霜|r", "|cFF9933CC暗影|r", "|cFFFF66FF奥数|r" },
+    --     value = { physical, holy, fire, nature, frost, shadow, arcane },
+    -- }
 
-    return first_table, last_table, info, sub_attribute
+    return first_table, last_table
 end
 
 --- # 创建主属性框体
@@ -135,42 +141,70 @@ function MzxToolFrame:Void_CreatePlayerInfoFrame_UP(first)
     }
 
     self.voidPlayerInfo_UP = CreateFrame("Frame", "PlayerInfo_UP", UIParent, "BackdropTemplate")
-    self.voidPlayerInfo_UP:SetSize(150, 115)
+    self.voidPlayerInfo_UP:SetSize(140, #first * 20 + 10)
     self.voidPlayerInfo_UP:SetPoint(MzxToolClassicCharacterDB.point.player_up.p,
         MzxToolClassicCharacterDB.point.player_up.x,
         MzxToolClassicCharacterDB.point.player_up.y)
-    SetInfoFrameStyle(self.voidPlayerInfo_UP)
+    SetInfoFrameStyle(self.voidPlayerInfo_UP, true)
 
-    self.voidPlayerInfoText_UP = {
-        self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
-        self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
-    }
+    -- self.voidPlayerInfoText_UP = {
+    --     self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
+    --     self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
+    -- }
 
-    AddStringLeft(self.voidPlayerInfoText_UP[1], table.concat(first.name, "\n"))
-    AddStringRight(self.voidPlayerInfoText_UP[2], table.concat(first.value, "\n"))
+    -- for _, value in ipairs(first.name) do
+    --     AddStringLeft(self.voidPlayerInfoText_UP[1], value)
+    -- end
+    -- for _, value in ipairs(first.value) do
+    --     AddStringRight(self.voidPlayerInfoText_UP[2], value)
+    -- end
+
+    self.voidPlayerInfoText_UP = {}
+    for index, value in ipairs(first) do
+        self.voidPlayerInfoText_UP[index] = {
+            self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
+            self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
+        }
+        AddStringLeft(self.voidPlayerInfoText_UP[index][1], value.name, nil, 6, (1 - index) * 20 + (#first - 1) * 10)
+        AddStringRight(self.voidPlayerInfoText_UP[index][2], value.value, nil, -5, (1 - index) * 20 + (#first - 1) * 10)
+    end
 end
 
 --- # 创建副属性框体
-function MzxToolFrame:Void_CreatePlayerInfoFrame_Down(info)
+function MzxToolFrame:Void_CreatePlayerInfoFrame_Down(last)
     MzxToolClassicCharacterDB.point.player_down = MzxToolClassicCharacterDB.point.player_down or {
         p = point.player_down.p,
         x = point.player_down.x,
         y = point.player_down.y
     }
     self.voidPlayerInfo_DOWN = CreateFrame("Frame", "PlayerInfo_DOWN", UIParent, "BackdropTemplate")
-    self.voidPlayerInfo_DOWN:SetSize(90, 115)
+    self.voidPlayerInfo_DOWN:SetSize(90, #last * 20 + 10)
     self.voidPlayerInfo_DOWN:SetPoint(MzxToolClassicCharacterDB.point.player_down.p,
         MzxToolClassicCharacterDB.point.player_down.x,
         MzxToolClassicCharacterDB.point.player_down.y)
-    SetInfoFrameStyle(self.voidPlayerInfo_DOWN)
+    SetInfoFrameStyle(self.voidPlayerInfo_DOWN, true)
 
-    self.voidPlayerInfoText_DOWN = {
-        self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
-        self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
-    }
+    -- self.voidPlayerInfoText_DOWN = {
+    --     self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
+    --     self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
+    -- }
 
-    AddStringLeft(self.voidPlayerInfoText_DOWN[1], table.concat(info.name, "\n"))
-    AddStringRight(self.voidPlayerInfoText_DOWN[2], table.concat(info.value, "\n"))
+    -- for _, value in ipairs(last.name) do
+    --     AddStringLeft(self.voidPlayerInfoText_DOWN[1], value)
+    -- end
+    -- for _, value in ipairs(last.value) do
+    --     AddStringRight(self.voidPlayerInfoText_DOWN[2], value)
+    -- end
+
+    self.voidPlayerInfoText_DOWN = {}
+    for index, value in ipairs(last) do
+        self.voidPlayerInfoText_DOWN[index] = {
+            self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
+            self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
+        }
+        AddStringLeft(self.voidPlayerInfoText_DOWN[index][1], value.name, nil, 6, (1 - index) * 20 + (#last - 1) * 10)
+        AddStringRight(self.voidPlayerInfoText_DOWN[index][2], value.value, nil, -5, (1 - index) * 20 + (#last - 1) * 10)
+    end
 end
 
 --- # 创建玩家信息框体
@@ -191,10 +225,18 @@ end
 --- # 刷新玩家信息框体
 function MzxToolFrame:Void_UpdatePlayerInfo()
     if self.voidPlayerInfo_UP and self.voidPlayerInfo_DOWN then
-        local first, info = MzxToolFrame:Void_PlayerInfo()
-        self.voidPlayerInfoText_UP[1]:SetText(table.concat(first.name, "\n"))
-        self.voidPlayerInfoText_UP[2]:SetText(table.concat(first.value, "\n"))
-        self.voidPlayerInfoText_DOWN[1]:SetText(table.concat(info.name, "\n"))
-        self.voidPlayerInfoText_DOWN[2]:SetText(table.concat(info.value, "\n"))
+        local first, last = MzxToolFrame:Void_PlayerInfo()
+        for index, value in ipairs(first) do
+            self.voidPlayerInfoText_UP[index][1]:SetText(value.name)
+            self.voidPlayerInfoText_UP[index][2]:SetText(value.value)
+        end
+        for index, value in ipairs(last) do
+            self.voidPlayerInfoText_DOWN[index][1]:SetText(value.name)
+            self.voidPlayerInfoText_DOWN[index][2]:SetText(value.value)
+        end
+        -- self.voidPlayerInfoText_UP[1]:SetText(table.concat(first.name, "\n"))
+        -- self.voidPlayerInfoText_UP[2]:SetText(table.concat(first.value, "\n"))
+        -- self.voidPlayerInfoText_DOWN[1]:SetText(table.concat(last.name, "\n"))
+        -- self.voidPlayerInfoText_DOWN[2]:SetText(table.concat(last.value, "\n"))
     end
 end
