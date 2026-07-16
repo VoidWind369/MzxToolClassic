@@ -17,7 +17,7 @@ local totem_tool = {
 
 -- # Api接口
 function GetTotems()
-    local totems = { {}, {}, {}, {} }
+    local totems = {}
 
     local totem_map = {
         earth = { "石肤图腾", "石爪图腾", "土元素图腾", "大地之力图腾", "地缚图腾", "战栗图腾" },
@@ -50,21 +50,25 @@ function GetTotems()
     for key, spell in pairs(spells) do
         for index, value in ipairs(totem_map.earth) do
             if spell.name == value then
+                totems[1] = totems[1] or {}
                 table.insert(totems[1], spell)
             end
         end
         for index, value in ipairs(totem_map.fire) do
             if spell.name == value then
+                totems[2] = totems[2] or {}
                 table.insert(totems[2], spell)
             end
         end
         for index, value in ipairs(totem_map.water) do
             if spell.name == value then
+                totems[3] = totems[3] or {}
                 table.insert(totems[3], spell)
             end
         end
         for index, value in ipairs(totem_map.air) do
             if spell.name == value then
+                totems[4] = totems[4] or {}
                 table.insert(totems[4], spell)
             end
         end
@@ -101,78 +105,73 @@ function MzxToolFrame:CreateTotemToolFrame(totems)
 
     -- 创建主框体
     self.voidTotemTool = CreateFrame("Frame", "TotemTool", UIParent, "BackdropTemplate")
-    self.voidTotemTool:SetSize(220, 60)
+    self.voidTotemTool:SetSize(#totems * 50 + 20, 60)
     self.voidTotemTool:SetPoint(point.p, point.x, point.y)
     SetInfoFrameStyle(self.voidTotemTool)
 
     self.voidTotemToolIcons = {}
     for index, totem in ipairs(totems) do
-        if not totem[1] then
-            totem[1] = {
-                icon = totem_tool.default_btn[index].icon,
-                spellID = totem_tool.default_btn[index].spell_id,
-                name = totem_tool.default_btn[index].name
+        if #totem > 0 then
+            -- 初始化保存的图腾
+            local db = MzxToolClassicCharacterDB.totem.default_btn[index] or {
+                icon = totem[1].icon,
+                spellID = totem[1].spellID,
+                name = totem[1].name
             }
-        end
-        -- 初始化保存的图腾
-        local db = MzxToolClassicCharacterDB.totem.default_btn[index] or {
-            icon = totem[1].icon,
-            spellID = totem[1].spellID,
-            name = totem[1].name
-        }
 
-        -- 创建主框体上的图标
-        local icon = CreateFrame("Button", nil, self.voidTotemTool, "SecureActionButtonTemplate")
-        icon.bg = CreateFrame("Frame", nil, self.voidTotemTool, "BackdropTemplate")
-        -- 添加边框
-        SetButtonFrameStyle(icon.bg, 46, 46, "LEFT", index * 50 - 38, 0)
+            -- 创建主框体上的图标
+            local icon = CreateFrame("Button", nil, self.voidTotemTool, "SecureActionButtonTemplate")
+            icon.bg = CreateFrame("Frame", nil, self.voidTotemTool, "BackdropTemplate")
+            -- 添加边框
+            SetButtonFrameStyle(icon.bg, 46, 46, "LEFT", index * 50 - 38, 0)
 
-        -- 加载保存的图腾按钮
-        AddLeftButton(icon, db.icon, db.spellID, 36, "LEFT", index * 50 - 33, 0)
-        MzxDebug("加载图腾", db.spellID, db.name)
+            -- 加载保存的图腾按钮
+            AddLeftButton(icon, db.icon, db.spellID, 36, "LEFT", index * 50 - 33, 0)
+            MzxDebug("加载图腾", db.spellID, db.name)
 
-        -- 创建每系图腾的框体
-        icon.totem_frame = CreateFrame("Frame", "TotemFrame" .. index, icon, "BackdropTemplate")
-        icon.totem_frame.tex = icon.totem_frame:CreateTexture()
+            -- 创建每系图腾的框体
+            icon.totem_frame = CreateFrame("Frame", "TotemFrame" .. index, icon, "BackdropTemplate")
+            icon.totem_frame.tex = icon.totem_frame:CreateTexture()
 
-        -- 创建用于战斗显示的遮罩
-        icon.totem_frame.blocker = CreateFrame("Frame", nil, icon.totem_frame)
-        self:TotemFrame(icon.totem_frame, totem, index) -- Start blocking (popup starts hidden)
+            -- 创建用于战斗显示的遮罩
+            icon.totem_frame.blocker = CreateFrame("Frame", nil, icon.totem_frame)
+            self:TotemFrame(icon.totem_frame, totem, index) -- Start blocking (popup starts hidden)
 
-        -- 鼠标悬停事件
-        icon:SetScript("OnEnter", function(s)
-            GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
-            GameTooltip:SetSpellByID(self.voidTotemToolIcons[index]:GetAttribute("spell"))
-            GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("|cFF00FF00鼠标左键|r释放图腾", 0.9, 0.9, 0.9)
-            GameTooltip:AddLine("|cFF00FF00鼠标右键|r打开该系图腾栏", 0.9, 0.9, 0.9)
-            GameTooltip:Show()
-            s.bg:SetBackdropColor(1, 0.8, 0.1, 0.8)
-            s.bg:SetBackdropBorderColor(0.9, 0.9, 0.9, 1)
-        end)
+            -- 鼠标悬停事件
+            icon:SetScript("OnEnter", function(s)
+                GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
+                GameTooltip:SetSpellByID(self.voidTotemToolIcons[index]:GetAttribute("spell"))
+                GameTooltip:AddLine(" ")
+                GameTooltip:AddLine("|cFF00FF00鼠标左键|r释放图腾", 0.9, 0.9, 0.9)
+                GameTooltip:AddLine("|cFF00FF00鼠标右键|r打开该系图腾栏", 0.9, 0.9, 0.9)
+                GameTooltip:Show()
+                s.bg:SetBackdropColor(1, 0.8, 0.1, 0.8)
+                s.bg:SetBackdropBorderColor(0.9, 0.9, 0.9, 1)
+            end)
 
-        -- 鼠标离开事件
-        icon:SetScript("OnLeave", function(s)
-            GameTooltip:Hide()
-            s.bg:SetBackdropColor(0.8, 0, 0.7, 0.8)
-            s.bg:SetBackdropBorderColor(0.1, 0.1, 0.1, 1)
-        end)
+            -- 鼠标离开事件
+            icon:SetScript("OnLeave", function(s)
+                GameTooltip:Hide()
+                s.bg:SetBackdropColor(0.8, 0, 0.7, 0.8)
+                s.bg:SetBackdropBorderColor(0.1, 0.1, 0.1, 1)
+            end)
 
-        -- 鼠标右击事件
-        icon:SetScript("OnMouseUp", function(s, button)
-            if button == "RightButton" and s.totem_frame then
-                if totem_tool.button_frame[index] then
-                    -- s.totem_frame:Hide()
-                    totem_tool.button_frame[index] = false
-                    HideTotemFrame(s.totem_frame)
-                else
-                    -- s.totem_frame:Show()
-                    totem_tool.button_frame[index] = true
-                    ShowTotemFrame(s.totem_frame)
+            -- 鼠标右击事件
+            icon:SetScript("OnMouseUp", function(s, button)
+                if button == "RightButton" and s.totem_frame then
+                    if totem_tool.button_frame[index] then
+                        -- s.totem_frame:Hide()
+                        totem_tool.button_frame[index] = false
+                        HideFrame(s.totem_frame)
+                    else
+                        -- s.totem_frame:Show()
+                        totem_tool.button_frame[index] = true
+                        ShowFrame(s.totem_frame)
+                    end
                 end
-            end
-        end)
-        self.voidTotemToolIcons[index] = icon
+            end)
+            self.voidTotemToolIcons[index] = icon
+        end
     end
 end
 
@@ -215,7 +214,7 @@ function MzxToolFrame:TotemFrame(frame, totem_spells, type_index)
                     for index, value in ipairs(self.voidTotemToolIcons) do
                         -- value.totem_frame:Hide()
                         value.totem_frame:SetAlpha(0)
-                        HideTotemFrame(value.totem_frame)
+                        HideFrame(value.totem_frame)
                     end
                 end
             end
@@ -265,41 +264,12 @@ function MzxToolFrame:Void_CreateTotemTool()
             break
         end
     end
+    if #totems < 1 then
+        return
+    end
     self:CreateTotemToolFrame(totems)
     MovableDisplay(self.voidTotemTool)
     MovableFrameStop(self.voidTotemTool, MzxToolClassicCharacterDB.point.totem_tool, totem_tool.up)
-end
-
-function ShowTotemFrame(frame)
-    if not InCombatLockdown() then
-        frame:Show()
-        frame:EnableMouse(true)
-        for _, btn in ipairs(frame.icons or {}) do
-            btn:EnableMouse(true)
-        end
-    end
-    frame:SetAlpha(1)
-    if frame.blocker then
-        frame.blocker:EnableMouse(false) -- 允许点击穿透到按钮
-    end
-end
-
-function HideTotemFrame(frame)
-    if InCombatLockdown() then
-        frame:SetAlpha(0)
-        if frame.blocker then
-            frame.blocker:EnableMouse(true) -- 阻止隐藏弹出窗口的点击
-        end
-    else
-        frame:EnableMouse(false)
-        for _, btn in ipairs(frame.icons or {}) do
-            btn:EnableMouse(false)
-        end
-        frame:Hide()
-        if frame.blocker then
-            frame.blocker:EnableMouse(true)
-        end
-    end
 end
 
 function MzxToolFrame:TotemRegenDisabled()

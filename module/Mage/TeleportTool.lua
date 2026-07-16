@@ -19,7 +19,7 @@ local teleport_tool = {
 
 -- # Api接口
 function GetCitys()
-    local types = { {}, {} }
+    local teleport_types = {}
     local citys = { "奥格瑞玛", "雷霆崖", "幽暗城", "暴风城", "铁炉堡", "达纳苏斯", "斯通纳德", "塞拉摩", "沙塔斯" }
 
     local spells = {}
@@ -39,34 +39,22 @@ function GetCitys()
     for key, spell in pairs(spells) do
         for index, value in ipairs(citys) do
             if spell.name == "传送：" .. value then
-                table.insert(types[1], spell)
+                teleport_types[1] = teleport_types[1] or {}
+                table.insert(teleport_types[1], spell)
             end
             if spell.name == "传送门：" .. value then
-                table.insert(types[2], spell)
+                teleport_types[2] = teleport_types[2] or {}
+                table.insert(teleport_types[2], spell)
             end
         end
     end
 
-    return types
-end
-
---- # Api打包
-function SpellArgs(name, subtext, icon, castTime, minRange, maxRange, spellID, originalIcon)
-    return {
-        name = name,
-        subtext = subtext,
-        icon = icon,
-        castTime = castTime,
-        minRange = minRange,
-        maxRange = maxRange,
-        spellID = spellID,
-        originalIcon = originalIcon
-    }
+    return teleport_types
 end
 
 --- 创建收纳面板
 --- types：传送或传送门
-function MzxToolFrame:CreateTeleportToolFrame(types)
+function MzxToolFrame:CreateTeleportToolFrame(teleport_types)
     -- 初始化位置
     MzxToolClassicCharacterDB.point.teleport_tool = MzxToolClassicCharacterDB.point.teleport_tool or {
         p = teleport_tool.up.p,
@@ -79,18 +67,18 @@ function MzxToolFrame:CreateTeleportToolFrame(types)
 
     -- 创建主框体
     self.voidTeleportTool = CreateFrame("Frame", "TeleportTool", UIParent, "BackdropTemplate")
-    self.voidTeleportTool:SetSize(120, 60)
+    self.voidTeleportTool:SetSize(#teleport_types * 50 + 20, 60)
     self.voidTeleportTool:SetPoint(point.p, point.x, point.y)
     SetInfoFrameStyle(self.voidTeleportTool)
 
     self.voidTeleportToolIcons = {}
-    for index, type in ipairs(types) do
-        if #type > 0 then
+    for index, teleport_type in ipairs(teleport_types) do
+        if #teleport_type > 0 then
             -- 初始化保存
             local db = MzxToolClassicCharacterDB.teleport.default_btn[index] or {
-                icon = type[1].icon,
-                spellID = type[1].spellID,
-                name = type[1].name
+                icon = teleport_type[1].icon,
+                spellID = teleport_type[1].spellID,
+                name = teleport_type[1].name
             }
 
             -- 创建主框体上的图标
@@ -109,7 +97,7 @@ function MzxToolFrame:CreateTeleportToolFrame(types)
 
             -- 创建用于战斗显示的遮罩
             icon.teleport_type_frame.blocker = CreateFrame("Frame", nil, icon.teleport_type_frame)
-            self:TeleportTypeFrame(icon.teleport_type_frame, type, index) -- Start blocking (popup starts hidden)
+            self:TeleportTypeFrame(icon.teleport_type_frame, teleport_type, index) -- Start blocking (popup starts hidden)
 
             -- 鼠标悬停事件
             icon:SetScript("OnEnter", function(s)
@@ -136,11 +124,11 @@ function MzxToolFrame:CreateTeleportToolFrame(types)
                     if teleport_tool.button_frame[index] then
                         -- s.totem_frame:Hide()
                         teleport_tool.button_frame[index] = false
-                        HideTotemFrame(s.teleport_type_frame)
+                        HideFrame(s.teleport_type_frame)
                     else
                         -- s.totem_frame:Show()
                         teleport_tool.button_frame[index] = true
-                        ShowTotemFrame(s.teleport_type_frame)
+                        ShowFrame(s.teleport_type_frame)
                     end
                 end
             end)
@@ -187,7 +175,7 @@ function MzxToolFrame:TeleportTypeFrame(frame, spells, type_index)
                     }
                     for index, value in ipairs(self.voidTeleportToolIcons) do
                         value.teleport_type_frame:SetAlpha(0)
-                        HideTotemFrame(value.teleport_type_frame)
+                        HideFrame(value.teleport_type_frame)
                     end
                 end
             end
@@ -237,41 +225,12 @@ function MzxToolFrame:Void_CreateTeleportTool()
             break
         end
     end
+    if #teleport_types < 1 then
+        return
+    end
     self:CreateTeleportToolFrame(teleport_types)
     MovableDisplay(self.voidTeleportTool)
     MovableFrameStop(self.voidTeleportTool, MzxToolClassicCharacterDB.point.teleport_tool, teleport_tool.up)
-end
-
-function ShowTotemFrame(frame)
-    if not InCombatLockdown() then
-        frame:Show()
-        frame:EnableMouse(true)
-        for _, btn in ipairs(frame.icons or {}) do
-            btn:EnableMouse(true)
-        end
-    end
-    frame:SetAlpha(1)
-    if frame.blocker then
-        frame.blocker:EnableMouse(false) -- 允许点击穿透到按钮
-    end
-end
-
-function HideTotemFrame(frame)
-    if InCombatLockdown() then
-        frame:SetAlpha(0)
-        if frame.blocker then
-            frame.blocker:EnableMouse(true) -- 阻止隐藏弹出窗口的点击
-        end
-    else
-        frame:EnableMouse(false)
-        for _, btn in ipairs(frame.icons or {}) do
-            btn:EnableMouse(false)
-        end
-        frame:Hide()
-        if frame.blocker then
-            frame.blocker:EnableMouse(true)
-        end
-    end
 end
 
 function MzxToolFrame:TeleportRegenDisabled()
