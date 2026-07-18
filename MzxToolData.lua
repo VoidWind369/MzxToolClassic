@@ -9,6 +9,7 @@ function InitDatabase()
         ShieldInfo = true,
         TotemInfo = true,
         TotemTool = true,
+        TotemDance = true,
         TeleportTool = true,
         Debug = false
     }
@@ -27,6 +28,7 @@ function NewDatabase()
         ShieldInfo = true,
         TotemInfo = true,
         TotemTool = true,
+        TotemDance = true,
         TeleportTool = true,
         Debug = false
     }

@@ -110,6 +110,8 @@ function MzxToolFrame:Initialize()
         end
         if MzxToolClassicCharacterDB.status.TotemInfo == true then
             self:Void_CreateTotemInfo()
+        end
+        if MzxToolClassicCharacterDB.status.TotemDance == true then
             self:Void_CreateTotemDance()
         end
     end

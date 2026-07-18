@@ -110,6 +110,16 @@ MzxToolAddon.options = {
                         MzxToolClassicCharacterDB.status.TotemTool = value
                     end,
                 },
+                TotemDance = {
+                    type = "toggle",
+                    name = "萨满图腾舞辅助",
+                    desc = "萨满图腾舞辅助计时工具",
+                    order = 5,
+                    get = function() return MzxToolClassicCharacterDB.status.TotemDance end,
+                    set = function(info, value)
+                        MzxToolClassicCharacterDB.status.TotemDance = value
+                    end,
+                },
                 TeleportTool = {
                     type = "toggle",
                     name = "法师传送工具",
