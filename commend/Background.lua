@@ -112,7 +112,7 @@ end
 
 --- # 显示数字通用属性
 function AddStringCenter(fontString, string, scale, x, y)
-    AddString(fontString, string, scale or 1, "CENTER", x or 0, y or 0)
+    AddString(fontString, string, scale or 1, "CENTER", x or 1.2, y or 0)
 end
 
 --- # 显示数字通用属性
