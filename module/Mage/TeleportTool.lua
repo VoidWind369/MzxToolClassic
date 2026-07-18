@@ -9,7 +9,7 @@ local teleport_tool = {
         y = -28
     },
     button_frame = {
-        false, false, false, false
+        false, false
     },
     default_btn = {
         { icon = 135764, spell_id = 49359 },
@@ -107,26 +107,26 @@ function MzxToolFrame:CreateTeleportToolFrame(teleport_types)
                 GameTooltip:AddLine("|cFF00FF00鼠标左键|r传送", 0.9, 0.9, 0.9)
                 GameTooltip:AddLine("|cFF00FF00鼠标右键|r其他传送", 0.9, 0.9, 0.9)
                 GameTooltip:Show()
-                s.bg:SetBackdropColor(1, 0.8, 0.1, 0.8)
-                s.bg:SetBackdropBorderColor(0.9, 0.9, 0.9, 1)
+                s.bg:SetBackdropColor(0, 0, 0, 0.2)
+                s.bg:SetBackdropBorderColor(0.1, 0.1, 0.1, 0.3)
             end)
 
             -- 鼠标离开事件
             icon:SetScript("OnLeave", function(s)
                 GameTooltip:Hide()
-                s.bg:SetBackdropColor(0.8, 0, 0.7, 0.8)
+                s.bg:SetBackdropColor(0, 0, 0, 0.6)
                 s.bg:SetBackdropBorderColor(0.1, 0.1, 0.1, 1)
             end)
 
             -- 鼠标右击事件
             icon:SetScript("OnMouseUp", function(s, button)
-                if button == "RightButton" and s.teleport_type_frame then
-                    if teleport_tool.button_frame[index] then
-                        -- s.totem_frame:Hide()
-                        teleport_tool.button_frame[index] = false
-                        HideFrame(s.teleport_type_frame)
-                    else
-                        -- s.totem_frame:Show()
+                if teleport_tool.button_frame[index] then
+                    teleport_tool.button_frame = { false, false }
+                    for _, value in ipairs(self.voidTeleportToolIcons) do
+                        HideFrame(value.teleport_type_frame)
+                    end
+                else
+                    if button == "RightButton" and s.teleport_type_frame then
                         teleport_tool.button_frame[index] = true
                         ShowFrame(s.teleport_type_frame)
                     end
@@ -180,7 +180,10 @@ function MzxToolFrame:TeleportTypeFrame(frame, spells, type_index)
                 end
             end
             -- 关闭框体
-            teleport_tool.button_frame = { false, false, false, false }
+            teleport_tool.button_frame = { false, false }
+            for _, value in ipairs(self.voidTeleportToolIcons) do
+                HideFrame(value.teleport_type_frame)
+            end
         end)
 
         -- 鼠标悬停事件
@@ -191,13 +194,14 @@ function MzxToolFrame:TeleportTypeFrame(frame, spells, type_index)
             GameTooltip:AddLine("|cFF00FF00鼠标左键|r传送", 0.9, 0.9, 0.9)
             GameTooltip:AddLine("|cFF00FF00鼠标右键|r设置为常用", 0.9, 0.9, 0.9)
             GameTooltip:Show()
-            s.bg:SetBackdropColor(1, 0.8, 0.1, 0.8)
-            s.bg:SetBackdropBorderColor(0.9, 0.9, 0.9, 1)
+            -- s.bg:SetBackdropColor(1, 0.8, 0.1, 0.8)
+            s.bg:SetBackdropColor(0, 0, 0, 0.2)
+            s.bg:SetBackdropBorderColor(0.1, 0.1, 0.1, 0.3)
         end)
 
         icon:SetScript("OnLeave", function(s)
             GameTooltip:Hide()
-            s.bg:SetBackdropColor(0.8, 0, 0.7, 0.8)
+            s.bg:SetBackdropColor(0, 0, 0, 0.6)
             s.bg:SetBackdropBorderColor(0.1, 0.1, 0.1, 1)
         end)
         -- icon:EnableMouse(false)

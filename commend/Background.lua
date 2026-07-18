@@ -90,7 +90,8 @@ function SetButtonFrameStyle(frame, width, height, point, x, y)
         edgeSize = 8,
         -- insets = { left = 1, right = 1, top = 1, bottom = 1 },
     })
-    frame:SetBackdropColor(0.8, 0, 0.7, 0.8)
+    -- frame:SetBackdropColor(0.8, 0, 0.7, 0.8)
+    frame:SetBackdropColor(0, 0, 0, 0.6)
     frame:SetBackdropBorderColor(0.1, 0.1, 0.1, 1)
 end
 

@@ -145,26 +145,26 @@ function MzxToolFrame:CreateTotemToolFrame(totems)
                 GameTooltip:AddLine("|cFF00FF00鼠标左键|r释放图腾", 0.9, 0.9, 0.9)
                 GameTooltip:AddLine("|cFF00FF00鼠标右键|r打开该系图腾栏", 0.9, 0.9, 0.9)
                 GameTooltip:Show()
-                s.bg:SetBackdropColor(1, 0.8, 0.1, 0.8)
-                s.bg:SetBackdropBorderColor(0.9, 0.9, 0.9, 1)
+                s.bg:SetBackdropColor(0, 0, 0, 0.2)
+                s.bg:SetBackdropBorderColor(0.1, 0.1, 0.1, 0.3)
             end)
 
             -- 鼠标离开事件
             icon:SetScript("OnLeave", function(s)
                 GameTooltip:Hide()
-                s.bg:SetBackdropColor(0.8, 0, 0.7, 0.8)
+                s.bg:SetBackdropColor(0, 0, 0, 0.6)
                 s.bg:SetBackdropBorderColor(0.1, 0.1, 0.1, 1)
             end)
 
             -- 鼠标右击事件
             icon:SetScript("OnMouseUp", function(s, button)
-                if button == "RightButton" and s.totem_frame then
-                    if totem_tool.button_frame[index] then
-                        -- s.totem_frame:Hide()
-                        totem_tool.button_frame[index] = false
-                        HideFrame(s.totem_frame)
-                    else
-                        -- s.totem_frame:Show()
+                if totem_tool.button_frame[index] then
+                    totem_tool.button_frame = { false, false }
+                    for _, value in ipairs(self.voidTotemToolIcons) do
+                        HideFrame(value.totem_frame)
+                    end
+                else
+                    if button == "RightButton" and s.totem_frame then
                         totem_tool.button_frame[index] = true
                         ShowFrame(s.totem_frame)
                     end
@@ -220,6 +220,9 @@ function MzxToolFrame:TotemFrame(frame, totem_spells, type_index)
             end
             -- 关闭框体
             totem_tool.button_frame = { false, false, false, false }
+            for _, value in ipairs(self.voidTotemToolIcons) do
+                HideFrame(value.totem_frame)
+            end
         end)
 
         -- 鼠标悬停事件
@@ -230,13 +233,13 @@ function MzxToolFrame:TotemFrame(frame, totem_spells, type_index)
             GameTooltip:AddLine("|cFF00FF00鼠标左键|r释放图腾", 0.9, 0.9, 0.9)
             GameTooltip:AddLine("|cFF00FF00鼠标右键|r设置为常用", 0.9, 0.9, 0.9)
             GameTooltip:Show()
-            s.bg:SetBackdropColor(1, 0.8, 0.1, 0.8)
-            s.bg:SetBackdropBorderColor(0.9, 0.9, 0.9, 1)
+            s.bg:SetBackdropColor(0, 0, 0, 0.2)
+            s.bg:SetBackdropBorderColor(0.1, 0.1, 0.1, 0.3)
         end)
 
         icon:SetScript("OnLeave", function(s)
             GameTooltip:Hide()
-            s.bg:SetBackdropColor(0.8, 0, 0.7, 0.8)
+            s.bg:SetBackdropColor(0, 0, 0, 0.6)
             s.bg:SetBackdropBorderColor(0.1, 0.1, 0.1, 1)
         end)
         -- icon:EnableMouse(false)
