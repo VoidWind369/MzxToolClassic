@@ -198,11 +198,10 @@ function MzxToolFrame:TotemFrame(frame, totem_spells, type_index)
 
         -- 右键设置图标
         icon:SetScript("OnMouseUp", function(s, button)
-            if button == "RightButton" then
-                if InCombatLockdown() then
-                    ShowSimpleAlert(
-                        "|CFF8845ECM|r|CFFA037E9z|r|CFFA435E8x|r：战斗中无法设置图腾！")
-                else
+            if InCombatLockdown() then
+                ShowSimpleAlert("|CFF8845ECM|r|CFFA037E9z|r|CFFA435E8x|r：战斗中无法设置图腾！")
+            else
+                if button == "RightButton" then
                     self.voidTotemToolIcons[type_index]:SetNormalTexture(totem.icon)
                     self.voidTotemToolIcons[type_index]:SetAttribute("spell", totem.spellID)
                     -- 保存图腾设置
@@ -217,11 +216,11 @@ function MzxToolFrame:TotemFrame(frame, totem_spells, type_index)
                         HideFrame(value.totem_frame)
                     end
                 end
-            end
-            -- 关闭框体
-            totem_tool.button_frame = { false, false, false, false }
-            for _, value in ipairs(self.voidTotemToolIcons) do
-                HideFrame(value.totem_frame)
+                -- 关闭框体
+                totem_tool.button_frame = { false, false, false, false }
+                for _, value in ipairs(self.voidTotemToolIcons) do
+                    HideFrame(value.totem_frame)
+                end
             end
         end)
 

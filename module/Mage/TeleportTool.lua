@@ -160,11 +160,10 @@ function MzxToolFrame:TeleportTypeFrame(frame, spells, type_index)
 
         -- 右键设置图标
         icon:SetScript("OnMouseUp", function(s, button)
-            if button == "RightButton" then
-                if InCombatLockdown() then
-                    ShowSimpleAlert(
-                        "|CFF8845ECM|r|CFFA037E9z|r|CFFA435E8x|r：战斗中无法设置！")
-                else
+            if InCombatLockdown() then
+                ShowSimpleAlert("|CFF8845ECM|r|CFFA037E9z|r|CFFA435E8x|r：战斗中无法设置！")
+            else
+                if button == "RightButton" then
                     self.voidTeleportToolIcons[type_index]:SetNormalTexture(spell.icon)
                     self.voidTeleportToolIcons[type_index]:SetAttribute("spell", spell.spellID)
                     -- 保存图腾设置
@@ -178,11 +177,11 @@ function MzxToolFrame:TeleportTypeFrame(frame, spells, type_index)
                         HideFrame(value.teleport_type_frame)
                     end
                 end
-            end
-            -- 关闭框体
-            teleport_tool.button_frame = { false, false }
-            for _, value in ipairs(self.voidTeleportToolIcons) do
-                HideFrame(value.teleport_type_frame)
+                -- 关闭框体
+                teleport_tool.button_frame = { false, false }
+                for _, value in ipairs(self.voidTeleportToolIcons) do
+                    HideFrame(value.teleport_type_frame)
+                end
             end
         end)
 
