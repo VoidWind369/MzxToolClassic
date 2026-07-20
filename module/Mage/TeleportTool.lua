@@ -20,7 +20,7 @@ local teleport_tool = {
 -- # Api接口
 function GetCitys()
     local teleport_types = {}
-    local citys = { "奥格瑞玛", "雷霆崖", "幽暗城", "暴风城", "铁炉堡", "达纳苏斯", "斯通纳德", "塞拉摩", "沙塔斯" }
+    local citys = { "奥格瑞玛", "雷霆崖", "幽暗城", "暴风城", "铁炉堡", "达纳苏斯", "斯通纳德", "塞拉摩", "银月城", "埃索达", "沙塔斯" }
 
     local spells = {}
     for slot = 1, 500 do
