@@ -3,7 +3,7 @@
 ## Notes: Mzx classic tools
 ## Notes-zhCN: Mzx怀旧服工具箱，By -- 【月溪晓月】公会
 ## Author: 慕梓茜
-## Version: 1.0.6-r3
+## Version: 1.0.6-r4
 ## SavedVariables: MzxToolClassicDB
 ## SavedVariablesPerCharacter: MzxToolClassicCharacterDB
 ## IconTexture: Interface\AddOns\VoidModClassic\Moon.png
@@ -23,6 +23,5 @@ module\SkillLineInfo.lua
 module\Shaman\TotemInfo.lua
 module\Shaman\TotemDance.lua
 module\Shaman\TotemTool.lua
-module\ButtonAuto.lua
 module\Mage\TeleportTool.lua
 module\Priest\PowerWordShield.lua

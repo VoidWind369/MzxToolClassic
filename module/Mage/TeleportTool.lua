@@ -236,6 +236,14 @@ function MzxToolFrame:Void_CreateTeleportTool()
     MovableFrameStop(self.voidTeleportTool, MzxToolClassicCharacterDB.point.teleport_tool, teleport_tool.up)
 end
 
+-- Todo
+function MzxToolFrame:Void_UpdateTeleportTool()
+    local teleport_types = GetCitys()
+    if #teleport_types < 1 then
+        return
+    end
+end
+
 function MzxToolFrame:TeleportRegenDisabled()
     MzxDebug("传送进入战斗")
     for elem, container in pairs(self.voidTeleportToolIcons) do
@@ -260,7 +268,7 @@ function MzxToolFrame:TeleportRegenDisabled()
 end
 
 function MzxToolFrame:TeleportRegenEnabled()
-    MzxDebug("图腾工具离开战斗")
+    MzxDebug("传送工具离开战斗")
     for elem, container in pairs(self.voidTeleportToolIcons) do
         if not teleport_tool.button_frame[elem] then
             container.teleport_type_frame:EnableMouse(false)

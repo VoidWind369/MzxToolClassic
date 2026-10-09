@@ -1,5 +1,5 @@
 -- 创建主框架
-MzxToolFrame = CreateFrame("Frame", "VoidModFrame", UIParent)
+MzxToolFrame = CreateFrame("Frame", "MzxToolFrame", UIParent)
 MzxToolFrame:RegisterEvent("PLAYER_LOGIN")                -- 用户登录
 MzxToolFrame:RegisterEvent("UNIT_AURA")                   -- 获得或消失的增益、减益、状态或物品加成
 MzxToolFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")    -- 当法术成功施放时触发

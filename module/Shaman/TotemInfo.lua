@@ -115,6 +115,16 @@ function MzxToolFrame:RecycleTotem()
     self.voidTotemInfo.secureBtn:SetAttribute("type1", "spell")
     self.voidTotemInfo.secureBtn:SetAttribute("spell", "图腾召唤") -- 设置要施放的技能名
     self.voidTotemInfo.secureBtn:RegisterForClicks("AnyUp", "AnyDown")
+    -- 鼠标悬停事件
+    self.voidTotemInfo.secureBtn:SetScript("OnEnter", function(s)
+        GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
+        GameTooltip:SetSpellByID(36936)
+        GameTooltip:AddLine("|cFF00FF00鼠标左键|r释放|cFFFFFF66图腾召唤|r", 0.9, 0.9, 0.9)
+        GameTooltip:Show()
+    end)
+    self.voidTotemInfo.secureBtn:SetScript("OnLeave", function(s)
+        GameTooltip:Hide()
+    end)
     -- VoidFrame.voidTotemInfo.secureBtn:SetAttribute("type", "macro")
     -- VoidFrame.voidTotemInfo.secureBtn:SetAttribute("macrotext", "/cast 图腾召唤") -- text for macro on left click
 end

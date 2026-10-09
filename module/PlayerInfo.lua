@@ -147,18 +147,6 @@ function MzxToolFrame:Void_CreatePlayerInfoFrame_UP(first)
         MzxToolClassicCharacterDB.point.player_up.y)
     SetInfoFrameStyle(self.voidPlayerInfo_UP, true)
 
-    -- self.voidPlayerInfoText_UP = {
-    --     self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
-    --     self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
-    -- }
-
-    -- for _, value in ipairs(first.name) do
-    --     AddStringLeft(self.voidPlayerInfoText_UP[1], value)
-    -- end
-    -- for _, value in ipairs(first.value) do
-    --     AddStringRight(self.voidPlayerInfoText_UP[2], value)
-    -- end
-
     self.voidPlayerInfoText_UP = {}
     for index, value in ipairs(first) do
         self.voidPlayerInfoText_UP[index] = {
@@ -184,18 +172,6 @@ function MzxToolFrame:Void_CreatePlayerInfoFrame_Down(last)
         MzxToolClassicCharacterDB.point.player_down.y)
     SetInfoFrameStyle(self.voidPlayerInfo_DOWN, true)
 
-    -- self.voidPlayerInfoText_DOWN = {
-    --     self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
-    --     self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
-    -- }
-
-    -- for _, value in ipairs(last.name) do
-    --     AddStringLeft(self.voidPlayerInfoText_DOWN[1], value)
-    -- end
-    -- for _, value in ipairs(last.value) do
-    --     AddStringRight(self.voidPlayerInfoText_DOWN[2], value)
-    -- end
-
     self.voidPlayerInfoText_DOWN = {}
     for index, value in ipairs(last) do
         self.voidPlayerInfoText_DOWN[index] = {
@@ -211,9 +187,9 @@ end
 function MzxToolFrame:Void_CreatePlayerInfo()
     MzxToolClassicCharacterDB.point = MzxToolClassicCharacterDB.point or point
 
-    local first, info = MzxToolFrame:Void_PlayerInfo()
+    local first, last = MzxToolFrame:Void_PlayerInfo()
     self:Void_CreatePlayerInfoFrame_UP(first)
-    self:Void_CreatePlayerInfoFrame_Down(info)
+    self:Void_CreatePlayerInfoFrame_Down(last)
 
     MovableDisplay(self.voidPlayerInfo_UP)
     MovableDisplay(self.voidPlayerInfo_DOWN)
@@ -234,9 +210,5 @@ function MzxToolFrame:Void_UpdatePlayerInfo()
             self.voidPlayerInfoText_DOWN[index][1]:SetText(value.name)
             self.voidPlayerInfoText_DOWN[index][2]:SetText(value.value)
         end
-        -- self.voidPlayerInfoText_UP[1]:SetText(table.concat(first.name, "\n"))
-        -- self.voidPlayerInfoText_UP[2]:SetText(table.concat(first.value, "\n"))
-        -- self.voidPlayerInfoText_DOWN[1]:SetText(table.concat(last.name, "\n"))
-        -- self.voidPlayerInfoText_DOWN[2]:SetText(table.concat(last.value, "\n"))
     end
 end
