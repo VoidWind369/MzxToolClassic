@@ -3,10 +3,10 @@
 ## Notes: Mzx classic tools
 ## Notes-zhCN: Mzx怀旧服工具箱，By -- 【月溪晓月】公会
 ## Author: 慕梓茜
-## Version: 1.0.6-r4
+## Version: 1.0.6-r5
 ## SavedVariables: MzxToolClassicDB
 ## SavedVariablesPerCharacter: MzxToolClassicCharacterDB
-## IconTexture: Interface\AddOns\VoidModClassic\Moon.png
+## IconTexture: Interface\AddOns\MzxToolClassic\Moon.png
 ## X-Curse-Project-ID: 1495336
 
 MzxToolData.lua
