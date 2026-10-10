@@ -8,8 +8,6 @@ MzxToolFrame:RegisterEvent("PARTY_INVITE_REQUEST")        -- 排本邀请
 MzxToolFrame:RegisterEvent("GROUP_INVITE_CONFIRMATION")   -- 队伍邀请
 MzxToolFrame:RegisterEvent("UNIT_COMBAT")                 -- 当 NPC 或玩家参与战斗并受到伤害时触发
 MzxToolFrame:RegisterEvent("UNIT_RESISTANCES")            -- 当单位抗性发生变化时
-MzxToolFrame:RegisterEvent("SKILL_LINES_CHANGED")         -- 当玩家技能列表内容发生变化时(武器熟练度)
-MzxToolFrame:RegisterEvent("PLAYER_TOTEM_UPDATE")         -- 当图腾施放或被摧毁（召回或击杀）时
 MzxToolFrame:RegisterEvent("PLAYER_REGEN_DISABLED")       -- 进入战斗（脱离恢复状态）
 MzxToolFrame:RegisterEvent("PLAYER_REGEN_ENABLED")        -- 脱离战斗（进入恢复状态）
 MzxToolFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED") -- 战斗日志
@@ -100,6 +98,7 @@ function MzxToolFrame:Initialize()
         self:Void_CreatePlayerInfo()
     end
     if MzxToolClassicCharacterDB.status.SkillLine == true then
+        self:RegisterEvent("SKILL_LINES_CHANGED")         -- 当玩家技能列表内容发生变化时(武器熟练度)
         self:Void_CreateSkillLineInfo()
     end
 
@@ -109,6 +108,7 @@ function MzxToolFrame:Initialize()
             self:Void_CreateShieldInfo()
         end
         if MzxToolClassicCharacterDB.status.TotemInfo == true then
+            self:RegisterEvent("PLAYER_TOTEM_UPDATE")         -- 当图腾施放或被摧毁（召回或击杀）时
             self:Void_CreateTotemInfo()
         end
         if MzxToolClassicCharacterDB.status.TotemDance == true then
