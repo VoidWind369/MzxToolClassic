@@ -15,7 +15,7 @@ function MzxToolFrame.GetTotemInfo()
         local name = (haveTotem and totemName) and totemName or value[2]
         local est_num = startTime + duration - GetTime()
         local est_color_str = string.format(est_num > 10 and "|cFFFFFF00%.1f|r" or "|cFFFF0000%.1f|r", est_num)
-        local est_dur = (haveTotem and totemName) and est_color_str or "|cFFC0C0C0Nil|r"
+        local est_dur = (haveTotem and totemName) and est_color_str or "|cFFC0C0C0--|r"
 
         totem_info[index] = {
             icon = icon_num,

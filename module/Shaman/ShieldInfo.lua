@@ -29,7 +29,7 @@ local shield = {
 }
 
 --- # 获取武器临时附魔信息
-function MzxToolFrame:GetWeaponEnchantInfo()
+function MzxToolFrame:GetWeaponEnchant()
     local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID, hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantID, hasRangedEnchant, rangedExpiration, rangedCharges, rangedEnchantID =
         GetWeaponEnchantInfo()
 
@@ -90,7 +90,7 @@ function MzxToolFrame:Void_CreateShieldInfo()
         self.shieldDots[i] = dot
     end
 
-    self:Void_CreateWeaponEnchantInfoFrame(self:GetWeaponEnchantInfo())
+    self:Void_CreateWeaponEnchantInfoFrame(self:GetWeaponEnchant())
 
     GetShieldGameTooltip()
     MovableDisplay(self.dotFrame)
@@ -163,11 +163,12 @@ end
 
 --- # 刷新武器临时附魔信息
 function MzxToolFrame:UpdateWeaponEnchant()
-    local hand = self:GetWeaponEnchantInfo()
-    if self.dotFrame then
-        self.dotFrame.weaponEnchantMainText:SetText(hand.main.expiration)
-        self.dotFrame.weaponEnchantOffText:SetText(hand.off.expiration)
+    if not self.dotFrame then
+        return
     end
+    local hand = self:GetWeaponEnchant()
+    self.dotFrame.weaponEnchantMainText:SetText(hand.main.expiration)
+    self.dotFrame.weaponEnchantOffText:SetText(hand.off.expiration)
 end
 
 function GetGradientColorsSM(shield_type, alpha)

@@ -10,7 +10,6 @@ MzxToolFrame:RegisterEvent("UNIT_COMBAT")                 -- 当 NPC 或玩家�
 MzxToolFrame:RegisterEvent("UNIT_RESISTANCES")            -- 当单位抗性发生变化时
 MzxToolFrame:RegisterEvent("PLAYER_REGEN_DISABLED")       -- 进入战斗（脱离恢复状态）
 MzxToolFrame:RegisterEvent("PLAYER_REGEN_ENABLED")        -- 脱离战斗（进入恢复状态）
-MzxToolFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED") -- 战斗日志
 
 MzxToolFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_LOGIN" then
@@ -21,8 +20,7 @@ MzxToolFrame:SetScript("OnEvent", function(self, event, ...)
     elseif event == "UNIT_AURA" then
         local unit = ...
         if unit == "player" then
-            self:CheckBloodlust()
-            self:UpdateShieldInfo()
+            self.aura_dirty = true
         end
         -- self:Void_UpdatePlayerInfo()
     end
@@ -69,14 +67,6 @@ MzxToolFrame:SetScript("OnEvent", function(self, event, ...)
     end
 end)
 
-MzxToolFrame:SetScript("OnUpdate", function(self, delta)
-    self:Void_UpdateTotemTimeLeft()
-    self:UpdateWeaponEnchant()
-    -- self:Void_UpdateSkillLineInfo()
-    self:Void_UpdateTotemDance()
-    self:Void_UpdatePlayerInfo()
-end)
-
 function MzxToolFrame:Initialize()
     -- 加载数据库
     InitDatabase()
@@ -112,6 +102,7 @@ function MzxToolFrame:Initialize()
             self:Void_CreateTotemInfo()
         end
         if MzxToolClassicCharacterDB.status.TotemDance == true then
+            self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED") -- 战斗日志（仅图腾舞需要）
             self:Void_CreateTotemDance()
         end
     end
@@ -129,6 +120,27 @@ function MzxToolFrame:Initialize()
     end
     DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000恶！龙！咆！哮！|r|cFF00FF00启动！|r")
     DEFAULT_CHAT_FRAME:AddMessage("周年服 |cFFFF69B4月溪晓月|r 公会")
+
+    -- 定时刷新（替代每帧 OnUpdate，降低性能开销）
+    local tick = 0
+    C_Timer.NewTicker(0.1, function()
+        -- 合并 UNIT_AURA 突发触发，最多每 0.1s 处理一次
+        if self.aura_dirty then
+            self.aura_dirty = false
+            self:CheckBloodlust()
+            self:UpdateShieldInfo()
+        end
+
+        self:Void_UpdateTotemTimeLeft()
+        self:Void_UpdateTotemDance()
+
+        tick = tick + 1
+        if tick >= 5 then
+            tick = 0
+            self:UpdateWeaponEnchant()
+            self:Void_UpdatePlayerInfo()
+        end
+    end)
 end
 
 -- 延后加载

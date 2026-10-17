@@ -258,14 +258,7 @@ function MzxToolFrame:TotemFrame(frame, totem_spells, type_index)
 end
 
 function MzxToolFrame:Void_CreateTotemTool()
-    local totems = nil
-    while (true) do
-        local t = GetTotems() -- 用 pcall 捕获错误
-        if t then
-            totems = t
-            break
-        end
-    end
+    local totems = GetTotems()
     if #totems < 1 then
         return
     end
@@ -276,6 +269,9 @@ end
 
 function MzxToolFrame:TotemRegenDisabled()
     MzxDebug("图腾工具进入战斗")
+    if not self.voidTotemToolIcons then
+        return
+    end
     for elem, container in pairs(self.voidTotemToolIcons) do
         if not container.totem_frame:IsShown() then
             container.totem_frame:Show()
@@ -299,6 +295,9 @@ end
 
 function MzxToolFrame:TotemRegenEnabled()
     MzxDebug("图腾工具离开战斗")
+    if not self.voidTotemToolIcons then
+        return
+    end
     for elem, container in pairs(self.voidTotemToolIcons) do
         if not totem_tool.button_frame[elem] then
             container.totem_frame:EnableMouse(false)
