@@ -127,8 +127,9 @@ function MzxToolFrame:Initialize()
         -- 合并 UNIT_AURA 突发触发，最多每 0.1s 处理一次
         if self.aura_dirty then
             self.aura_dirty = false
-            self:CheckBloodlust()
-            self:UpdateShieldInfo()
+            local auraMap = self:ScanPlayerAuras("HELPFUL")
+            self:CheckBloodlust(auraMap)
+            self:UpdateShieldInfo(auraMap)
         end
 
         self:Void_UpdateTotemTimeLeft()
@@ -141,6 +142,28 @@ function MzxToolFrame:Initialize()
             self:Void_UpdatePlayerInfo()
         end
     end)
+end
+
+-- ----------------------------------------------------------------------------
+-- 一次性扫描玩家全部指定类型的光环，建立 spellId -> auraData 映射
+-- @param filter "HELPFUL" 或 "HARMFUL"
+-- 返回：{ [spellId] = auraData, ... }
+-- 说明：避免多个模块各自按 ID 重复查询，将 26 次 C 层调用降为 1 次遍历
+-- ----------------------------------------------------------------------------
+function MzxToolFrame:ScanPlayerAuras(filter)
+    local auraMap = {}
+    local index = 1
+    while true do
+        local auraData = C_UnitAuras.GetAuraDataByIndex("player", index, filter)
+        if not auraData then
+            break
+        end
+        if auraData.spellId then
+            auraMap[auraData.spellId] = auraData
+        end
+        index = index + 1
+    end
+    return auraMap
 end
 
 -- 延后加载

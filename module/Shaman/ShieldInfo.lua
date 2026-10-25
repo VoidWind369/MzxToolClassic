@@ -191,22 +191,31 @@ end
 
 -- ----------------------------------------------------------------------------
 -- 增强萨buff监控主刷新：护盾层数 + 专注/元素集中状态
+-- @param auraMap ScanPlayerAuras 返回的 spellId -> auraData 映射，可为 nil（则回退到直接查询）
 -- ----------------------------------------------------------------------------
-function MzxToolFrame:UpdateShieldInfo()
+function MzxToolFrame:UpdateShieldInfo(auraMap)
     -- 判断是否加载
     if not self.dotFrame then
         return
     end
 
+    -- 从缓存读取光环，减少 C 层查询次数
+    local function GetAura(spell_id)
+        if auraMap and auraMap[spell_id] then
+            return auraMap[spell_id]
+        end
+        return C_UnitAuras.GetUnitAuraBySpellID("player", spell_id)
+    end
+
     -- 萨满专注
-    local focusData = C_UnitAuras.GetUnitAuraBySpellID("player", shield_data.focus_spell_id)
+    local focusData = GetAura(shield_data.focus_spell_id)
     -- 元素集中
-    local elementalFocusData = C_UnitAuras.GetUnitAuraBySpellID("player", shield_data.elemental_focus_id)
+    local elementalFocusData = GetAura(shield_data.elemental_focus_id)
 
     -- 闪电护盾
     local lightning_shield = { 0, 0 }
     for _, spell_id in pairs(shield_data.lightning_shield_ids) do
-        local aura = C_UnitAuras.GetUnitAuraBySpellID("player", spell_id)
+        local aura = GetAura(spell_id)
         if aura then
             lightning_shield[1] = lightning_shield[1] + 1
             lightning_shield[2] = aura.applications or 0
@@ -217,7 +226,7 @@ function MzxToolFrame:UpdateShieldInfo()
     -- 水之护盾
     local water_shield = { 0, 0 }
     for _, spell_id in pairs(shield_data.water_shield_ids) do
-        local aura = C_UnitAuras.GetUnitAuraBySpellID("player", spell_id)
+        local aura = GetAura(spell_id)
         if aura then
             water_shield[1] = water_shield[1] + 1
             water_shield[2] = aura.applications or 0
@@ -228,7 +237,7 @@ function MzxToolFrame:UpdateShieldInfo()
     -- 大地之盾
     local earth_shield = { 0, 0 }
     for _, spell_id in pairs(shield_data.earth_shield_ids) do
-        local aura = C_UnitAuras.GetUnitAuraBySpellID("player", spell_id)
+        local aura = GetAura(spell_id)
         if aura then
             earth_shield[1] = earth_shield[1] + 1
             earth_shield[2] = aura.applications or 0

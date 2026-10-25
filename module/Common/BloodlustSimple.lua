@@ -22,15 +22,16 @@ local bloodlust_state = {
 }
 
 -- ----------------------------------------------------------------------------
--- 监控嗜血buff：遍历数据层的法术 ID 表，发现有效光环则触发提示
+-- 监控嗜血buff：从光环缓存中读取，避免按 ID 重复查询
+-- @param auraMap ScanPlayerAuras 返回的 spellId -> auraData 映射，可为 nil（则回退到直接查询）
 -- ----------------------------------------------------------------------------
-function MzxToolFrame:CheckBloodlust()
+function MzxToolFrame:CheckBloodlust(auraMap)
     local foundBuff = false
     local buffName = ""
     local spellIdFound = 0
 
     for bloodlustId, _ in pairs(bloodlust_data.spell_ids) do
-        local auraData = C_UnitAuras.GetUnitAuraBySpellID("player", bloodlustId)
+        local auraData = auraMap and auraMap[bloodlustId] or C_UnitAuras.GetUnitAuraBySpellID("player", bloodlustId)
         if auraData then
             foundBuff = true
             buffName = auraData.name
