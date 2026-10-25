@@ -16,6 +16,7 @@ commend\Util.lua
 commend\MzxAddon.lua
 commend\Background.lua
 commend\Movable.lua
+commend\UIStyle.lua
 module\Shaman\Data.lua
 module\Shaman\ShieldInfo.lua
 module\Common\Data.lua

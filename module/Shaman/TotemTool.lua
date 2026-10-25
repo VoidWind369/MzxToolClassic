@@ -7,18 +7,18 @@
 --   3. 右键点击主图标弹出该系全部图腾列表，可释放或设置为常用；
 --   4. 战斗状态下自动显示/隐藏图腾框体（PLAYER_REGEN_DISABLED/ENABLED）。
 --
--- 数据依赖：MzxShamanData.TotemTool（位于 module/Shaman/Data/ShamanData.lua）
--- 运行时状态：totem_state.button_frame[系索引] 记录该系弹出列表是否展开
+-- 数据依赖：MzxShamanData.TotemTool（位于 module/Shaman/Data.lua）
+-- UI 封装：MzxUIStyle（位于 commend/UIStyle.lua）
 -- 数据持久化：MzxToolClassicCharacterDB.totem.default_btn[系索引]
 -- ============================================================================
+
+local ui = MzxUIStyle    -- UI 封装层快捷引用
+local dt = MzxShamanData.TotemTool   -- 数据层快捷引用
 
 -- 运行时状态（不持久化，仅在当前会话有效）
 local totem_state = {
     button_frame = { false, false, false, false },
 }
-
--- 颜色数据层快捷引用（顶层，不属于 TotemTool 子表）
-local dt_color = MzxShamanData.Color
 
 -- ----------------------------------------------------------------------------
 -- API 封装：扫描法术书，按系返回已学会的图腾法术表
@@ -28,8 +28,7 @@ local dt_color = MzxShamanData.Color
 function GetTotems()
     local totems = {}
 
-    -- 从数据层读取四系图腾法术名映射，避免硬编码散落在 UI 逻辑中
-    local totem_map = MzxShamanData.TotemTool.totem_map
+    local totem_map = dt.totem_map
 
     local spells = {}
     for slot = 1, 500 do
@@ -105,8 +104,6 @@ end
 -- @param totems GetTotems() 返回的四系法术表
 -- ----------------------------------------------------------------------------
 function MzxToolFrame:CreateTotemToolFrame(totems)
-    local dt = MzxShamanData.TotemTool   -- 数据层快捷引用
-
     -- 初始化位置数据
     MzxToolClassicCharacterDB.point.totem_tool = MzxToolClassicCharacterDB.point.totem_tool or {
         p = dt.up.p,
@@ -118,12 +115,14 @@ function MzxToolFrame:CreateTotemToolFrame(totems)
     -- 初始化保存的图腾按钮设置
     MzxToolClassicCharacterDB.totem.default_btn = MzxToolClassicCharacterDB.totem.default_btn or {}
 
-    -- 创建主框体
+    -- 创建主框体（统一面板样式）
     local col_count = #totems
-    self.voidTotemTool = CreateFrame("Frame", "TotemTool", UIParent, "BackdropTemplate")
-    self.voidTotemTool:SetSize(col_count * dt.panel_w_per_col + dt.panel_padding, dt.panel_h)
-    self.voidTotemTool:SetPoint(point.p, point.x, point.y)
-    SetInfoFrameStyle(self.voidTotemTool)
+    self.voidTotemTool = ui.CreatePanel(
+        UIParent,
+        col_count * dt.panel_w_per_col + dt.panel_padding,
+        dt.panel_h,
+        point.p, point.x, point.y
+    )
 
     self.voidTotemToolIcons = {}
     for index, totem in ipairs(totems) do
@@ -135,148 +134,62 @@ function MzxToolFrame:CreateTotemToolFrame(totems)
                 name = totem[1].name,
             }
 
-            -- 创建主图标按钮（安全动作按钮，可直接绑定法术释放）
-            local icon = CreateFrame("Button", nil, self.voidTotemTool, "SecureActionButtonTemplate")
-            icon.bg = CreateFrame("Frame", nil, self.voidTotemTool, "BackdropTemplate")
-            SetButtonFrameStyle(icon.bg, dt.btn_bg_size, dt.btn_bg_size, "LEFT", index * dt.col_spacing - 38, 0)
+            -- 创建主图标按钮（统一样式，含悬停效果）
+            local icon = ui.CreateIconButton(
+                self.voidTotemTool,
+                db.icon,
+                db.spellID,
+                dt.btn_size,
+                "LEFT", index * dt.col_spacing - 33, 0,
+                function(s, button)
+                    -- 左键：由 SecureActionButtonTemplate 施放法术
+                    -- 右键：打开该系图腾弹出列表
+                    if button == "RightButton" then
+                        if totem_state.button_frame[index] then
+                            -- 已弹出：关闭全部弹出框
+                            totem_state.button_frame = { false, false, false, false }
+                            for _, value in ipairs(self.voidTotemToolIcons) do
+                                ui.TogglePopup(value.totem_frame, false)
+                            end
+                        else
+                            totem_state.button_frame[index] = true
+                            ui.TogglePopup(icon.totem_frame, true)
+                        end
+                    end
+                end
+            )
 
-            -- 加载图标与法术绑定
-            AddLeftButton(icon, db.icon, db.spellID, dt.btn_size, "LEFT", index * dt.col_spacing - 33, 0)
-            MzxDebug("加载图腾", db.spellID, db.name)
-
-            -- 创建每系图腾的弹出框体
-            icon.totem_frame = CreateFrame("Frame", "TotemFrame" .. index, icon, "BackdropTemplate")
-            icon.totem_frame.tex = icon.totem_frame:CreateTexture()
-
-            -- 创建战斗显示遮罩（默认阻挡点击，弹出时放行）
-            icon.totem_frame.blocker = CreateFrame("Frame", nil, icon.totem_frame)
-            self:TotemFrame(icon.totem_frame, totem, index) -- 初始化弹出列表（popup 起始隐藏）
-
-            -- ================= 鼠标事件：主图标 =================
-
-            -- 悬停：显示法术提示，高亮背景
-            icon:SetScript("OnEnter", function(s)
-                GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
-                GameTooltip:SetSpellByID(self.voidTotemToolIcons[index]:GetAttribute("spell"))
-                GameTooltip:AddLine(" ")
-                GameTooltip:AddLine(dt.text.left_click, 0.9, 0.9, 0.9)
-                GameTooltip:AddLine(dt.text.right_click_popup, 0.9, 0.9, 0.9)
-                GameTooltip:Show()
-                s.bg:SetBackdropColor(unpack(dt_color.bg_hover))
-                s.bg:SetBackdropBorderColor(unpack(dt_color.border_hover))
-            end)
-
-            -- 离开：隐藏提示，恢复背景
-            icon:SetScript("OnLeave", function(s)
-                GameTooltip:Hide()
-                s.bg:SetBackdropColor(unpack(dt_color.bg_default))
-                s.bg:SetBackdropBorderColor(unpack(dt_color.border_default))
-            end)
-
-            -- 右键：打开该系图腾弹出列表；左键：直接释放常用图腾（由 SecureActionButtonTemplate 处理）
-            icon:SetScript("OnMouseUp", function(s, button)
-                if totem_state.button_frame[index] then
-                    -- 已弹出：关闭全部弹出框
+            -- 创建每系图腾的弹出列表（统一样式）
+            local popup = ui.CreatePopupList(
+                icon,
+                totem,
+                #totem,
+                function(item, s, button)
+                    if InCombatLockdown() then
+                        ui.ShowAlert(dt.text.combat_block)
+                    else
+                        if button == "RightButton" then
+                            -- 设置为该系常用图腾
+                            icon:SetNormalTexture(item.icon)
+                            icon:SetAttribute("spell", item.spellID)
+                            MzxToolClassicCharacterDB.totem.default_btn[index] = {
+                                icon = item.icon,
+                                spellID = item.spellID,
+                                name = item.name,
+                            }
+                        end
+                    end
+                    -- 无论左右键，点击后均关闭弹出框并重置状态
                     totem_state.button_frame = { false, false, false, false }
                     for _, value in ipairs(self.voidTotemToolIcons) do
-                        HideFrame(value.totem_frame)
-                    end
-                else
-                    if button == "RightButton" and s.totem_frame then
-                        totem_state.button_frame[index] = true
-                        ShowFrame(s.totem_frame)
+                        ui.TogglePopup(value.totem_frame, false)
                     end
                 end
-            end)
+            )
 
+            icon.totem_frame = popup
             self.voidTotemToolIcons[index] = icon
         end
-    end
-end
-
--- ----------------------------------------------------------------------------
--- 创建四系图腾弹出列表框体（右键主图标后展开）
--- @param frame        弹出框体
--- @param totem_spells 该系下的图腾法术表
--- @param type_index   系索引（1=土,2=火,3=水,4=气）
--- ----------------------------------------------------------------------------
-function MzxToolFrame:TotemFrame(frame, totem_spells, type_index)
-    local dt = MzxShamanData.TotemTool
-    local len = #totem_spells
-
-    frame:SetSize(dt.popup_w, len * dt.popup_row_h + 6)
-    frame:SetPoint("BOTTOM", 0, 45)
-    SetInfoFrameStyle(frame)
-    frame.blocker:SetAllPoints(frame)
-    frame.blocker:SetFrameLevel(frame:GetFrameLevel() + 100) -- 位于所有按钮之上，阻挡点击
-    frame.blocker:EnableMouse(true)                           -- 起始状态：阻挡，popup 隐藏
-
-    frame.icons = {}
-    for index, totem in ipairs(totem_spells) do
-        -- 创建系内单个图腾按钮
-        local icon = CreateFrame("Button", nil, frame, "SecureActionButtonTemplate")
-        icon.bg = CreateFrame("Frame", nil, frame, "BackdropTemplate")
-        SetButtonFrameStyle(icon.bg, dt.popup_btn_bg, dt.popup_btn_bg, "BOTTOM", 0, (index - 1) * dt.popup_row_spacing + 1)
-        AddLeftButton(icon, totem.icon, totem.spellID, dt.popup_btn_size, "BOTTOM", 0, (index - 1) * dt.popup_row_spacing + 5)
-
-        -- 右键：设置为该系常用图腾，并保存到角色数据
-        icon:SetScript("OnMouseUp", function(s, button)
-            if InCombatLockdown() then
-                ShowSimpleAlert(dt.text.combat_block)
-            else
-                if button == "RightButton" then
-                    -- 更新主图标图标与绑定法术
-                    self.voidTotemToolIcons[type_index]:SetNormalTexture(totem.icon)
-                    self.voidTotemToolIcons[type_index]:SetAttribute("spell", totem.spellID)
-                    -- 持久化保存
-                    MzxToolClassicCharacterDB.totem.default_btn[type_index] = {
-                        icon = totem.icon,
-                        spellID = totem.spellID,
-                        name = totem.name,
-                    }
-                    -- 关闭全部弹出框
-                    for index2, value in ipairs(self.voidTotemToolIcons) do
-                        value.totem_frame:SetAlpha(0)
-                        HideFrame(value.totem_frame)
-                    end
-                end
-                -- 无论左右键，点击后均关闭弹出框并重置按钮状态
-                totem_state.button_frame = { false, false, false, false }
-                for _, value in ipairs(self.voidTotemToolIcons) do
-                    HideFrame(value.totem_frame)
-                end
-            end
-        end)
-
-        -- 悬停：显示法术提示，高亮背景
-        icon:SetScript("OnEnter", function(s)
-            GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
-            GameTooltip:SetSpellByID(totem.spellID)
-            GameTooltip:AddLine(" ")
-            GameTooltip:AddLine(dt.text.left_click, 0.9, 0.9, 0.9)
-            GameTooltip:AddLine(dt.text.right_click_set, 0.9, 0.9, 0.9)
-            GameTooltip:Show()
-            s.bg:SetBackdropColor(unpack(dt_color.bg_hover))
-            s.bg:SetBackdropBorderColor(unpack(dt_color.border_hover))
-        end)
-
-        -- 离开：隐藏提示，恢复背景
-        icon:SetScript("OnLeave", function(s)
-            GameTooltip:Hide()
-            s.bg:SetBackdropColor(unpack(dt_color.bg_default))
-            s.bg:SetBackdropBorderColor(unpack(dt_color.border_default))
-        end)
-
-        frame.icons[index] = icon
-    end
-
-    -- 按运行时展开状态控制初始显示/隐藏
-    if totem_state.button_frame[type_index] then
-        frame:Show()
-        frame:SetAlpha(1)
-    else
-        frame:Hide()
-        frame:SetAlpha(0)
     end
 end
 
@@ -339,5 +252,5 @@ function MzxToolFrame:Void_CreateTotemTool()
     end
     self:CreateTotemToolFrame(totems)
     MovableDisplay(self.voidTotemTool)
-    MovableFrameStop(self.voidTotemTool, MzxToolClassicCharacterDB.point.totem_tool, MzxShamanData.TotemTool.up)
+    MovableFrameStop(self.voidTotemTool, MzxToolClassicCharacterDB.point.totem_tool, dt.up)
 end
