@@ -48,7 +48,8 @@ ShamanData.TotemTool = {
     up = { p = "CENTER", x = 0, y = -28 },
 
     -- 尺寸常量
-    panel_w_per_col = 50,   -- 每系图腾占用宽度
+    panel_w_per_col = 50,   -- 每系图腾占用宽度（也作为主图标水平间距 col_spacing）
+    col_spacing     = 50,   -- 主图标水平间距，与 panel_w_per_col 一致
     panel_padding   = 20,   -- 主面板水平内边距
     panel_h         = 60,   -- 主面板高度
     btn_size        = 36,   -- 主按钮图标尺寸
