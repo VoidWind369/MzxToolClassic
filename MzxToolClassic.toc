@@ -18,10 +18,11 @@ commend\Background.lua
 commend\Movable.lua
 module\Shaman\Data.lua
 module\Shaman\ShieldInfo.lua
-module\Shaman\BloodlustSimple.lua
-module\MessageBot.lua
-module\PlayerInfo.lua
-module\SkillLineInfo.lua
+module\Common\Data.lua
+module\Common\BloodlustSimple.lua
+module\Common\MessageBot.lua
+module\Common\PlayerInfo.lua
+module\Common\SkillLineInfo.lua
 module\Shaman\TotemInfo.lua
 module\Shaman\TotemDance.lua
 module\Shaman\TotemTool.lua

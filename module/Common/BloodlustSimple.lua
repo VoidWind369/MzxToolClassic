@@ -6,12 +6,14 @@
 --   2. 10 秒内防止重复播放；
 --   3. 提供 /void testalert 等调试命令入口。
 --
--- 数据依赖：MzxShamanData.Bloodlust（位于 module/Shaman/Data/ShamanData.lua）
+-- 说明：虽然嗜血为萨满技能，但本模块为全职业通用模块，任何职业获得加速光环时均可触发提示。
+--
+-- 数据依赖：MzxCommonData.Bloodlust（位于 module/Common/Data.lua）
 -- 数据持久化：无（运行时状态）
 -- 注意：语音文件路径由用户明确保留，此处仅做数据分离，未改动路径
 -- ============================================================================
 
-local bloodlust_data = MzxShamanData.Bloodlust   -- 数据层快捷引用
+local bloodlust_data = MzxCommonData.Bloodlust   -- 数据层快捷引用
 
 -- 运行时状态（不持久化，仅在当前会话有效）
 local bloodlust_state = {
