@@ -1,38 +1,33 @@
-local bloodlust = {
-    bloodlust_spell_ids = {
-        [2825] = "|cFF0070DE嗜血 Bloodlust|r",
-        [32182] = "|cFF0070DE英勇 Heroism|r",
-        [80353] = "|cFF69CCF0时光扭曲 Time Warp|r",
-        [264667] = "|cFFABD473原始狂怒 Primal Rage|r",
-        [390386] = "|cFF33937F守护巨龙之怒 Fury of the Aspects|r",
-        [178207] = "|cFFC69B6D狂怒战鼓|r",
-        [230935] = "|cFFC69B6D高山战鼓|r",
-        [256740] = "|cFFC69B6D漩涡战鼓|r",
-        [308084] = "|cFFC69B6D尊主打击|r",
-        [354646] = "|cFFC69B6D戈姆毒气|r",
-    },
+-- ============================================================================
+-- 模块：嗜血/英勇提示 (BloodlustSimple)
+-- ============================================================================
+-- 职责：
+--   1. 监控玩家身上的嗜血/英勇等加速光环，获得时弹出屏幕提示并播放语音；
+--   2. 10 秒内防止重复播放；
+--   3. 提供 /void testalert 等调试命令入口。
+--
+-- 数据依赖：MzxShamanData.Bloodlust（位于 module/Shaman/Data/ShamanData.lua）
+-- 数据持久化：无（运行时状态）
+-- 注意：语音文件路径由用户明确保留，此处仅做数据分离，未改动路径
+-- ============================================================================
 
-    d_spell_ids = {
-        [192106] = "闪电护盾",
-        [52127] = "水之护盾",
-        [383648] = "大地护盾",
-    },
+local bloodlust_data = MzxShamanData.Bloodlust   -- 数据层快捷引用
 
-    -- 语音文件路径
-    voice_file = "Interface/AddOns/VoidMod/media/void_voice.ogg",
-    yurin = "Interface/AddOns/VoidMod/media/yurin.wav",
-
+-- 运行时状态（不持久化，仅在当前会话有效）
+local bloodlust_state = {
     hasBloodlust = false,
     lastPlayTime = 0,
 }
 
----# 监控嗜血buff
+-- ----------------------------------------------------------------------------
+-- 监控嗜血buff：遍历数据层的法术 ID 表，发现有效光环则触发提示
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:CheckBloodlust()
     local foundBuff = false
     local buffName = ""
     local spellIdFound = 0
 
-    for bloodlustId, _ in pairs(bloodlust.bloodlust_spell_ids) do
+    for bloodlustId, _ in pairs(bloodlust_data.spell_ids) do
         local auraData = C_UnitAuras.GetUnitAuraBySpellID("player", bloodlustId)
         if auraData then
             foundBuff = true
@@ -43,23 +38,29 @@ function MzxToolFrame:CheckBloodlust()
     end
 
     -- 处理buff状态变化
-    if foundBuff and not bloodlust.hasBloodlust then
+    if foundBuff and not bloodlust_state.hasBloodlust then
         self:OnBloodlustGained(buffName, spellIdFound, "ogg")
-        bloodlust.hasBloodlust = true
-    elseif not foundBuff and bloodlust.hasBloodlust then
-        bloodlust.hasBloodlust = false
+        bloodlust_state.hasBloodlust = true
+    elseif not foundBuff and bloodlust_state.hasBloodlust then
+        bloodlust_state.hasBloodlust = false
     end
 end
 
+-- ----------------------------------------------------------------------------
+-- 嗜血获得时的处理：聊天框提示、播放语音、屏幕警报
+-- @param buffName 光环名称
+-- @param spellId  法术 ID
+-- @param ogg      语音标识（"ogg" 或其他）
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:OnBloodlustGained(buffName, spellId, ogg)
     local currentTime = GetTime()
 
-    -- 防止重复播放（10秒内）
-    if currentTime - bloodlust.lastPlayTime < 10 then
+    -- 防止重复播放（冷却秒数）
+    if currentTime - bloodlust_state.lastPlayTime < bloodlust_data.cooldown_sec then
         return
     end
 
-    bloodlust.lastPlayTime = currentTime
+    bloodlust_state.lastPlayTime = currentTime
 
     -- 在聊天框显示
     DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000※ 你获得了 " .. buffName .. " (ID:" .. spellId .. ")！|r")
@@ -71,14 +72,16 @@ function MzxToolFrame:OnBloodlustGained(buffName, spellId, ogg)
     self:ShowSimpleAlert(buffName)
 end
 
----# 播放外部语音文件
----@param ogg table
+-- ----------------------------------------------------------------------------
+-- 播放外部语音文件
+-- @param ogg 语音标识（"ogg" 使用 ogg 路径，其他使用 wav 路径）
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:PlayBloodlustVoice(ogg)
     if PlaySoundFile then
         if ogg == "ogg" then
-            PlaySoundFile(bloodlust.voice_file, "Master")
+            PlaySoundFile(bloodlust_data.voice_ogg, "Master")
         else
-            PlaySoundFile(bloodlust.yurin, "Master")
+            PlaySoundFile(bloodlust_data.voice_wav, "Master")
         end
     else
         -- 备选：使用游戏内置音效
@@ -86,13 +89,17 @@ function MzxToolFrame:PlayBloodlustVoice(ogg)
     end
 end
 
+-- ----------------------------------------------------------------------------
+-- 屏幕中央警报提示（大字淡出）
+-- @param buffName 提示文本
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:ShowSimpleAlert(buffName)
     -- 屏幕中央错误提示
     UIErrorsFrame:AddMessage("※ " .. buffName .. "！", 1.0, 1.0, 0.0, 1.0)
 
     -- 创建大文字提示
     if not self.alertText then
-        self.alertText = UIParent:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
+        self.alertText = UIParent:CreateFontString(nil, "OVERLAY", MzxShamanData.Font.huge)
         self.alertText:SetPoint("CENTER", 0, 100)
         self.alertText:SetTextColor(1, 0, 0, 1)
         self.alertText:SetShadowColor(0, 0, 0, 1)
@@ -111,12 +118,12 @@ function MzxToolFrame:ShowSimpleAlert(buffName)
     UIFrameFade(self.alertText, self.alertText.fadeInfo)
 end
 
----# 检测嗜血Buff
----* 任意职业测试时
----* 需有嗜血职业组队
+-- ----------------------------------------------------------------------------
+-- 调试：检测所有嗜血Buff状态（任意职业，需组队有嗜血职业）
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:DebugBuffs()
     DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00=== 嗜血Buff检测 ===|r")
-    for bloodlustId, bloodlustName in pairs(bloodlust.bloodlust_spell_ids) do
+    for bloodlustId, bloodlustName in pairs(bloodlust_data.spell_ids) do
         local auraData = C_UnitAuras.GetUnitAuraBySpellID("player", bloodlustId)
         if auraData then
             DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00已激活|r" .. bloodlustName:sub(1, 10) .. (auraData.name or "未知") .. " (ID: " .. (auraData.spellId or "?") .. ")|r")
@@ -126,14 +133,15 @@ function MzxToolFrame:DebugBuffs()
     end
 
     -- 显示当前嗜血状态
-    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00当前嗜血状态: " .. (bloodlust.hasBloodlust and "|cFF00FF00已激活|r" or "|cFFFF0000未激活|r"))
+    DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00当前嗜血状态: " .. (bloodlust_state.hasBloodlust and "|cFF00FF00已激活|r" or "|cFFFF0000未激活|r"))
 end
 
----# 检测萨满三种元素护盾
----* 使用萨满作为测试职业时
+-- ----------------------------------------------------------------------------
+-- 调试：检测萨满三种元素护盾（萨满职业时使用）
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:DebugEleBuff()
     DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00护盾Buff检测|r")
-    for spellId, spellName in pairs(bloodlust.d_spell_ids) do
+    for spellId, spellName in pairs(bloodlust_data.shield_spell_ids) do
         local auraData = C_UnitAuras.GetUnitAuraBySpellID("player", spellId)
         if auraData then
             DEFAULT_CHAT_FRAME:AddMessage("|cFF888888" .. (auraData.name or "未知") .. " (ID: " .. (auraData.spellId or "?") .. ")|r")
@@ -143,8 +151,10 @@ function MzxToolFrame:DebugEleBuff()
     end
 end
 
----# 嗜血测试
----@param ogg table
+-- ----------------------------------------------------------------------------
+-- 调试：嗜血提示测试
+-- @param ogg 语音标识
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:TestAlert(ogg)
     DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00测试嗜血提示...|r")
     self:OnBloodlustGained("嗜血测试", 2825, ogg)

@@ -1,56 +1,69 @@
-local totem = {
-    up = {
-        p = "CENTER",
-        x = 0,
-        y = -180
-    },
-}
+-- ============================================================================
+-- 模块：萨满图腾信息监控 (TotemInfo)
+-- ============================================================================
+-- 职责：
+--   1. 显示四系图腾（火焰/大地/水之/空气）的当前名称、剩余时间、图标；
+--   2. 图腾剩余时间按阈值着色（>10 秒黄色，<=10 秒红色，未放置灰色）；
+--   3. 提供“图腾召唤”安全动作按钮，附带法术提示悬停。
+--
+-- 数据依赖：MzxShamanData.TotemInfo（位于 module/Shaman/Data/ShamanData.lua）
+-- 数据持久化：MzxToolClassicCharacterDB.point.totem
+-- ============================================================================
 
+local dt = MzxShamanData.TotemInfo   -- 数据层快捷引用
+
+-- ----------------------------------------------------------------------------
+-- 获取全部四系图腾当前状态
+-- 返回：totem_info[1..4]，每项 { icon, name, dur, spell_id }
+-- ----------------------------------------------------------------------------
 function MzxToolFrame.GetTotemInfo()
     local totem_info = {}
-    local color = { { "|cFFFF4500", "(火焰图腾)" }, { "|cFF8B4513", "(大地图腾)" }, { "|cFF1E90FF", "(水之图腾)" }, { "|cFF40E0D0", "(空气图腾)" } }
-    for index, value in ipairs(color) do
+    for index = 1, 4 do
         local haveTotem, totemName, startTime, duration, icon, modRate, spellID = GetTotemInfo(index)
-        local icon_num = icon or 136232
-        local name = (haveTotem and totemName) and totemName or value[2]
+        local icon_num = icon or MzxShamanData.Texture.default_icon or 136232
+        local name = (haveTotem and totemName) and totemName or dt.color[index][2]
         local est_num = startTime + duration - GetTime()
         local est_color_str = string.format(est_num > 10 and "|cFFFFFF00%.1f|r" or "|cFFFF0000%.1f|r", est_num)
-        local est_dur = (haveTotem and totemName) and est_color_str or "|cFFC0C0C0--|r"
+        local est_dur = (haveTotem and totemName) and est_color_str or dt.placeholder
 
         totem_info[index] = {
-            icon = icon_num,
-            name = value[1] .. name .. "|r",
-            dur = est_dur,
-            spell_id = spellID
+            icon   = icon_num,
+            name   = dt.color[index][1] .. name .. "|r",
+            dur    = est_dur,
+            spell_id = spellID,
         }
     end
     return totem_info
 end
 
+-- ----------------------------------------------------------------------------
+-- 获取全部四系图腾剩余时间（轻量版，仅用于计时刷新）
+-- 返回：totem_info[1..4]，每项 { dur }
+-- ----------------------------------------------------------------------------
 function MzxToolFrame.GetTotemTimeLeft()
     local totem_info = {}
-    local color = { { "|cFFFF4500", "(火焰图腾)" }, { "|cFF8B4513", "(大地图腾)" }, { "|cFF1E90FF", "(水之图腾)" }, { "|cFF40E0D0", "(空气图腾)" } }
-    for index, value in ipairs(color) do
+    for index = 1, 4 do
         local seconds = GetTotemTimeLeft(index)
         local est_color_str = string.format(seconds > 10 and "|cFFFFFF00%.1f|r" or "|cFFFF0000%.1f|r", seconds)
         local est_dur = seconds > 0 and est_color_str or "|cFFC0C0C0--|r"
-        totem_info[index] = {
-            dur = est_dur,
-        }
+        totem_info[index] = { dur = est_dur }
     end
     return totem_info
 end
 
---- # 创建图腾框体
+-- ----------------------------------------------------------------------------
+-- 创建图腾信息主框体
+-- @param totem_info GetTotemInfo() 返回的表
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:Void_CreateTotemInfoFrame(totem_info)
     MzxToolClassicCharacterDB.point.totem = MzxToolClassicCharacterDB.point.totem or {
-        p = totem.up.p,
-        x = totem.up.x,
-        y = totem.up.y,
+        p = dt.up.p,
+        x = dt.up.x,
+        y = dt.up.y,
     }
 
     self.voidTotemInfo = CreateFrame("Frame", "Totem", UIParent, "BackdropTemplate")
-    self.voidTotemInfo:SetSize(231, #totem_info * 26 + 10)
+    self.voidTotemInfo:SetSize(dt.panel_w, #totem_info * dt.row_h + 10)
     self.voidTotemInfo:SetPoint(MzxToolClassicCharacterDB.point.totem.p,
         MzxToolClassicCharacterDB.point.totem.x,
         MzxToolClassicCharacterDB.point.totem.y)
@@ -61,18 +74,20 @@ function MzxToolFrame:Void_CreateTotemInfoFrame(totem_info)
     self.voidTotemInfoDurText = {}
     for index, value in ipairs(totem_info) do
         self.voidTotemInfoIcon[index] = self.voidTotemInfo:CreateTexture()
-        self.voidTotemInfoNameText[index] = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
-        self.voidTotemInfoDurText[index] = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", "GameTooltipText")
+        self.voidTotemInfoNameText[index] = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", dt.Font.tooltip)
+        self.voidTotemInfoDurText[index] = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", dt.Font.tooltip)
 
         local y = 36 - (index - 1) * 24
-        AddIconLeft(self.voidTotemInfoIcon[index], value.icon, 17, 13.5, y - 1)
-        AddStringLeft(self.voidTotemInfoNameText[index], value.name, 1.2, 35, y)
-        AddStringRight(self.voidTotemInfoDurText[index], value.dur, 1.2, -10, y)
+        AddIconLeft(self.voidTotemInfoIcon[index], value.icon, dt.icon_w, dt.icon_x, y - 1)
+        AddStringLeft(self.voidTotemInfoNameText[index], value.name, dt.name_scale, dt.name_x, y)
+        AddStringRight(self.voidTotemInfoDurText[index], value.dur, dt.name_scale, dt.dur_x, y)
     end
     GetTotemGameTooltip()
 end
 
---- # 创建图腾信息框体
+-- ----------------------------------------------------------------------------
+-- 模块入口：创建图腾信息界面
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:Void_CreateTotemInfo()
     self:Void_CreateTotemInfoFrame(MzxToolFrame:GetTotemInfo())
 
@@ -82,9 +97,10 @@ function MzxToolFrame:Void_CreateTotemInfo()
     MovableTotemFrameStop()
 end
 
---- # 刷新图腾信息框体
+-- ----------------------------------------------------------------------------
+-- 刷新图腾信息框体（图标、名称、剩余时间）
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:Void_UpdateTotemInfo()
-    -- 判断是否启用
     if self.voidTotemInfo then
         local info = MzxToolFrame:GetTotemInfo()
         for index, value in ipairs(info) do
@@ -95,9 +111,10 @@ function MzxToolFrame:Void_UpdateTotemInfo()
     end
 end
 
---- # 刷新图腾剩余时间
+-- ----------------------------------------------------------------------------
+-- 刷新图腾剩余时间文本
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:Void_UpdateTotemTimeLeft()
-    -- 判断是否启用
     if self.voidTotemInfo then
         local info = MzxToolFrame:GetTotemTimeLeft()
         for index, value in ipairs(info) do
@@ -106,14 +123,16 @@ function MzxToolFrame:Void_UpdateTotemTimeLeft()
     end
 end
 
+-- ----------------------------------------------------------------------------
+-- 创建“图腾召唤”安全动作按钮
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:RecycleTotem()
     MzxToolFrame.voidTotemInfo.secureBtn = CreateFrame("Button", "RecycleTotemBtn", self.voidTotemInfo,
         "SecureActionButtonTemplate")
     self.voidTotemInfo.secureBtn:SetSize(110, 100)
-    -- self.voidTotemInfo.secureBtn:SetNormalTexture(136233)
     self.voidTotemInfo.secureBtn:SetPoint("RIGHT", self.voidTotemInfo, "RIGHT", 0, 0)
     self.voidTotemInfo.secureBtn:SetAttribute("type1", "spell")
-    self.voidTotemInfo.secureBtn:SetAttribute("spell", "图腾召唤") -- 设置要施放的技能名
+    self.voidTotemInfo.secureBtn:SetAttribute("spell", "图腾召唤")
     self.voidTotemInfo.secureBtn:RegisterForClicks("AnyUp", "AnyDown")
     -- 鼠标悬停事件
     self.voidTotemInfo.secureBtn:SetScript("OnEnter", function(s)
@@ -125,13 +144,13 @@ function MzxToolFrame:RecycleTotem()
     self.voidTotemInfo.secureBtn:SetScript("OnLeave", function(s)
         GameTooltip:Hide()
     end)
-    -- VoidFrame.voidTotemInfo.secureBtn:SetAttribute("type", "macro")
-    -- VoidFrame.voidTotemInfo.secureBtn:SetAttribute("macrotext", "/cast 图腾召唤") -- text for macro on left click
 end
 
+-- ----------------------------------------------------------------------------
+-- 为图标绑定鼠标悬停法术提示
+-- ----------------------------------------------------------------------------
 function GetTotemGameTooltip()
     for index, value in ipairs(MzxToolFrame.voidTotemInfoIcon) do
-        -- 鼠标悬停事件
         value:SetScript("OnEnter", function(self)
             local haveTotem, totemName, startTime, duration, icon, modRate, spellID = GetTotemInfo(index)
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -145,27 +164,29 @@ function GetTotemGameTooltip()
     end
 end
 
+-- ----------------------------------------------------------------------------
+-- 框体拖动停止与双击居中
+-- ----------------------------------------------------------------------------
 function MovableTotemFrameStop()
-    -- 拖动停止
+    -- 拖动停止：保存位置
     MzxToolFrame.voidTotemInfo:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
         self.isMoving = false
         local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
-        MzxToolClassicCharacterDB.point.totem.p = p    -- 保存
-        MzxToolClassicCharacterDB.point.totem.x = xOfs -- 保存
-        MzxToolClassicCharacterDB.point.totem.y = yOfs -- 保存
+        MzxToolClassicCharacterDB.point.totem.p = p
+        MzxToolClassicCharacterDB.point.totem.x = xOfs
+        MzxToolClassicCharacterDB.point.totem.y = yOfs
     end)
 
     -- 双击居中
     MzxToolFrame.voidTotemInfo:SetScript("OnMouseUp", function(self, button)
         if button == "LeftButton" and self.doubleClick then
             self:ClearAllPoints()
-            self:SetPoint(totem.up.p, totem.up.x, totem.up.y)
+            self:SetPoint(dt.up.p, dt.up.x, dt.up.y)
             local p, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
-            -- 保存到变量或保存文件
-            MzxToolClassicCharacterDB.point.totem.p = p    -- 保存
-            MzxToolClassicCharacterDB.point.totem.x = xOfs -- 保存
-            MzxToolClassicCharacterDB.point.totem.y = yOfs -- 保存
+            MzxToolClassicCharacterDB.point.totem.p = p
+            MzxToolClassicCharacterDB.point.totem.x = xOfs
+            MzxToolClassicCharacterDB.point.totem.y = yOfs
             self.doubleClick = false
         end
     end)
