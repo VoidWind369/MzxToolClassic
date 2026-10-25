@@ -12,6 +12,7 @@
 -- ============================================================================
 
 local dt = MzxShamanData.TotemDance   -- 数据层快捷引用
+local dt_font = MzxShamanData.Font    -- 字体数据层快捷引用
 
 local totem_dance = {
     totem_end_time = 0,
@@ -52,8 +53,8 @@ function MzxToolFrame:CreateTotemDanceFrame(dance_time)
 
     self.voidTotemDanceIcon = self.voidTotemDance:CreateTexture()
     self.voidTotemDanceText = {
-        self.voidTotemDance:CreateFontString(nil, "OVERLAY", dt.Font.tooltip),
-        self.voidTotemDance:CreateFontString(nil, "OVERLAY", dt.Font.tooltip),
+        self.voidTotemDance:CreateFontString(nil, "OVERLAY", dt_font.tooltip),
+        self.voidTotemDance:CreateFontString(nil, "OVERLAY", dt_font.tooltip),
     }
     AddIconLeft(self.voidTotemDanceIcon, dt.icon_normal, dt.icon_size, dt.icon_x, dt.icon_y)
     AddStringLeft(self.voidTotemDanceText[1], dt.text.title, dt.text1_scale, dt.text1_x)

@@ -10,7 +10,8 @@
 -- 数据持久化：MzxToolClassicCharacterDB.point.totem
 -- ============================================================================
 
-local dt = MzxShamanData.TotemInfo   -- 数据层快捷引用
+local dt     = MzxShamanData.TotemInfo   -- 数据层快捷引用
+local dt_font = MzxShamanData.Font       -- 字体数据层快捷引用
 
 -- ----------------------------------------------------------------------------
 -- 获取全部四系图腾当前状态
@@ -74,8 +75,8 @@ function MzxToolFrame:Void_CreateTotemInfoFrame(totem_info)
     self.voidTotemInfoDurText = {}
     for index, value in ipairs(totem_info) do
         self.voidTotemInfoIcon[index] = self.voidTotemInfo:CreateTexture()
-        self.voidTotemInfoNameText[index] = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", dt.Font.tooltip)
-        self.voidTotemInfoDurText[index] = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", dt.Font.tooltip)
+        self.voidTotemInfoNameText[index] = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", dt_font.tooltip)
+        self.voidTotemInfoDurText[index] = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", dt_font.tooltip)
 
         local y = 36 - (index - 1) * 24
         AddIconLeft(self.voidTotemInfoIcon[index], value.icon, dt.icon_w, dt.icon_x, y - 1)
