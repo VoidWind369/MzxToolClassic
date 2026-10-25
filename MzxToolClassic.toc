@@ -25,5 +25,6 @@ module\SkillLineInfo.lua
 module\Shaman\TotemInfo.lua
 module\Shaman\TotemDance.lua
 module\Shaman\TotemTool.lua
+module\Mage\Data.lua
 module\Mage\TeleportTool.lua
 module\Priest\PowerWordShield.lua
