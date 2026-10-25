@@ -6,13 +6,14 @@
 --   2. 启动 10 秒倒计时，图标在普通/激活状态间切换；
 --   3. 提供图标悬停提示，说明图腾舞用途。
 --
--- 数据依赖：MzxShamanData.TotemDance（位于 module/Shaman/Data/ShamanData.lua）
+-- 数据依赖：MzxShamanData.TotemDance（位于 module/Shaman/Data.lua）
+-- UI 封装：MzxUIStyle（位于 commend/UIStyle.lua）
 -- 事件依赖：COMBAT_LOG_EVENT_UNFILTERED（仅在萨满且图腾舞开启时注册，见 MzxTool.lua）
 -- 数据持久化：MzxToolClassicCharacterDB.point.totem_dance
 -- ============================================================================
 
+local ui = MzxUIStyle       -- UI 封装层快捷引用
 local dt = MzxShamanData.TotemDance   -- 数据层快捷引用
-local dt_font = MzxShamanData.Font    -- 字体数据层快捷引用
 
 local totem_dance = {
     totem_end_time = 0,
@@ -34,7 +35,7 @@ function MzxToolFrame:GetGroupBuffs()
 end
 
 -- ----------------------------------------------------------------------------
--- 创建图腾舞主框体
+-- 创建图腾舞主框体（统一面板样式 + 图标 + 文本）
 -- @param dance_time 初始剩余时间文本
 -- ----------------------------------------------------------------------------
 function MzxToolFrame:CreateTotemDanceFrame(dance_time)
@@ -44,21 +45,27 @@ function MzxToolFrame:CreateTotemDanceFrame(dance_time)
         y = dt.up.y,
     }
 
-    self.voidTotemDance = CreateFrame("Frame", "TotemDance", UIParent, "BackdropTemplate")
-    self.voidTotemDance:SetSize(dt.panel_w, dt.panel_h)
-    self.voidTotemDance:SetPoint(MzxToolClassicCharacterDB.point.totem_dance.p,
+    -- 主框体：统一面板样式
+    self.voidTotemDance = ui.CreatePanel(
+        UIParent,
+        dt.panel_w,
+        dt.panel_h,
+        MzxToolClassicCharacterDB.point.totem_dance.p,
         MzxToolClassicCharacterDB.point.totem_dance.x,
-        MzxToolClassicCharacterDB.point.totem_dance.y)
-    SetInfoFrameStyle(self.voidTotemDance)
+        MzxToolClassicCharacterDB.point.totem_dance.y
+    )
 
+    -- 图标（统一样式）
     self.voidTotemDanceIcon = self.voidTotemDance:CreateTexture()
+    self.voidTotemDanceIcon:SetTexture(dt.icon_normal)
+    self.voidTotemDanceIcon:SetSize(dt.icon_size, dt.icon_size)
+    self.voidTotemDanceIcon:SetPoint("LEFT", dt.icon_x, dt.icon_y)
+
+    -- 文本（统一标签样式）
     self.voidTotemDanceText = {
-        self.voidTotemDance:CreateFontString(nil, "OVERLAY", dt_font.tooltip),
-        self.voidTotemDance:CreateFontString(nil, "OVERLAY", dt_font.tooltip),
+        ui.CreateLabel(self.voidTotemDance, dt.text.title, ui.Font.tooltip, "LEFT", dt.text1_x, 0, nil, dt.text1_scale),
+        ui.CreateLabel(self.voidTotemDance, dance_time, ui.Font.tooltip, "RIGHT", dt.text2_x, 0, nil, dt.text2_scale),
     }
-    AddIconLeft(self.voidTotemDanceIcon, dt.icon_normal, dt.icon_size, dt.icon_x, dt.icon_y)
-    AddStringLeft(self.voidTotemDanceText[1], dt.text.title, dt.text1_scale, dt.text1_x)
-    AddStringRight(self.voidTotemDanceText[2], dance_time, dt.text2_scale)
 
     GetTotemDanceGameTooltip()
 end
@@ -78,9 +85,9 @@ end
 function MzxToolFrame:Void_UpdateTotemDance()
     if self.voidTotemDance then
         if totem_dance.remaining_time > 2 then
-            MzxToolFrame.voidTotemDanceIcon:SetTexture(dt.icon_active)
+            self.voidTotemDanceIcon:SetTexture(dt.icon_active)
         else
-            MzxToolFrame.voidTotemDanceIcon:SetTexture(dt.icon_normal)
+            self.voidTotemDanceIcon:SetTexture(dt.icon_normal)
         end
         self.voidTotemDanceText[2]:SetText(FormatRemaining())
     end

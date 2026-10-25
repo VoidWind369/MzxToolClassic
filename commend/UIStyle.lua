@@ -134,9 +134,10 @@ end
 -- @param x       X 偏移
 -- @param y       Y 偏移
 -- @param onClick 右键点击回调 (function(button))
+-- @param bg_size 背景框尺寸（可选，默认 size + 10）
 -- 返回：创建的按钮框架（已包含 bg 背景框）
 -- ----------------------------------------------------------------------------
-function UIStyle.CreateIconButton(parent, icon, spellID, size, point, x, y, onClick)
+function UIStyle.CreateIconButton(parent, icon, spellID, size, point, x, y, onClick, bg_size)
     local btn = CreateFrame("Button", nil, parent, "SecureActionButtonTemplate")
     btn:SetSize(size, size)
     btn:SetPoint(point, x, y)
@@ -146,7 +147,9 @@ function UIStyle.CreateIconButton(parent, icon, spellID, size, point, x, y, onCl
     btn:SetNormalTexture(icon or UIStyle.Texture.default_icon)
 
     local bg = CreateFrame("Frame", nil, btn, "BackdropTemplate")
-    bg:SetSize(size + 10, size + 10)
+    local bgW = bg_size or (size + 10)
+    local bgH = bg_size or (size + 10)
+    bg:SetSize(bgW, bgH)
     bg:SetPoint("CENTER", btn, "CENTER", 0, 0)
     ApplyButtonBackdrop(bg, false)
     btn.bg = bg
@@ -181,9 +184,10 @@ end
 -- @param x       X 偏移
 -- @param y       Y 偏移
 -- @param color   颜色表（可选，默认 text_normal）
+-- @param scale   字体缩放（可选）
 -- 返回：创建的 FontString
 -- ----------------------------------------------------------------------------
-function UIStyle.CreateLabel(parent, text, font, point, x, y, color)
+function UIStyle.CreateLabel(parent, text, font, point, x, y, color, scale)
     local fs = parent:CreateFontString(nil, "OVERLAY", font or UIStyle.Font.normal)
     fs:SetPoint(point, x, y)
     fs:SetText(text)
@@ -191,6 +195,13 @@ function UIStyle.CreateLabel(parent, text, font, point, x, y, color)
     fs:SetTextColor(unpack(c))
     fs:SetShadowColor(0, 0, 0, 0.5)
     fs:SetShadowOffset(1, -1)
+    if scale then
+        fs:SetTextScale(scale)
+        fs:SetSpacing(scale * 1.5)
+    else
+        fs:SetSpacing(1.5)
+    end
+    fs:SetJustifyH(point)
     return fs
 end
 

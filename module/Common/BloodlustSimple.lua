@@ -72,7 +72,7 @@ function MzxToolFrame:OnBloodlustGained(buffName, spellId, ogg)
     self:PlayBloodlustVoice(ogg)
 
     -- 屏幕提示
-    self:ShowSimpleAlert(buffName)
+    ui.ShowAlert(buffName)
 end
 
 -- ----------------------------------------------------------------------------

@@ -1,17 +1,23 @@
-local point = {
-    player_up = {
-        p = "BOTTOMLEFT",
-        x = 430.0,
-        y = 130.0
-    },
-    player_down = {
-        p = "BOTTOMLEFT",
-        x = 430.0,
-        y = 10.0
-    }
-}
+-- ============================================================================
+-- 模块：玩家属性面板 (PlayerInfo) —— 通用
+-- ============================================================================
+-- 职责：
+--   1. 显示玩家主属性（力量/敏捷/耐力/智力/精神）与攻防属性（攻击强度/法术强度等）；
+--   2. 显示七系抗性与移动速度；
+--   3. 上下两个独立面板，支持拖动与双击居中。
+--
+-- 数据依赖：MzxCommonData.PlayerInfo（位于 module/Common/Data.lua）
+-- UI 封装：MzxUIStyle（位于 commend/UIStyle.lua）
+-- 数据持久化：MzxToolClassicCharacterDB.point.player_up / player_down
+-- ============================================================================
 
---- # 玩家信息获取
+local ui = MzxUIStyle      -- UI 封装层快捷引用
+local dt = MzxCommonData.PlayerInfo   -- 数据层快捷引用
+
+-- ----------------------------------------------------------------------------
+-- 玩家信息获取（数据计算，不涉及 UI）
+-- 返回：first_table, last_table
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:Void_PlayerInfo()
     -- 主属性
     local strength = UnitStat("player", 1)  -- 力量
@@ -84,7 +90,6 @@ function MzxToolFrame:Void_PlayerInfo()
 
     local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed("player")
     local speedPercent = (currentSpeed / 7) * 100 -- 7是基础奔跑速度
-    --local power = UnitPower("player", Enum.PowerType.Mana)
 
     local first_table = {
         { name = "|cFFC41E3A" .. attribute.name .. "|r", value = attribute.damage },
@@ -94,25 +99,6 @@ function MzxToolFrame:Void_PlayerInfo()
         { name = "|cFFCD7F32急速等级|r", value = string.format(" %.1f%%", haste or 0) },
         { name = "|cFFCD7F32移动速度|r", value = string.format(" %.1f%%", speedPercent or 0) },
     }
-
-    -- local first_table = {
-    --     name = {
-    --         "|cFFC41E3A" .. attribute.name .. "|r",
-    --         "|cFFC41E3A暴击几率|r",
-    --         "|cFF3FC7EB命中等级|r",
-    --         "|cFF3FC7EB命中几率|r",
-    --         "|cFFCD7F32急速等级|r",
-    --         "|cFFCD7F32移动速度|r",
-    --     },
-    --     value = {
-    --         attribute.damage,
-    --         string.format(" %.2f%%", attribute.chance or 0),
-    --         attribute.rating,
-    --         string.format(" %.2f%%", attribute.ratingBonus or 0),
-    --         string.format(" %.1f%%", haste or 0),
-    --         string.format(" %.1f%%", speedPercent or 0),
-    --     }
-    -- }
 
     local last_table = {
         { name = "|cFFFFFF66物理|r", value = physical },
@@ -124,68 +110,98 @@ function MzxToolFrame:Void_PlayerInfo()
         { name = "|cFFFF66FF奥数|r", value = arcane }
     }
 
-    -- local last_table = {
-    --     name = { "|cFFFFFF66物理|r", "|cFFFFFF66神圣|r", "|cFFFF3300火焰|r", "|cFF00FF00自然|r", "|cFF00CCFF冰霜|r", "|cFF9933CC暗影|r", "|cFFFF66FF奥数|r" },
-    --     value = { physical, holy, fire, nature, frost, shadow, arcane },
-    -- }
-
     return first_table, last_table
 end
 
---- # 创建主属性框体
+-- ----------------------------------------------------------------------------
+-- 创建上面板（主属性）
+-- @param first first_table
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:Void_CreatePlayerInfoFrame_UP(first)
     MzxToolClassicCharacterDB.point.player_up = MzxToolClassicCharacterDB.point.player_up or {
-        p = point.player_up.p,
-        x = point.player_up.x,
-        y = point.player_up.y
+        p = dt.up.p,
+        x = dt.up.x,
+        y = dt.up.y,
     }
 
-    self.voidPlayerInfo_UP = CreateFrame("Frame", "PlayerInfo_UP", UIParent, "BackdropTemplate")
-    self.voidPlayerInfo_UP:SetSize(140, #first * 20 + 10)
-    self.voidPlayerInfo_UP:SetPoint(MzxToolClassicCharacterDB.point.player_up.p,
+    -- 主框体：统一面板样式
+    self.voidPlayerInfo_UP = ui.CreatePanel(
+        UIParent,
+        dt.panel_w_up,
+        #first * dt.row_h + dt.label_padding * 2,
+        MzxToolClassicCharacterDB.point.player_up.p,
         MzxToolClassicCharacterDB.point.player_up.x,
-        MzxToolClassicCharacterDB.point.player_up.y)
-    SetInfoFrameStyle(self.voidPlayerInfo_UP, true)
+        MzxToolClassicCharacterDB.point.player_up.y
+    )
 
     self.voidPlayerInfoText_UP = {}
     for index, value in ipairs(first) do
-        self.voidPlayerInfoText_UP[index] = {
-            self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
-            self.voidPlayerInfo_UP:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
-        }
-        AddStringLeft(self.voidPlayerInfoText_UP[index][1], value.name, nil, 6, (1 - index) * 20 + (#first - 1) * 10)
-        AddStringRight(self.voidPlayerInfoText_UP[index][2], value.value, nil, -5, (1 - index) * 20 + (#first - 1) * 10)
+        -- 从下往上排列，第一行在最底部
+        local y = dt.label_padding + dt.row_h * (#first - index)
+
+        local nameText = ui.CreateLabel(
+            self.voidPlayerInfo_UP,
+            value.name,
+            ui.Font.tooltip,
+            "LEFT", 6, y
+        )
+        local valueText = ui.CreateLabel(
+            self.voidPlayerInfo_UP,
+            value.value,
+            ui.Font.tooltip,
+            "RIGHT", -5, y
+        )
+        self.voidPlayerInfoText_UP[index] = { nameText, valueText }
     end
 end
 
---- # 创建副属性框体
+-- ----------------------------------------------------------------------------
+-- 创建下面板（抗性属性）
+-- @param last last_table
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:Void_CreatePlayerInfoFrame_Down(last)
     MzxToolClassicCharacterDB.point.player_down = MzxToolClassicCharacterDB.point.player_down or {
-        p = point.player_down.p,
-        x = point.player_down.x,
-        y = point.player_down.y
+        p = dt.down.p,
+        x = dt.down.x,
+        y = dt.down.y,
     }
-    self.voidPlayerInfo_DOWN = CreateFrame("Frame", "PlayerInfo_DOWN", UIParent, "BackdropTemplate")
-    self.voidPlayerInfo_DOWN:SetSize(90, #last * 20 + 10)
-    self.voidPlayerInfo_DOWN:SetPoint(MzxToolClassicCharacterDB.point.player_down.p,
+
+    -- 主框体：统一面板样式
+    self.voidPlayerInfo_DOWN = ui.CreatePanel(
+        UIParent,
+        dt.panel_w_down,
+        #last * dt.row_h + dt.label_padding * 2,
+        MzxToolClassicCharacterDB.point.player_down.p,
         MzxToolClassicCharacterDB.point.player_down.x,
-        MzxToolClassicCharacterDB.point.player_down.y)
-    SetInfoFrameStyle(self.voidPlayerInfo_DOWN, true)
+        MzxToolClassicCharacterDB.point.player_down.y
+    )
 
     self.voidPlayerInfoText_DOWN = {}
     for index, value in ipairs(last) do
-        self.voidPlayerInfoText_DOWN[index] = {
-            self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
-            self.voidPlayerInfo_DOWN:CreateFontString(nil, "OVERLAY", "GameTooltipText"),
-        }
-        AddStringLeft(self.voidPlayerInfoText_DOWN[index][1], value.name, nil, 6, (1 - index) * 20 + (#last - 1) * 10)
-        AddStringRight(self.voidPlayerInfoText_DOWN[index][2], value.value, nil, -5, (1 - index) * 20 + (#last - 1) * 10)
+        -- 从下往上排列，第一行在最底部
+        local y = dt.label_padding + dt.row_h * (#last - index)
+
+        local nameText = ui.CreateLabel(
+            self.voidPlayerInfo_DOWN,
+            value.name,
+            ui.Font.tooltip,
+            "LEFT", 6, y
+        )
+        local valueText = ui.CreateLabel(
+            self.voidPlayerInfo_DOWN,
+            value.value,
+            ui.Font.tooltip,
+            "RIGHT", -5, y
+        )
+        self.voidPlayerInfoText_DOWN[index] = { nameText, valueText }
     end
 end
 
---- # 创建玩家信息框体
+-- ----------------------------------------------------------------------------
+-- 模块入口：创建玩家信息界面
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:Void_CreatePlayerInfo()
-    MzxToolClassicCharacterDB.point = MzxToolClassicCharacterDB.point or point
+    MzxToolClassicCharacterDB.point = MzxToolClassicCharacterDB.point or {}
 
     local first, last = MzxToolFrame:Void_PlayerInfo()
     self:Void_CreatePlayerInfoFrame_UP(first)
@@ -194,11 +210,13 @@ function MzxToolFrame:Void_CreatePlayerInfo()
     MovableDisplay(self.voidPlayerInfo_UP)
     MovableDisplay(self.voidPlayerInfo_DOWN)
 
-    MovableFrameStop(self.voidPlayerInfo_UP, MzxToolClassicCharacterDB.point.player_up, point.player_up)
-    MovableFrameStop(self.voidPlayerInfo_DOWN, MzxToolClassicCharacterDB.point.player_down, point.player_down)
+    MovableFrameStop(self.voidPlayerInfo_UP, MzxToolClassicCharacterDB.point.player_up, dt.up)
+    MovableFrameStop(self.voidPlayerInfo_DOWN, MzxToolClassicCharacterDB.point.player_down, dt.down)
 end
 
---- # 刷新玩家信息框体
+-- ----------------------------------------------------------------------------
+-- 刷新玩家信息框体文本
+-- ----------------------------------------------------------------------------
 function MzxToolFrame:Void_UpdatePlayerInfo()
     if self.voidPlayerInfo_UP and self.voidPlayerInfo_DOWN then
         local first, last = MzxToolFrame:Void_PlayerInfo()

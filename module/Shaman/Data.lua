@@ -97,6 +97,7 @@ ShamanData.TotemInfo = {
     -- 尺寸常量
     panel_w   = 231,
     row_h     = 26,
+    label_padding = 4,     -- 每行顶部内边距
     icon_w    = 17,
     icon_x    = 13.5,
     name_x    = 35,
@@ -132,6 +133,7 @@ ShamanData.TotemDance = {
     icon_y    = -1.2,
     text1_x   = 45,
     text1_scale = 1.6,
+    text2_x   = -10,
     text2_scale = 1.6,
 
     -- 触发图腾舞的法术 ID（COMBAT_LOG SPELL_SUMMON 监控）

@@ -6,12 +6,13 @@
 --   2. 图腾剩余时间按阈值着色（>10 秒黄色，<=10 秒红色，未放置灰色）；
 --   3. 提供“图腾召唤”安全动作按钮，附带法术提示悬停。
 --
--- 数据依赖：MzxShamanData.TotemInfo（位于 module/Shaman/Data/ShamanData.lua）
+-- 数据依赖：MzxShamanData.TotemInfo（位于 module/Shaman/Data.lua）
+-- UI 封装：MzxUIStyle（位于 commend/UIStyle.lua）
 -- 数据持久化：MzxToolClassicCharacterDB.point.totem
 -- ============================================================================
 
-local dt     = MzxShamanData.TotemInfo   -- 数据层快捷引用
-local dt_font = MzxShamanData.Font       -- 字体数据层快捷引用
+local ui = MzxUIStyle      -- UI 封装层快捷引用
+local dt = MzxShamanData.TotemInfo   -- 数据层快捷引用
 
 -- ----------------------------------------------------------------------------
 -- 获取全部四系图腾当前状态
@@ -53,7 +54,7 @@ function MzxToolFrame.GetTotemTimeLeft()
 end
 
 -- ----------------------------------------------------------------------------
--- 创建图腾信息主框体
+-- 创建图腾信息主框体（统一面板样式 + 垂直列表行）
 -- @param totem_info GetTotemInfo() 返回的表
 -- ----------------------------------------------------------------------------
 function MzxToolFrame:Void_CreateTotemInfoFrame(totem_info)
@@ -63,25 +64,46 @@ function MzxToolFrame:Void_CreateTotemInfoFrame(totem_info)
         y = dt.up.y,
     }
 
-    self.voidTotemInfo = CreateFrame("Frame", "Totem", UIParent, "BackdropTemplate")
-    self.voidTotemInfo:SetSize(dt.panel_w, #totem_info * dt.row_h + 10)
-    self.voidTotemInfo:SetPoint(MzxToolClassicCharacterDB.point.totem.p,
+    -- 主框体：统一面板样式
+    self.voidTotemInfo = ui.CreatePanel(
+        UIParent,
+        dt.panel_w,
+        #totem_info * dt.row_h + 10,
+        MzxToolClassicCharacterDB.point.totem.p,
         MzxToolClassicCharacterDB.point.totem.x,
-        MzxToolClassicCharacterDB.point.totem.y)
-    SetInfoFrameStyle(self.voidTotemInfo)
+        MzxToolClassicCharacterDB.point.totem.y
+    )
 
     self.voidTotemInfoIcon = {}
     self.voidTotemInfoNameText = {}
     self.voidTotemInfoDurText = {}
     for index, value in ipairs(totem_info) do
-        self.voidTotemInfoIcon[index] = self.voidTotemInfo:CreateTexture()
-        self.voidTotemInfoNameText[index] = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", dt_font.tooltip)
-        self.voidTotemInfoDurText[index] = self.voidTotemInfo:CreateFontString(nil, "OVERLAY", dt_font.tooltip)
+        local y = dt.row_h * (index - 1) + dt.label_padding
 
-        local y = 36 - (index - 1) * 24
-        AddIconLeft(self.voidTotemInfoIcon[index], value.icon, dt.icon_w, dt.icon_x, y - 1)
-        AddStringLeft(self.voidTotemInfoNameText[index], value.name, dt.name_scale, dt.name_x, y)
-        AddStringRight(self.voidTotemInfoDurText[index], value.dur, dt.name_scale, dt.dur_x, y)
+        -- 图标（统一图标样式）
+        local icon = self.voidTotemInfo:CreateTexture()
+        icon:SetTexture(value.icon)
+        icon:SetSize(dt.icon_w, dt.icon_w)
+        icon:SetPoint("LEFT", dt.icon_x, y - 1)
+        self.voidTotemInfoIcon[index] = icon
+
+        -- 名称文本（统一标签样式）
+        local nameText = ui.CreateLabel(
+            self.voidTotemInfo,
+            value.name,
+            ui.Font.tooltip,
+            "LEFT", dt.name_x, y
+        )
+        self.voidTotemInfoNameText[index] = nameText
+
+        -- 剩余时间文本（统一标签样式）
+        local durText = ui.CreateLabel(
+            self.voidTotemInfo,
+            value.dur,
+            ui.Font.tooltip,
+            "RIGHT", dt.dur_x, y
+        )
+        self.voidTotemInfoDurText[index] = durText
     end
     GetTotemGameTooltip()
 end
@@ -125,17 +147,25 @@ function MzxToolFrame:Void_UpdateTotemTimeLeft()
 end
 
 -- ----------------------------------------------------------------------------
--- 创建“图腾召唤”安全动作按钮
+-- 创建“图腾召唤”安全动作按钮（统一样式）
 -- ----------------------------------------------------------------------------
 function MzxToolFrame:RecycleTotem()
-    MzxToolFrame.voidTotemInfo.secureBtn = CreateFrame("Button", "RecycleTotemBtn", self.voidTotemInfo,
-        "SecureActionButtonTemplate")
+    self.voidTotemInfo.secureBtn = ui.CreateIconButton(
+        self.voidTotemInfo,
+        MzxShamanData.Texture.default_icon,
+        36936,   -- 图腾召唤法术 ID
+        36,
+        "RIGHT", 0, 0,
+        nil,   -- 无额外 onClick，左键由 SecureActionButtonTemplate 施放
+        110    -- 按钮本身尺寸，bg 自适应
+    )
+    -- 调整为大功能按钮尺寸（bg 由 CreateIconButton 的 bg_size 控制）
     self.voidTotemInfo.secureBtn:SetSize(110, 100)
     self.voidTotemInfo.secureBtn:SetPoint("RIGHT", self.voidTotemInfo, "RIGHT", 0, 0)
     self.voidTotemInfo.secureBtn:SetAttribute("type1", "spell")
     self.voidTotemInfo.secureBtn:SetAttribute("spell", "图腾召唤")
     self.voidTotemInfo.secureBtn:RegisterForClicks("AnyUp", "AnyDown")
-    -- 鼠标悬停事件
+    -- 鼠标悬停事件（自定义 tooltip 文本）
     self.voidTotemInfo.secureBtn:SetScript("OnEnter", function(s)
         GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
         GameTooltip:SetSpellByID(36936)
