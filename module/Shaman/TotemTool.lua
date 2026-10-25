@@ -17,6 +17,9 @@ local totem_state = {
     button_frame = { false, false, false, false },
 }
 
+-- 颜色数据层快捷引用（顶层，不属于 TotemTool 子表）
+local dt_color = MzxShamanData.Color
+
 -- ----------------------------------------------------------------------------
 -- API 封装：扫描法术书，按系返回已学会的图腾法术表
 -- 返回：totems[1]=土系列表, totems[2]=火系列表, totems[3]=水系列表, totems[4]=气系列表
@@ -159,15 +162,15 @@ function MzxToolFrame:CreateTotemToolFrame(totems)
                 GameTooltip:AddLine(dt.text.left_click, 0.9, 0.9, 0.9)
                 GameTooltip:AddLine(dt.text.right_click_popup, 0.9, 0.9, 0.9)
                 GameTooltip:Show()
-                s.bg:SetBackdropColor(unpack(dt.Color.bg_hover))
-                s.bg:SetBackdropBorderColor(unpack(dt.Color.border_hover))
+                s.bg:SetBackdropColor(unpack(dt_color.bg_hover))
+                s.bg:SetBackdropBorderColor(unpack(dt_color.border_hover))
             end)
 
             -- 离开：隐藏提示，恢复背景
             icon:SetScript("OnLeave", function(s)
                 GameTooltip:Hide()
-                s.bg:SetBackdropColor(unpack(dt.Color.bg_default))
-                s.bg:SetBackdropBorderColor(unpack(dt.Color.border_default))
+                s.bg:SetBackdropColor(unpack(dt_color.bg_default))
+                s.bg:SetBackdropBorderColor(unpack(dt_color.border_default))
             end)
 
             -- 右键：打开该系图腾弹出列表；左键：直接释放常用图腾（由 SecureActionButtonTemplate 处理）
@@ -253,15 +256,15 @@ function MzxToolFrame:TotemFrame(frame, totem_spells, type_index)
             GameTooltip:AddLine(dt.text.left_click, 0.9, 0.9, 0.9)
             GameTooltip:AddLine(dt.text.right_click_set, 0.9, 0.9, 0.9)
             GameTooltip:Show()
-            s.bg:SetBackdropColor(unpack(dt.Color.bg_hover))
-            s.bg:SetBackdropBorderColor(unpack(dt.Color.border_hover))
+            s.bg:SetBackdropColor(unpack(dt_color.bg_hover))
+            s.bg:SetBackdropBorderColor(unpack(dt_color.border_hover))
         end)
 
         -- 离开：隐藏提示，恢复背景
         icon:SetScript("OnLeave", function(s)
             GameTooltip:Hide()
-            s.bg:SetBackdropColor(unpack(dt.Color.bg_default))
-            s.bg:SetBackdropBorderColor(unpack(dt.Color.border_default))
+            s.bg:SetBackdropColor(unpack(dt_color.bg_default))
+            s.bg:SetBackdropBorderColor(unpack(dt_color.border_default))
         end)
 
         frame.icons[index] = icon
